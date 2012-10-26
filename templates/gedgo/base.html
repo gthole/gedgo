@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<style media="screen" type="text/css">
+{{ css }}
+</style>
+<body>
+
+
+<div class="container">
+<div class="header">
+<h1 style="margin-bottom:0;">The Thole Family Tree</h1>
+<div class="search">
+	<form action="/gedgo/search/" method="get">
+		search
+		<input type="text" name="q" value="{{ query }}" size="30">
+	</form>
+</div>
+</div>
+
+
+
+<div class="left-side-bar">
+{% block leftsidebar %}{% endblock %}
+</div>
+
+<div class="content">
+{% block content %}{% endblock %}
+</div>
+ 
+<div class="right-side-bar">
+{% block rightsidebar %}{% endblock %}
+</div>
+
+
+<div class="footer">
+Powered by gen-go, a django web app.
+</div>
+
+</div>
+
+</body>
+</html>

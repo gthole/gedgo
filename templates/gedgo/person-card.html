@@ -1,0 +1,23 @@
+<div class="card">
+	<table>
+		<tr>
+			<td>
+				<a href="/gedgo/{{ somebody.pointer }}/"><img src="{{ MEDIA_URL }}thumbs/{% if somebody.media.all %}{{ somebody.key_photo }}{% else %}generic_person.gif{% endif %}" height=50px width=50px></a></div>
+			</td>
+			<td>
+				<table>
+					<tr>
+						<td>
+							<a href="/gedgo/{{ somebody.pointer }}/">{{ somebody.full_name }}</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							({{ somebody.year_range }})
+						</td>
+					<tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>

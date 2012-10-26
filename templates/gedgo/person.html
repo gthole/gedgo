@@ -1,0 +1,132 @@
+{% extends "gedgo/base.html" %}
+
+
+{% block leftsidebar %}
+{% for photo in person.media.all %}
+	{% if not photo.name == person.key_photo %}
+	<a href="{{ MEDIA_URL }}{{ photo.name }}">
+		<img src="{{ MEDIA_URL }}thumbs/{{ photo.name }}" height=100px width=100px border=1>
+	</a>
+	{% endif %}
+{% endfor %}
+{% endblock %}
+
+
+
+
+{% block content %}
+<div class="pod">
+<table>
+	<tr>
+		<td>
+		<div style="width: 115px; height: 115px; overflow: hidden">
+			<a href="{{ MEDIA_URL }}{% if person.media.all %}{{ person.key_photo }}{% else %}generic_person.gif{% endif %}">	
+				<img src="{{ MEDIA_URL }}thumbs/{% if person.media.all %}{{ person.key_photo }}{% else %}generic_person.gif{% endif %}" height=115 width=115>
+			</a>
+		</div>
+		</td>
+		<td><h2>{{ person.full_name }}</h2><h3>({{ person.year_range }})</h3></td>
+	</tr>
+</table>
+</div>
+<br>
+
+<!-- H-line -->
+
+<!-- Basic information pod -->
+{% if person.birth or person.death %}
+<div class="pod">
+	<table>
+	{% if person.birth.year_start %}<tr><td><div class="pod-title">Born: </div></td><td> {{ person.birth.date_string }} {% if person.birth.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+	{% if person.birth.place %}<tr><td><div class="pod-title">Birthplace: </div></td><td> {{ person.birth.place }} </td></tr>{% endif %}
+	{% if person.death.year_start %}<tr><td><div class="pod-title">Died: </div></td><td> {{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+	{% if person.death.place %}<tr><td><div class="pod-title">Deathplace: </div></td><td> {{ person.death.place }} </td></tr>{% endif %}
+	</table>
+</div><br>
+{% endif %}
+
+<!-- Families -->
+{% if person.child_family %}
+<div class="pod">
+	<!-- Fathers -->
+	{% for somebody in person.child_family.husbands.all %}
+		<div class="card-title">Father:</div>
+		{% include "gedgo/person-card.html" %}
+	{% endfor %}
+	
+	<!-- Mothers -->
+	{% for somebody in person.child_family.wives.all %}
+		<hr>
+		<div class="card-title">Mother:</div>
+		{% include "gedgo/person-card.html" %}
+	{% endfor %}
+	
+	<!-- Siblings -->
+	{% if person.child_family.children.all and not person.child_family.single_child == person %}
+		<hr>
+		<div class="card-title">Siblings:</div>
+		{% for somebody in person.child_family.children.all %}
+			{% if not somebody == person %}
+				{% include "gedgo/person-card.html" %}
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+</div>
+<br>
+{% endif %}
+
+{% for family in person.spousal_families.all %}
+<div class="pod">
+	<!-- Spouses -->
+	{% for somebody in family.husbands.all %}
+		{% if not somebody == person %}
+			<div class="card-title">Husband:</div>
+			{% include "gedgo/person-card.html" %}
+		{% endif %}
+	{% endfor %}
+	
+	{% for somebody in family.wives.all %}
+		{% if not somebody == person %}
+			<div class="card-title">Wife:</div>
+			{% include "gedgo/person-card.html" %}
+		{% endif %}
+	{% endfor %}
+	
+	<!-- Marital Facts -->
+	{% if family.marriage.year_start %}
+		<hr>
+		<table>
+		{% if family.marriage.year_start %}<tr><td><div class="pod-title">Married: </div></td><td> {{ family.marriage.date_string }} {% if family.marriage.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if family.marriage.place %}<tr><td><div class="pod-title">Place: </div></td><td> {{ family.marriage.place }} </td></tr>{% endif %}
+		</table>
+	{% endif %}
+	
+	<!-- Children -->
+	{% if family.children.all %}
+		<hr>
+		<div class="card-title">Children:</div>
+		{% for somebody in family.children.all %}
+			{% include "gedgo/person-card.html" %}
+		{% endfor %}
+	{% endif %}
+</div><br>
+{% endfor %}
+
+<!-- Notes -->
+{% if person.notes.all %}
+<div class="pod">
+	<div class="pod-title">Notes:</div>
+	{% for note in person.notes.all %}
+		{{ note.text|linebreaks }}
+	{% endfor %}
+</div>
+<br>
+{% endif %}
+
+<div class="pod">
+	{% include "gedgo/comment_form.html" %}
+</div>
+<br>
+
+{%endblock %}
+

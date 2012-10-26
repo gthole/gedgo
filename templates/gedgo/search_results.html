@@ -1,0 +1,22 @@
+{% extends 'gedgo/base.html' %}
+
+{% block content %}
+{% if people %}
+	<div class="pod">
+		You searched for: <strong>{{ query }}</strong><br>
+		Found {{ people|length }} person{{ people|pluralize }}.<br>
+	</div><br>
+	<div class="pod">
+	{% for person in people %}
+		<table><tr>
+		<td><a href="../{{ person.pointer }}"><img src="{{ MEDIA_URL }}thumbs/{% if person.media.all %}{{ person.key_photo }}{% else %}generic_person.gif{% endif %}" height=75 width=75></a></td>
+		<td>
+		<a href="../{{ person.pointer }}/">{{ person.full_name }}</a><br>
+		({{ person.year_range }})</td></tr></table>
+		{% if not forloop.last %} <hr> {% endif %}
+	{% endfor %}
+	</div>
+{% else %}
+    <div class="pod">No people matched your search criteria.<br><i>{{ query }}</i></div><br>
+{% endif %}
+{% endblock %}

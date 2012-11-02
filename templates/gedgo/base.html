@@ -1,22 +1,32 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
-<style media="screen" type="text/css">
-{{ css }}
-</style>
+<title>{% if gedcom.title %}{{ gedcom.title }}{% else %}Ged-go!{% endif %}{% if person %} : {{ person.full_name }}{% endif %}</title>
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static "styles/style.css" %}">
+	<script type="text/javascript" src="{% static "js/d3.v2.js" %}"></script>
+</head>
 <body>
 
 
 <div class="container">
 <div class="header">
-<h1 style="margin-bottom:0;">The Thole Family Tree</h1>
+<a href="/gedgo/">
+	<h1 style="margin-bottom:0;">{% if gedcom.title %}{{ gedcom.title }}{% else %}Ged-go!{% endif %}</h1>
+</a>
+
+<a href="/gedgo/">About</a> | 
+<a href="/gedgo/blog/">Blog</a> | 
+<a href="/gedgo/documentaries/">Documentaries</a>
+
 <div class="search">
 	<form action="/gedgo/search/" method="get">
 		search
 		<input type="text" name="q" value="{{ query }}" size="30">
 	</form>
 </div>
-</div>
 
+</div>
 
 
 <div class="left-side-bar">
@@ -25,7 +35,7 @@
 
 <div class="content">
 {% block content %}{% endblock %}
-</div>
+<br></div>
  
 <div class="right-side-bar">
 {% block rightsidebar %}{% endblock %}
@@ -33,7 +43,7 @@
 
 
 <div class="footer">
-Powered by gen-go, a django web app.
+Powered by ged-go.
 </div>
 
 </div>

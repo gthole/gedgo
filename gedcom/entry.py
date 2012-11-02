@@ -24,7 +24,12 @@ class Entry:
 					break
 			if no_matching_tag:
 				break
-		return default if no_matching_tag else entry.value
+		if no_matching_tag:
+			return default
+		value = entry.value
+		for child in entry.get_children_by_tag('CONC'):
+			value += child.value
+		return value
 	
 	def get_child_by_tag(self, tag):
 		children = self.get_children_by_tag(tag)

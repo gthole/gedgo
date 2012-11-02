@@ -1,5 +1,6 @@
 body {
 	background-color:#7EB5D6;
+	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
 }
 .container {
 	background-color:#DFC184;
@@ -10,13 +11,21 @@ body {
 .header {
 	padding-top: 10px;
 	padding-left: 5px;
-	padding-bottom: 28px;
+	padding-bottom: 25px;
 	background-color:#274257;
+	color: #FFFFFA;
 }
 .search {
 	float:right;
 	background-color:#274257;
 	padding-bottom: 5px;
+	padding-right: 10px;
+	color: #FFFFFA;
+}
+.navbar {
+	float:right;
+	background-color:#274257;
+	padding-top: 7px;
 	padding-right: 10px;
 	color: #FFFFFA;
 }
@@ -45,6 +54,7 @@ body {
 	margin-top: 5px;
 	margin-bottom: 5px;
 	margin-left: 5px;
+	margin-right: 5px;
 }
 .pod-title {
 	font-weight: bold;
@@ -60,21 +70,36 @@ body {
 h1 {
 	font-family:Georgia;
 	color:#FFFFFA;
+	padding-left: 7px;
+	padding-right: 7px;
+	padding-bottom: 10px;
 }
 hr {
   color: #EEEEEE;
 }
-a:link {
+a {
+	color:#274257;
+	text-decoration: none;
+}
+.content a:link {
 	color:#274257;
 }
-a:visited {
+.content a:visited {
 	color:#274257;
 }
-a:hover {
+.content a:hover {
 	color:#FFA540;
 }
-a:active {
+.content a:active {
 	color:#FFA540;
+}
+.header a {
+	color:#FFFFFA;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.leftsidebar {
+	color:#274257;
 }
 td {
 	padding-right: 5px;
@@ -82,6 +107,17 @@ td {
 input {
 	color: #888888;
 	border-radius: 3px;
+	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+}
+form {
+	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+}
+ul { 
+	margin: 0;
+	padding:0;
+	list-style:none;
+	display: inline; 
+	margin: 0; 
 }
 textarea {
 	color: #888888;
@@ -96,4 +132,7 @@ label {
 }
 .card-title {
 	font-weight: bold;
+}
+.family-card {
+	float: center;
 }

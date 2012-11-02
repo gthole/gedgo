@@ -1,0 +1,37 @@
+{% extends "gedgo/base.html" %}
+
+{% block leftsidebar %}
+{% for person in post.tagged_photos.all %}
+	<a href="{{ MEDIA_URL }}{{ photo.name }}">
+		<img src="{{ MEDIA_URL }}thumbs/{{ photo.name }}" height=100px width=100px border=1>
+	</a>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+<div class="pod">
+<h2>{{ post.title }}</h2>
+    <div class="body">{{ post.body|linebreaks }}</div>
+</div><br>
+<div class="pod">
+    Posted: {{ post.created }}<br>
+    <a href="../">Back to the post list</a><br>
+    <a href="/gedgo/">Main site</a>  
+</div>
+
+{% if post.tagged_people.all %}
+<br>
+<div class="pod">
+    People in this post:<br>
+    {% for somebody in post.tagged_people.all %}
+    	
+	    	{% include "gedgo/person-card.html" %}
+	    	
+    	{% if forloop.last %}{% else %}<hr>{% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}
+
+<!-- Comments  -->

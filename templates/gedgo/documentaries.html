@@ -1,0 +1,26 @@
+{% extends "gedgo/base.html" %}
+
+
+{% block leftsidebar %}
+
+{% endblock %}
+
+
+{% block content %}
+{% if documentaries.all %}
+	{% for documentary in documentaries.all %}
+		<div class="pod">
+			<div class="pod-title">{{ documentary.title }}</div>
+			<a href=""><img src=""></a>
+			<hr>
+			{{ documentary.title|linebreaks }}
+			{{ documentary.last_updated }}
+		</div>
+	{% endfor %}
+{% else %}
+	<div class="pod">
+		No documentaries yet.  Check back soon.
+	</div>
+{% endif %}
+{% endblock %}
+

@@ -12,7 +12,8 @@
 <div class="pod">
 <h2>{{ post.title }}</h2>
     <div class="body">{{ post.body|linebreaks }}</div>
-</div><br>
+</div>
+
 <div class="pod">
     Posted: {{ post.created }}<br>
     <a href="../">Back to the post list</a><br>
@@ -20,7 +21,6 @@
 </div>
 
 {% if post.tagged_people.all %}
-<br>
 <div class="pod">
     People in this post:<br>
     {% for somebody in post.tagged_people.all %}
@@ -32,6 +32,9 @@
 </div>
 {% endif %}
 
-{% endblock %}
-
 <!-- Comments  -->
+<div class="pod">
+	{% include "gedgo/comment_form.html" %}
+</div>
+
+{% endblock %}

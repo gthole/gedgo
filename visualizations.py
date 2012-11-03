@@ -81,7 +81,7 @@ def __gatherby(inlist, func, equivalencefunc = lambda a,b : a == b):
     return gathered
 
 HISTORICAL = [
-	['First "Peanuts" cartoon strip', 1950],
+	['First Peanuts cartoon strip', 1950],
 	['Color TV introduced', 1951],
 	['Queen Elizabeth coronated', 1952],
 	['DNA discovered', 1953],
@@ -90,7 +90,7 @@ HISTORICAL = [
 	['Sputnik launched', 1957],
 	['First TV presidential debate', 1960],
 	['Cuban missile crisis', 1962],
-	["'I Have a Dream' speech", 1963],
+	['I Have a Dream speech', 1963],
 	['US sends troops to Vietnam', 1965],
 	['Summer of love', 1967],
 	['Beatles release Let It Be', 1969],

@@ -61,7 +61,8 @@ def documentaries(request, gedcom_id):
 	documentaries = Documentary.objects.all().order_by('-last_updated')
 	
 	return render_to_response("gedgo/documentaries.html", 
-		{'documentaries': documentaries, 'gedcom': g, 'user': request.user})
+		{'documentaries': documentaries, 'gedcom': g, 'user': request.user},
+		context_instance=RequestContext(request))
 
 @login_required
 def documentaries_redirect(request):

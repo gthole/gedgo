@@ -7,7 +7,7 @@ class Person(models.Model):
 	class Meta:
 		app_label = 'gedgo'
 		verbose_name_plural = 'People'
-	pointer = models.CharField(max_length=10)
+	pointer = models.CharField(max_length=10, primary_key=True)
 	gedcom = models.ForeignKey('Gedcom')
 	
 	# Name

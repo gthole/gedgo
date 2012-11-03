@@ -29,7 +29,7 @@ body {
 	padding-right: 10px;
 	color: #FFFFFA;
 }
-.left-side-bar {
+.mediacontent {
 	margin-left:20px;
 	margin-top:20px;
 	background-color:#DFC184;
@@ -51,8 +51,8 @@ body {
 	padding-left: 15px;
 	padding-right: 15px;
 	padding-bottom: 20px;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin-top: 25px;
+	margin-bottom: 25px;
 	margin-left: 5px;
 	margin-right: 5px;
 }
@@ -106,6 +106,7 @@ td {
 }
 input {
 	color: #888888;
+	background-color: #FFFFFA;
 	border-radius: 3px;
 	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
 }

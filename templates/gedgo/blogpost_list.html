@@ -8,7 +8,7 @@
                 <a href="{{ post.id }}"><h2>{{ post.title }}</h2></a>
                 <div class="body">{{ post.body|linebreaks|truncatewords:200 }}</div>
                 <div class="time">{{ post.created }}</div>
-            </div><br>
+            </div>
             {% endfor %}
         {% else %}
         	<div class="pod">

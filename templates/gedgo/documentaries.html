@@ -2,7 +2,6 @@
 
 
 {% block leftsidebar %}
-
 {% endblock %}
 
 
@@ -10,11 +9,11 @@
 {% if documentaries.all %}
 	{% for documentary in documentaries.all %}
 		<div class="pod">
-			<div class="pod-title">{{ documentary.title }}</div>
-			<a href=""><img src=""></a>
+			<div class="pod-title">{{ documentary.title }}</div><br>
+			<a href="{{ MEDIA_URL }}{{ documentary.location }}"><img src="{{ MEDIA_URL }}{{ documentary.thumb }}" width=460></a>
 			<hr>
-			{{ documentary.title|linebreaks }}
-			{{ documentary.last_updated }}
+			{{ documentary.description|linebreaks }}
+			Last updated: {{ documentary.last_updated }}
 		</div>
 	{% endfor %}
 {% else %}

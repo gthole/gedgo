@@ -19,4 +19,4 @@ class Documentary(models.Model):
 	gedcom = models.ForeignKey('Gedcom')
 	
 	def __unicode__(self):
-		return self.title + ' (' + self.kind.lower() + ')'
+		return self.title

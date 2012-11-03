@@ -3,7 +3,7 @@ from django.db import models
 class Note(models.Model):
 	class Meta:
 		app_label = 'gedgo'
-	pointer = models.CharField(max_length=10)
+	pointer = models.CharField(max_length=10, primary_key=True)
 	
 	text = models.TextField()
 	gedcom = models.ForeignKey('Gedcom')

@@ -3,7 +3,7 @@
     	Please correct the error{{ form.errors|pluralize }} below.
     </p>
 {% endif %}
-<p>Send us a comment about {% if person %}{{ person.full_name }}{% else %}this gedcom{% endif %}.</p>
+<p>Send us a comment about {% if person %}{{ person.full_name }}{% elif post %}this blog post{% else %}this gedcom{% endif %}.</p>
 <form action="" method="post">
 	{% csrf_token %}
 	<input type="text" value=" your name" name="name" onblur="if (this.value == '') {this.value = ' your name';}"  onfocus="if (this.value == ' your name') {this.value = '';}" size="40"/>

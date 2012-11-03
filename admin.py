@@ -18,7 +18,6 @@ class PersonAdmin(admin.ModelAdmin):
 			   'prefix', 'suffix')
 
 class DocumentaryAdmin(admin.ModelAdmin):
-	exclude = ('gedcom',)
 	filter_horizontal = ('tagged_people','tagged_families',)
 
 admin.site.register(Gedcom, GedcomAdmin)

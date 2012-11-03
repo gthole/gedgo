@@ -15,9 +15,13 @@
 	<h1 style="margin-bottom:0;">{% if gedcom.title %}{{ gedcom.title }}{% else %}Ged-go!{% endif %}</h1>
 </a>
 
-<a href="/gedgo/">About</a> | 
-<a href="/gedgo/blog/">Blog</a> | 
+<a href="/gedgo/">About</a> 
+{% if gedcom.showblog %}| 
+<a href="/gedgo/blog/">Blog</a> 
+{% endif %}
+{% if gedcom.showdocumentaries %}| 
 <a href="/gedgo/documentaries/">Documentaries</a>
+{% endif %}
 
 <div class="search">
 	<form action="/gedgo/search/" method="get">
@@ -29,17 +33,13 @@
 </div>
 
 
-<div class="left-side-bar">
+<div class="mediacontent">
 {% block leftsidebar %}{% endblock %}
 </div>
 
 <div class="content">
 {% block content %}{% endblock %}
 <br></div>
- 
-<div class="right-side-bar">
-{% block rightsidebar %}{% endblock %}
-</div>
 
 
 <div class="footer">

@@ -2,6 +2,8 @@ from django.db import models
 import random
 
 from media import Media
+from blogpost import BlogPost
+from documentary import Documentary
 
 class Gedcom(models.Model):
 	class Meta:
@@ -29,7 +31,7 @@ class Gedcom(models.Model):
 		return random.sample(photos, min(20, len(photos)))
 	
 	def showblog(self):
-		return True if BlogPost.objects.filter(gedcom=self.id) else False
+		return True if BlogPost.objects.all() else False
 	
 	def showdocumentaries(self):
 		return True if Documentary.objects.filter(gedcom=self.id) else False

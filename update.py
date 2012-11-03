@@ -10,8 +10,6 @@ import requests
 
 
 def update(g, file_name):
-	__purge_gedcom(g)
-	
 	print 'Parsing file: ' + file_name
 	gedcom = GedcomFile(file_name) # This is horrible naming.
 	
@@ -21,6 +19,7 @@ def update(g, file_name):
 		g.last_updated = timezone.now()
 	else:
 		g.last_updated = timezone.now()
+		__purge_events(g)
 	
 	g.file_name = file_name
 	g.save()
@@ -31,23 +30,20 @@ def update(g, file_name):
 		tag = entry.tag
 		
 		if tag == 'INDI':
-			e = __create_Person(entry, g)
-			g.people.add(e)
+			e = __process_Person(entry, g)
 			person_counter += 1
 		elif tag == 'FAM':
-			e = __create_Family(entry, g)
-			g.families.add(e)
+			e = __process_Family(entry, g)
 			family_counter += 1
 		elif tag == 'NOTE':
-			e = __create_Note(entry, g)
-			g.notes.add(e)
+			e = __process_Note(entry, g)
 			note_counter += 1
 	
 	print ('Found ' + 
 		  str(person_counter) + ' people, ' +
 		  str(family_counter) + ' families, ' +
 		  str(note_counter) + ' notes, and ' + 
-		  str(len(Media.objects.all())) + ' photos.')
+		  str(len(Media.objects.all())) + ' media objects.')
 	
 	print 'Creating ForeignKey links'
 	__process_all_relations(g, gedcom)
@@ -56,33 +52,13 @@ def update(g, file_name):
 
 #--- Second Level script functions
 
-def __purge_gedcom(g):
+def __purge_events(g):
 	if g is None:
 		return None
 	
-	print 'Purging Gedcom' + str(g.id)
-	for p in Person.objects.filter(gedcom=g):
-		g.people.remove(p)
-		p.delete()
-	print '  Person objects cleared.'
-	
-	for f in Family.objects.filter(gedcom=g):
-		g.families.remove(f)
-		f.delete()
-	print '  Family objects cleared.'
-	
-	for e in Event.objects.filter(gedcom=g):
-		e.delete()
+	print '  Clearing Event objects.'
+	Event.objects.filter(gedcom=g).delete()
 	print '  Event objects cleared.'
-	
-	for n in Note.objects.filter(gedcom=g):
-		g.notes.remove(n)
-		n.delete()
-	print '  Note objects cleared.'
-	
-	for m in Media.objects.filter(gedcom=g, persistent=False):
-		m.delete()
-	print '  Media objects cleared.'
 
 
 
@@ -109,6 +85,7 @@ def __process_all_relations(gedcom_model, gedcom):
 
 def __process_person_relations(gedcom, person, entry):
 	# "FAMS"
+	person.spousal_families = []
 	person.spousal_families.add(*__objects_from_entry_tag(gedcom.families.all(), entry, 'FAMS'))
 	
 	# "FAMC"
@@ -117,6 +94,7 @@ def __process_person_relations(gedcom, person, entry):
 		person.child_family = child_family[0]
 	
 	# "NOTE"
+	person.notes = []
 	person.notes.add(*__objects_from_entry_tag(gedcom.notes.all(), entry, 'NOTE'))
 	
 	person.save()
@@ -125,16 +103,16 @@ def __process_person_relations(gedcom, person, entry):
 
 def __process_family_relations(gedcom, family, entry):
 	# "HUSB"
+	family.husbands = []
 	family.husbands.add(*__objects_from_entry_tag(gedcom.people.all(), entry, 'HUSB'))
 	
 	# "WIFE"
+	family.wives = []
 	family.wives.add(*__objects_from_entry_tag(gedcom.people.all(), entry, 'WIFE'))
 	
 	# "CHIL"
+	family.children = []
 	family.children.add(*__objects_from_entry_tag(gedcom.people.all(), entry, 'CHIL'))
-	
-	# "NOTE"
-	# family.notes.add(*__objects_from_entry_tag(gedcom.notes.all(), entry, 'NOTE'))
 	
 	family.save()
 
@@ -143,8 +121,14 @@ def __process_family_relations(gedcom, family, entry):
 
 # --- Import Constructors
 
-def __create_Person(entry, g):
-	p = Person()
+def __process_Person(entry, g):
+	known = Person.objects.filter(pointer=entry.pointer)
+	
+	if len(known) == 0:
+		p = Person()
+	else:
+		p = known[0]
+	
 	p.pointer = entry.pointer
 	p.gedcom = g
 	
@@ -169,15 +153,20 @@ def __create_Person(entry, g):
 	# Media
 	media_entries = entry.get_children_by_tag('OBJE')
 	for m in media_entries:
-		__create_Media(m, p, g)
+		__process_Media(m, p, g)
 	
-	p.save()
-	
+	g.people.add(p)
+		
 	return p
 
 
-def __create_Family(entry, g):
-	f = Family()
+def __process_Family(entry, g):
+	known = Family.objects.filter(pointer=entry.pointer)
+	
+	if len(known) == 0:
+		f = Family()
+	else:
+		f = known[0]
 	
 	f.pointer = entry.pointer
 	f.gedcom = g
@@ -190,9 +179,11 @@ def __create_Family(entry, g):
 	# Media
 	media_entries = entry.get_children_by_tag('OBJE')
 	for m in media_entries:
-		__create_Media(m, f, g)
+		__process_Media(m, f, g)
 	
 	f.save()
+	
+	g.families.add(f)
 	
 	return f
 
@@ -221,8 +212,13 @@ def __create_Event(entry, g):
 	return e
 
 
-def __create_Note(entry, g):
-	n = Note()
+def __process_Note(entry, g):
+	known = Note.objects.filter(pointer=entry.pointer)
+	
+	if len(known) == 0:
+		n = Note()
+	else:
+		n = known[0]
 	
 	n.pointer = entry.pointer
 	n.gedcom = g
@@ -237,10 +233,12 @@ def __create_Note(entry, g):
 	
 	n.save()
 	
+	g.notes.add(n)
+	
 	return n
 
 
-def __create_Media(entry, object, g):
+def __process_Media(entry, object, g):
 	if not __valid_media_entry(entry):
 		return None
 	
@@ -261,9 +259,9 @@ def __create_Media(entry, object, g):
 		m.persistent = False
 		m.save()
 	
-	if type(object) is Person:
+	if (type(object) is Person) & (len(m.tagged_people.filter(pointer=object.pointer)) == 0):
 		m.tagged_people.add(object)
-	elif type(object) is Family:
+	elif (type(object) is Family) & (len(m.tagged_families.filter(pointer=object.pointer)) == 0):
 		m.tagged_families.add(object)
 
 
@@ -337,7 +335,7 @@ def __valid_media_entry(e):
 	return ((type(file_value) is str) & 
 		    (not file_value == '') &
 			('content-length' in img_presence.headers.keys()) &
-			((e.get_child_value_by_tags('TYPE') == 'PHOTO') & 
+			((e.get_child_value_by_tags('TYPE') != 'PHOTO') |
 			 ('content-length' in thmb_presence.headers.keys()))
 		)
 

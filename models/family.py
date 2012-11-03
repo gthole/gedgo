@@ -3,7 +3,7 @@ from django.db import models
 class Family(models.Model):
 	class Meta:
 		app_label = 'gedgo'
-	pointer = models.CharField(max_length=10)
+	pointer = models.CharField(max_length=10, primary_key=True)
 	gedcom = models.ForeignKey('Gedcom')
 	
 	husbands = models.ManyToManyField('Person', related_name='family_husbands')

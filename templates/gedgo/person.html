@@ -29,7 +29,6 @@
 	</tr>
 </table>
 </div>
-<br>
 
 <!-- H-line -->
 
@@ -42,7 +41,7 @@
 	{% if person.death.date %}<tr><td><div class="pod-title">Died: </div></td><td> {{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
 	{% if person.death.place %}<tr><td><div class="pod-title">Deathplace: </div></td><td> {{ person.death.place }} </td></tr>{% endif %}
 	</table>
-</div><br>
+</div>
 {% endif %}
 
 {% if person.education or person.religion %}
@@ -51,7 +50,7 @@
 	{% if person.education %}<tr><td><div class="pod-title">Education: </div></td><td> {{ person.education_delimited|linebreaksbr }}</td></tr>{% endif %}
 	{% if person.religion %}<tr><td><div class="pod-title">Religion: </div></td><td> {{ person.religion }} </td></tr>{% endif %}
 	</table>
-</div><br>
+</div>
 {% endif %}
 
 <!-- Families -->
@@ -81,7 +80,6 @@
 		{% endfor %}
 	{% endif %}
 </div>
-<br>
 {% endif %}
 
 {% for family in person.spousal_families.all %}
@@ -120,7 +118,7 @@
 			{% include "gedgo/person-card.html" %}
 		{% endfor %}
 	{% endif %}
-</div><br>
+</div>
 {% endfor %}
 
 {% if posts.all %}
@@ -129,7 +127,7 @@
 	{% for post in posts.all %}
 	<a href="/gedgo/{{ gedcom.id }}/blog/{{ post.id }}">{{ post.title }}</a>&nbsp; ({{ post.created }})<br>
 	{% endfor %}
-</div><br>
+</div>
 {% endif %}
 
 <!-- Notes -->
@@ -140,7 +138,6 @@
 		{{ note.text|linebreaks }}
 	{% endfor %}
 </div>
-<br>
 {% endif %}
 
 
@@ -153,14 +150,13 @@
 		<a href="{{ MEDIA_URL }}{{ video.name }}">{{ video.name }}</a>
 	{% endfor %}
 </div>
-<br>
 {% endif %}
 
 {% if events %}
 <div class="pod">
 	<div class="pod-title">Timeline:</div>
 	{% include "gedgo/person-timeline.html" %}
-</div><br>
+</div>
 {% endif %}
 
 <div class="pod">

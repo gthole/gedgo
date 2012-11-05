@@ -3,9 +3,9 @@
 
 {% block leftsidebar %}
 {% for photo in person.photos %}
-	{% if not photo.name == person.key_photo %}
-	<a href="{{ MEDIA_URL }}{{ photo.name }}">
-		<img src="{{ MEDIA_URL }}thumbs/{{ photo.name }}" height=100px width=100px border=1>
+	{% if not photo == person.key_photo %}
+	<a href="{{ photo.docfile.url }}">
+		<img src="{{ photo.thumb.url }}" height=100px width=100px border=1>
 	</a>
 	{% endif %}
 {% endfor %}
@@ -156,6 +156,13 @@
 <div class="pod">
 	<div class="pod-title">Timeline:</div>
 	{% include "gedgo/person-timeline.html" %}
+</div>
+{% endif %}
+
+{% if person.child_family %}
+<div class="pod">
+	<div class="pod-title">Pedigree Chart:</div>
+	{% include "gedgo/person-pedigree.html" %}
 </div>
 {% endif %}
 

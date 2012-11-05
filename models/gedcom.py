@@ -1,13 +1,13 @@
 from django.db import models
 import random
 
-from media import Media
+from document import Document
 from blogpost import BlogPost
-from documentary import Documentary
 
 class Gedcom(models.Model):
 	class Meta:
 		app_label = 'gedgo'
+	
 	file_name = models.CharField(max_length=40, null=True, blank=True)
 	title = models.CharField(max_length=40, null=True, blank=True)
 	description = models.TextField(null=True, blank=True)
@@ -17,8 +17,11 @@ class Gedcom(models.Model):
 	families = models.ManyToManyField('Family', related_name='gedcom_families')
 	notes = models.ManyToManyField('Note', related_name='gedcom_notes')
 	
-	key_people = models.ManyToManyField('Person', related_name='gedcom_key_people', null=True, blank=True)
-	key_families = models.ManyToManyField('Family', related_name='gedcom_key_families', null=True, blank=True)
+	key_people = models.ManyToManyField('Person', 
+		related_name='gedcom_key_people', null=True, blank=True)
+	
+	key_families = models.ManyToManyField('Family', 
+		related_name='gedcom_key_families', null=True, blank=True)
 	
 	def __unicode__(self):
 		if self.title is None or self.title == '':
@@ -27,11 +30,11 @@ class Gedcom(models.Model):
 			return self.title + ' (' + str(self.id) + ')'
 	
 	def photo_sample(self):
-		photos = Media.objects.filter(gedcom=self, kind='PHOTO')
+		photos = Document.objects.filter(gedcom=self, kind='PHOTO')
 		return random.sample(photos, min(20, len(photos)))
 	
 	def showblog(self):
 		return True if BlogPost.objects.all() else False
 	
 	def showdocumentaries(self):
-		return True if Documentary.objects.filter(gedcom=self.id) else False
+		return True if Document.objects.filter(gedcom=self, kind='DOCUV') else False

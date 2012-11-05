@@ -1,17 +1,19 @@
 {% extends "gedgo/base.html" %}
 
 {% block leftsidebar %}
-{% for person in post.tagged_photos.all %}
-	<a href="{{ MEDIA_URL }}{{ photo.name }}">
-		<img src="{{ MEDIA_URL }}thumbs/{{ photo.name }}" height=100px width=100px border=1>
-	</a>
-{% endfor %}
+{% if post.tagged_photos.all %}
+	{% for photo in post.tagged_photos.all %}
+		<a href="{{ photo.docfile.url }}">
+			<img src="{{ photo.docfile.url }}" height=100px width=100px border=1>
+		</a>
+	{% endfor %}
+{% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="pod">
 <h2>{{ post.title }}</h2>
-    <div class="body">{{ post.body|linebreaks }}</div>
+    <div class="body">{{ post.body|safe|linebreaks }}</div>
 </div>
 
 <div class="pod">

@@ -2,6 +2,11 @@
 
 
 {% block leftsidebar %}
+{% for photo in gedcom.photo_sample %}
+	<a href="{% if photo.key_person_tag %}/gedgo/{{ gedcom.id }}/{{ photo.key_person_tag.pointer }}{% else %}{{ MEDIA_URL }}{{ photo.name }}{% endif %}">
+		<img src="{{ MEDIA_URL }}thumbs/{{ photo.name }}" height=100px width=100px border=1>
+	</a>
+{% endfor %}
 {% endblock %}
 
 

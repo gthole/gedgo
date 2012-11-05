@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 
-from gedgo.models import Person, Gedcom, BlogPost, Documentary
+from gedgo.models import Person, Gedcom, BlogPost, Document
 from gedgo.forms import CommentForm, comment_action
 from gedgo.visualizations import timeline
 
@@ -58,7 +58,7 @@ def person(request, gedcom_id, person_id):
 @login_required
 def documentaries(request, gedcom_id):
 	g = get_object_or_404(Gedcom, id=gedcom_id)
-	documentaries = Documentary.objects.all().order_by('-last_updated')
+	documentaries = Document.objects.filter(kind='DOCUV').order_by('-last_updated')
 	
 	return render_to_response("gedgo/documentaries.html", 
 		{'documentaries': documentaries, 'gedcom': g, 'user': request.user},
@@ -74,8 +74,13 @@ def search(request):
 	if 'q' in request.GET and request.GET['q']:
 		q = request.GET['q']
 		
+		g = Gedcom.objects.all()
+		if len(g) > 0:
+			g = g[0]
+		
 		people = Person.objects.all()
 		posts = BlogPost.objects.all()
+		
 		for term in findall('\w+', q):  # Throw away non-word characters.
 			people = people & (Person.objects.filter(last_name__icontains=term) | 
 							   Person.objects.filter(first_name__icontains=term) |
@@ -84,11 +89,11 @@ def search(request):
 							 BlogPost.objects.filter(body__icontains=term))
 		
 		return render_to_response('gedgo/search_results.html', 
-			{'people': people, 'posts': posts, 'query': q}, 
+			{'people': people, 'gedcom': g, 'posts': posts, 'query': q}, 
 			context_instance=RequestContext(request))
 	else:
 		return render_to_response('gedgo/search_results.html',
-			{'people': Person.objects.none(), 'posts': BlogPost.objects.none()}, 
+			{'people': Person.objects.none(), 'gedcom': g, 'posts': BlogPost.objects.none()}, 
 			context_instance=RequestContext(request))
 
 
@@ -112,7 +117,9 @@ def blog(request, gedcom_id):
 	except (InvalidPage, EmptyPage):
 		posts = paginator.page(paginator.num_pages)
 	
-	return render_to_response("gedgo/blogpost_list.html", {'posts': posts, 'gedcom': g, 'user': request.user})
+	return render_to_response("gedgo/blogpost_list.html", 
+		{'posts': posts, 'gedcom': g, 'user': request.user},
+		context_instance=RequestContext(request))
 
 
 @login_required
@@ -127,5 +134,6 @@ def blogpost(request, post_id, gedcom_id):
 	g = get_object_or_404(Gedcom, id=gedcom_id)
 	post = get_object_or_404(BlogPost, id=post_id)
 	
-	return render_to_response("gedgo/blogpost.html", {'post': post, 'gedcom': g, 'user': request.user},
-			context_instance=RequestContext(request))
+	return render_to_response("gedgo/blogpost.html", 
+		{'post': post, 'gedcom': g, 'user': request.user},
+		context_instance=RequestContext(request))

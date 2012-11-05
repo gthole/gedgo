@@ -29,7 +29,7 @@ body {
 	padding-right: 10px;
 	color: #FFFFFA;
 }
-.mediacontent {
+.sidebar {
 	margin-left:20px;
 	margin-top:20px;
 	background-color:#DFC184;
@@ -65,7 +65,7 @@ body {
 	clear:both;
 	text-align:center;
 	padding-top: 2px;
-	padding-bottom: 3px;
+	padding-bottom: 6px;
 }
 h1 {
 	font-family:Georgia;

@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.datetime_safe import date
 from django.conf import settings
-from media import Media
+
+from document import Document
 
 class Person(models.Model):
 	class Meta:
@@ -32,19 +33,22 @@ class Person(models.Model):
 	notes = models.ManyToManyField('Note', null = True)
 	
 	# Profile
-	profile = models.ManyToManyField('Media', null = True, blank=True)
+	profile = models.ManyToManyField('Document', null = True, blank=True)
 	
 	def photos(self):
-		return Media.objects.filter(tagged_people=self, kind='PHOTO')
+		return Document.objects.filter(tagged_people=self, kind='PHOTO')
 		
 	def videos(self):
-		vids = Media.objects.filter(tagged_people=self, kind='VIDEO')
+		vids = Document.objects.filter(tagged_people=self, kind='VIDEO')
 		return filter(lambda v: 'content-length' in requests(v.name).headers.keys(). vids)
 		
 	def key_photo(self):
+		if len(self.profile.all()) > 0:
+			return self.profile.all()[0]
+		
 		photos = self.photos()
 		if photos:
-			return photos[len(photos)-1].name
+			return photos[len(photos)-1]
 	
 	def __unicode__(self):
 		return self.last_name + ', ' + self.first_name + ' (' + self.pointer + ')'

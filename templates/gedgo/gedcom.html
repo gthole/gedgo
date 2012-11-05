@@ -4,7 +4,7 @@
 {% block leftsidebar %}
 {% for photo in gedcom.photo_sample %}
 	<a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% else %}{{ MEDIA_URL }}{{ photo.name }}{% endif %}">
-		<img src="{{ MEDIA_URL }}thumbs/{{ photo.name }}" height=100px width=100px border=1>
+		<img src="{{ MEDIA_URL }}{{ photo.thumb }}" height=100px width=100px border=1>
 	</a>
 {% endfor %}
 {% endblock %}
@@ -17,7 +17,7 @@
 
 {% if gedcom.description %}
 	<div class="pod">
-	{{ gedcom.description|linebreaks }}
+	{{ gedcom.description|safe|linebreaks }}
 	</div>
 {% endif %}
 

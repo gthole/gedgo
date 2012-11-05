@@ -13,8 +13,6 @@ class Family(models.Model):
 	marriage = models.ForeignKey('Event', related_name='family_marriage', blank=True, null=True)
 	divorce = models.ForeignKey('Event', related_name='family_divorce', blank=True, null=True)
 	
-	# Notes
-	# notes = models.ManyToManyField('Note', null = True)
 	
 	def __unicode__(self):
 		txt = ''

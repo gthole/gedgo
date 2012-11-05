@@ -2,11 +2,12 @@ from gedcom.file import GedcomFile
 from models import *
 
 from django.utils.datetime_safe import date
+from django.core.files import File
 from django.utils import timezone
 from django.conf import settings
 from datetime import datetime
 from re import findall
-import requests
+from os import path
 
 
 def update(g, file_name):
@@ -19,7 +20,6 @@ def update(g, file_name):
 		g.last_updated = timezone.now()
 	else:
 		g.last_updated = timezone.now()
-		__purge_events(g)
 	
 	g.file_name = file_name
 	g.save()
@@ -43,7 +43,7 @@ def update(g, file_name):
 		  str(person_counter) + ' people, ' +
 		  str(family_counter) + ' families, ' +
 		  str(note_counter) + ' notes, and ' + 
-		  str(len(Media.objects.all())) + ' media objects.')
+		  str(len(Document.objects.all())) + ' documents.')
 	
 	print 'Creating ForeignKey links'
 	__process_all_relations(g, gedcom)
@@ -51,15 +51,6 @@ def update(g, file_name):
 
 
 #--- Second Level script functions
-
-def __purge_events(g):
-	if g is None:
-		return None
-	
-	print '  Clearing Event objects.'
-	Event.objects.filter(gedcom=g).delete()
-	print '  Event objects cleared.'
-
 
 
 def __process_all_relations(gedcom_model, gedcom):
@@ -126,11 +117,11 @@ def __process_Person(entry, g):
 	
 	if len(known) == 0:
 		p = Person()
+		p.pointer = entry.pointer
+		p.gedcom = g
+		g.people.add(p)
 	else:
 		p = known[0]
-	
-	p.pointer = entry.pointer
-	p.gedcom = g
 	
 	# Name
 	name_value = entry.get_child_value_by_tags('NAME', default='')
@@ -142,8 +133,8 @@ def __process_Person(entry, g):
 	p.suffix = entry.get_child_value_by_tags(['NAME', 'NSFX'], default='')
 	p.prefix = entry.get_child_value_by_tags(['NAME', 'NPFX'], default='')
 	
-	p.birth = __create_Event(entry.get_child_by_tag('BIRT'), g)
-	p.death = __create_Event(entry.get_child_by_tag('DEAT'), g)
+	p.birth = __create_Event(entry.get_child_by_tag('BIRT'), g, p.birth)
+	p.death = __create_Event(entry.get_child_by_tag('DEAT'), g, p.death)
 	
 	p.education = entry.get_child_value_by_tags('EDUC')
 	p.religion = entry.get_child_value_by_tags('RELI')
@@ -151,12 +142,10 @@ def __process_Person(entry, g):
 	p.save()
 	
 	# Media
-	media_entries = entry.get_children_by_tag('OBJE')
-	for m in media_entries:
-		__process_Media(m, p, g)
+	document_entries = entry.get_children_by_tag('OBJE')
+	for m in document_entries:
+		__process_Document(m, p, g)
 	
-	g.people.add(p)
-		
 	return p
 
 
@@ -171,15 +160,15 @@ def __process_Family(entry, g):
 	f.pointer = entry.pointer
 	f.gedcom = g
 	
-	f.marriage = __create_Event(entry.get_child_by_tag('MARR'), g)
-	f.divorce = __create_Event(entry.get_child_by_tag('DIVC'), g)
+	f.marriage = __create_Event(entry.get_child_by_tag('MARR'), g, f.marriage)
+	f.divorce = __create_Event(entry.get_child_by_tag('DIVC'), g, f.divorce)
 	
 	f.save()
 	
 	# Media
-	media_entries = entry.get_children_by_tag('OBJE')
-	for m in media_entries:
-		__process_Media(m, f, g)
+	document_entries = entry.get_children_by_tag('OBJE')
+	for m in document_entries:
+		__process_Document(m, f, g)
 	
 	f.save()
 	
@@ -188,7 +177,7 @@ def __process_Family(entry, g):
 	return f
 
 
-def __create_Event(entry, g):
+def __create_Event(entry, g, e):
 	if entry is None:
 		return None
 	
@@ -200,13 +189,15 @@ def __create_Event(entry, g):
 	if not (date or place):
 		return None
 	
-	e = Event()
+	if e is None:
+		e = Event()
+		e.gedcom = g
+
 	e.date = rdate
 	e.place = place
 	e.date_format = date_format
 	e.year_range_end = year_range_end
 	e.date_approxQ = date_approxQ
-	e.gedcom = g
 	
 	e.save()
 	return e
@@ -238,25 +229,26 @@ def __process_Note(entry, g):
 	return n
 
 
-def __process_Media(entry, object, g):
-	if not __valid_media_entry(entry):
+def __process_Document(entry, object, g):
+	if not __valid_document_entry(entry):
 		return None
 	
 	file_name = __strip_files_directories(entry)
-	thumb = 'thumbs/' + file_name
 	kind = entry.get_child_value_by_tags('TYPE')
+	if kind == 'PHOTO':
+		thumb = 'thumbs/' + file_name #TODO: Fix for non-Linux
+	else:
+		thumb = None
 	
-	known = Media.objects.filter(name=file_name)
+	known = Document.objects.filter(docfile=unicode(file_name))
 	
 	if len(known) > 0:
 		m = known[0]
 	else:
-		m = Media()
-		m.gedcom = g
-		m.name = file_name
-		m.thumb = thumb
-		m.kind = kind
-		m.persistent = False
+		m = Document(gedcom=g, kind=kind)
+		m.docfile.name = file_name
+		if thumb is not None:
+			m.thumb.name = thumb
 		m.save()
 	
 	if (type(object) is Person) & (len(m.tagged_people.filter(pointer=object.pointer)) == 0):
@@ -328,15 +320,16 @@ def __object_from_pointer(objects, pointer):
 
 
 
-def __valid_media_entry(e):
+def __valid_document_entry(e):
+	# TODO: Fix Windows issues.
 	file_value = e.get_child_value_by_tags('FILE')
-	img_presence = requests.head(settings.MEDIA_URL + file_value.split('/')[-1])
-	thmb_presence = requests.head(settings.MEDIA_URL + 'thumbs/' + file_value.split('/')[-1])
+	img_presence = settings.MEDIA_ROOT + path.basename(file_value)
+	thmb_presence = settings.MEDIA_ROOT + path.join('thumbs', path.basename(file_value))
 	return ((type(file_value) is str) & 
 		    (not file_value == '') &
-			('content-length' in img_presence.headers.keys()) &
+			(path.exists(img_presence)) &
 			((e.get_child_value_by_tags('TYPE') != 'PHOTO') |
-			 ('content-length' in thmb_presence.headers.keys()))
+			 (path.exists(thmb_presence)))
 		)
 
 

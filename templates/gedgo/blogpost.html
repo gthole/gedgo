@@ -4,7 +4,7 @@
 {% if post.tagged_photos.all %}
 	{% for photo in post.tagged_photos.all %}
 		<a href="{{ photo.docfile.url }}">
-			<img src="{{ photo.docfile.url }}" height=100px width=100px border=1>
+			<img src="{{ photo.docfile.url }}" width=205px border=1>
 		</a>
 	{% endfor %}
 {% endif %}

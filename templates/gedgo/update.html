@@ -1,0 +1,28 @@
+{% extends "gedgo/base.html" %}
+
+{% block content %}
+<div class="pod">
+<h2>Update "{{ gedcom.title }}"</h2>
+</div>
+
+<div class="pod">
+		<form action="/gedgo/{{ gedcom.id }}/update/" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ form }}
+			<p><input type="submit" value="Upload" /></p>
+		</form>
+</div>
+
+<div class="pod">
+<p>
+Note: The update script is additive only.  Any people, families or tags removed
+will still be present unless manually deleted through the admin site.  Also know that the
+update script can take quite some time - in excess of 10 minutes, depending on the size of
+your gedcom file.
+</p>
+<p>
+After finishing the update, the website will send an email to the site owner indicating 
+that the update is complete.
+</p>
+</div>
+{% endblock %}

@@ -18,3 +18,9 @@ def comment_action(request, noun):
 			[settings.SERVER_EMAIL],
 		)
 		return form
+
+class UpdateForm(forms.Form):
+    gedcom_file = forms.FileField(
+        label='Select a file',
+        help_text='Max file size: 42M.'
+    )

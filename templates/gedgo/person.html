@@ -130,7 +130,15 @@
 </div>
 {% endif %}
 
-<!-- Notes -->
+{% if person.documentaries %}
+<div class="pod">
+	<div class="pod-title">Documentaries:</div>
+	{% for doc in person.documentaries %}
+		<a href="{{ doc.docfile.url }}">{{ doc.docfile.name }}</a><br>
+	{% endfor %}
+</div>
+{% endif %}
+
 {% if person.notes.all %}
 <div class="pod">
 	<div class="pod-title">Notes:</div>
@@ -140,17 +148,15 @@
 </div>
 {% endif %}
 
-
-
-<!-- Notes -->
-{% if person.videos %}
+{% if person.documents %}
 <div class="pod">
-	<div class="pod-title">Videos:</div>
-	{% for video in person.videos %}
-		<a href="{{ MEDIA_URL }}{{ video.name }}">{{ video.name }}</a>
+	<div class="pod-title">Documents:</div>
+	{% for doc in person.documents %}
+		<a href="{{ doc.docfile.url }}">{{ doc.docfile.name }}</a><br>
 	{% endfor %}
 </div>
 {% endif %}
+
 
 {% if events %}
 <div class="pod">

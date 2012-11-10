@@ -1,51 +1,53 @@
 body {
-	background-color:#7EB5D6;
-	font-family: Baskerville, serif;
+	background-color:#F9F9F9;
+	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+	margin:0px;
 }
 .container {
-	background-color:#DFC184;
+	background-color:#FFFFFA;
 	margin-left:auto;
 	margin-right:auto;
-	width:778px;
+	width:800px;
 }
 .header {
 	padding-top: 10px;
 	padding-left: 5px;
-	padding-bottom: 25px;
-	background-color:#274257;
+	padding-bottom: 10px;
+	background-color:teal;
 	color: #FFFFFA;
 }
 .search {
 	float:right;
-	background-color:#274257;
 	padding-bottom: 5px;
 	padding-right: 10px;
 	color: #FFFFFA;
 }
 .navbar {
 	float:right;
-	background-color:#274257;
 	padding-top: 7px;
 	padding-right: 10px;
 	color: #FFFFFA;
 }
 .sidebar {
-	margin-left:20px;
-	margin-top:20px;
-	background-color:#DFC184;
+	margin-right:10px;
+	margin-top:50px;
+	background-color:#FFFFFA;
 	width:228px;
-	float:left;
+	float:right;
 }
 .content {
-	background-color:#EEEEEE;
-	width:500px;
+	background-color:#FFFFFA;
+	width:522px;
 	float:left;
 	padding-top:15px;
 	padding-left:15px;
 	padding-right:15px;
 }
 .pod {
-	background-color:#FFFFFA;
+	background-color:#FFFFFF;
+	border-color:#F9F9F9;
+	border-style:solid;
+	border-width:3px;
 	border-radius: 15px;
 	padding-top: 10px;
 	padding-left: 15px;
@@ -60,7 +62,7 @@ body {
 	font-weight: bold;
 }
 .footer {
-	background-color:#274257;
+	background-color:teal;
 	color:#FFFFFA;
 	clear:both;
 	text-align:center;
@@ -68,14 +70,15 @@ body {
 	padding-bottom: 6px;
 }
 h1 {
-	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+	font-family:Georgia;
 	color:#FFFFFA;
 	padding-left: 7px;
 	padding-right: 7px;
 	padding-bottom: 10px;
+	font-size:14px;
 }
 hr {
-	color: #EEEEEE;
+  color: #EEEEEE;
 }
 a {
 	color:#274257;
@@ -95,6 +98,7 @@ a {
 }
 .header a {
 	color:#FFFFFA;
+	font-size:12px;
 	padding-left: 5px;
 	padding-right: 5px;
 }

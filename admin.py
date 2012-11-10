@@ -15,7 +15,7 @@ class PersonAdmin(admin.ModelAdmin):
 	filter_horizontal = ('profile',)
 	exclude = ('pointer', 'gedcom', 'birth', 'death', 
 			   'notes', 'child_family', 'spousal_families',
-			   'education', 'religion', 'last_name', 'first_name',
+			   'education', #'last_name', 'first_name', 'religion',
 			   'prefix', 'suffix')
 
 class DocumentAdmin(admin.ModelAdmin):

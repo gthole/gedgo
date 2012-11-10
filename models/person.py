@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.datetime_safe import date
 from django.conf import settings
 
+import requests
+
 from document import Document
 
 class Person(models.Model):
@@ -23,7 +25,7 @@ class Person(models.Model):
 	
 	# Details
 	education = models.TextField(null=True)
-	religion = models.CharField(max_length=50, null=True)
+	religion = models.CharField(max_length=50, null=True, blank=True)
 	
 	# Family
 	child_family = models.ForeignKey('Family', related_name='person_child_family', null=True, blank=True)
@@ -38,9 +40,12 @@ class Person(models.Model):
 	def photos(self):
 		return Document.objects.filter(tagged_people=self, kind='PHOTO')
 		
-	def videos(self):
-		vids = Document.objects.filter(tagged_people=self, kind='VIDEO')
-		return filter(lambda v: 'content-length' in requests(v.name).headers.keys(). vids)
+	def documents(self):
+		docs = Document.objects.filter(tagged_people=self)
+		return filter(lambda v: (v.kind != 'PHOTO') and (v.kind != 'DOCUV'), docs)
+		
+	def documentaries(self):
+		return Document.objects.filter(tagged_people=self, kind='DOCUV')
 		
 	def key_photo(self):
 		if len(self.profile.all()) > 0:

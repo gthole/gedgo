@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url(r'^(?P<gedcom_id>\d+)/blog/$', views.blog),
 	url(r'^(?P<gedcom_id>\d+)/blog/(?P<post_id>\d+)/$', views.blogpost),
 	url(r'^(?P<gedcom_id>\d+)/documentaries/$', views.documentaries),
+	url(r'^(?P<gedcom_id>\d+)/update/$', views.update),
     url(r'^search/$', views.search),
     
     # Redirects

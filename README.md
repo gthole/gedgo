@@ -25,6 +25,7 @@ Most of the web-based genealogy software out there is pretty ugly and difficult 
 Gedgo's current features include:
 * Individual view
    * Easy to read podded display
+   * Pedigree charts
    * Timeline of events coincided with major world historical events
 * Gedcom view
 * Basic search
@@ -38,7 +39,6 @@ Gedgo's current features include:
 
 Ged-go is under active development.  Future features:
 * Family view
-* Pedigree charts
 * Gedcom statistics and network graph
 * Advanced search
 * Multiple templates

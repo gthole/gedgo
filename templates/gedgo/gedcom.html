@@ -3,7 +3,7 @@
 
 {% block leftsidebar %}
 {% for photo in gedcom.photo_sample %}
-	<a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% else %}{{ photo.docfile.url }}{% endif %}">
+	<a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% elif photo.key_family_tag %}{{ photo.key_family_tag.pointer }}{% else %}{{ photo.docfile.url }}{% endif %}">
 		<img src="{{ MEDIA_URL }}{{ photo.thumb }}" height=100px width=100px border=1>
 	</a>
 {% endfor %}
@@ -36,10 +36,10 @@
 
 {% if post %}
 	<div class="pod">
-		<b><a href="../{{ gedcom.id }}/blog/{{ post.id }}">{{ post.title }}</a></b><br>
+		<b><a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
 		{{ post.body|safe|linebreaks|truncatewords:50 }}
 		<br><br>
-		<a href="../{{ gedcom.id }}/blog/{{ post.id }}">Read more</a>, or see <a href="../{{ gedcom.id }}/blog/">all posts</a>.
+		<a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">Read more</a>, or see <a href="../{{ gedcom.id }}/blog/">all posts</a>.
 	</div>
 {% endif %}
 

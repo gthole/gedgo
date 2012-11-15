@@ -29,6 +29,10 @@ class Document(models.Model):
 		if self.tagged_people.all():
 			return self.tagged_people.all()[0]
 	
+	def key_family_tag(self):
+		if self.tagged_families.all():
+			return self.tagged_families.all()[0]
+	
 	def file_base_name(self):
 		return docfile.path.basename()
 	

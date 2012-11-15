@@ -1,5 +1,7 @@
 from django.db import models
 
+from gedgo.models.document import Document
+
 class Family(models.Model):
 	class Meta:
 		app_label = 'gedgo'
@@ -13,14 +15,22 @@ class Family(models.Model):
 	marriage = models.ForeignKey('Event', related_name='family_marriage', blank=True, null=True)
 	divorce = models.ForeignKey('Event', related_name='family_divorce', blank=True, null=True)
 	
+	notes = models.ManyToManyField('Note', null = True)
 	
-	def __unicode__(self):
-		txt = ''
+	def family_name(self):
+		nm = ''
 		for set in [self.husbands.all(), self.wives.all()]:
 			for person in set:
-				txt += ' / ' + person.last_name
-		return (txt + ' (' + self.pointer + ')').strip(' / ')
+				nm += ' / ' + person.last_name
+		return nm.strip(' / ')
+	
+	def __unicode__(self):
+		txt = family_name(self)
+		return (txt + ' (' + self.pointer + ')')
 	
 	def single_child(self):
 		if len(self.children.all()) == 1:
 			return self.children.all()[0]
+	
+	def photos(self):
+		return Document.objects.filter(tagged_families=self, kind='PHOTO')

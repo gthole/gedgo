@@ -105,6 +105,10 @@ def __process_family_relations(gedcom, family, entry):
 	family.children = []
 	family.children.add(*__objects_from_entry_tag(gedcom.people.all(), entry, 'CHIL'))
 	
+	# "NOTE"
+	family.notes = []
+	family.notes.add(*__objects_from_entry_tag(gedcom.notes.all(), entry, 'NOTE'))
+	
 	family.save()
 
 

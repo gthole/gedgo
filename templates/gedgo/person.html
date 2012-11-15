@@ -125,7 +125,7 @@
 <div class="pod">
 	<div class="pod-title">Related blog posts:</div>
 	{% for post in posts.all %}
-	<a href="/gedgo/{{ gedcom.id }}/blog/{{ post.id }}">{{ post.title }}</a>&nbsp; ({{ post.created }})<br>
+	<a href="/gedgo/{{ gedcom.id }}/blog/post/{{ post.id }}">{{ post.title }}</a>&nbsp; ({{ post.created }})<br>
 	{% endfor %}
 </div>
 {% endif %}

@@ -39,7 +39,7 @@ class Person(models.Model):
 	
 	def photos(self):
 		return Document.objects.filter(tagged_people=self, kind='PHOTO')
-		
+	
 	def documents(self):
 		docs = Document.objects.filter(tagged_people=self)
 		return filter(lambda v: (v.kind != 'PHOTO') and (v.kind != 'DOCUV'), docs)
@@ -51,7 +51,7 @@ class Person(models.Model):
 		if len(self.profile.all()) > 0:
 			return self.profile.all()[0]
 		
-		photos = self.photos()
+		photos = Document.objects.filter(tagged_people=self, kind='PHOTO')
 		if photos:
 			return photos[len(photos)-1]
 	

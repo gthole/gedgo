@@ -59,6 +59,9 @@ body {
 .pod-title {
 	font-weight: bold;
 }
+.sidebar-title {
+	font-weight: bold;
+}
 .footer {
 	background-color:#274257;
 	color:#FFFFFA;
@@ -133,6 +136,10 @@ label {
 }
 .card-title {
 	font-weight: bold;
+}
+.subpod-title {
+	font-weight: bold;
+	margin-bottom: 5px;
 }
 .family-card {
 	float: center;

@@ -1,0 +1,69 @@
+{% extends "gedgo/base.html" %}
+
+
+{% block leftsidebar %}
+
+{% for photo in family.photos %}
+	<a href="{{ photo.docfile.url }}">
+		<img src="{{ photo.thumb.url }}" height=100px width=100px border=1>
+	</a>
+{% endfor %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="pod">
+	<h2>The {{ family.family_name }} Family</h2>
+</div>
+
+
+<div class="pod">
+	<!-- Fathers -->
+	{% for somebody in family.husbands.all %}
+		<div class="card-title">Husband:</div>
+		{% include "gedgo/person-card.html" %}
+	{% endfor %}
+	
+	<!-- Mothers -->
+	{% for somebody in family.wives.all %}
+		<hr>
+		<div class="card-title">Wife:</div>
+		{% include "gedgo/person-card.html" %}
+	{% endfor %}
+	
+	<!-- Siblings -->
+	{% if family.children.all %}
+		<hr>
+		<div class="card-title">Children:</div>
+		{% for somebody in family.children.all %}
+			{% if not somebody == person %}
+				{% include "gedgo/person-card.html" %}
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+</div>
+
+
+{% if family.marriage.date or family.marriage.place or family.divorce.date %}
+<div class="pod">
+	<table>
+		{% if family.marriage.date %}<tr><td><div class="pod-title">Married: </div></td><td> {{ family.marriage.date_string }} {% if family.marriage.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if family.marriage.place %}<tr><td><div class="pod-title">Place: </div></td><td> {{ family.marriage.place }} </td></tr>{% endif %}
+		{% if family.divorce.date %}<tr><td><div class="pod-title">Divorced: </div></td><td> {{ family.divorce.date_string }} {% if family.divorce.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if family.divorce.place %}<tr><td><div class="pod-title">Place: </div></td><td> {{ family.divorce.place }} </td></tr>{% endif %}
+	</table>
+</div>
+{% endif %}
+
+
+{% if family.notes.all %}
+<div class="pod">
+	<div class="pod-title">Notes:</div>
+	{% for note in family.notes.all %}
+		{{ note.text|linebreaks }}
+	{% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

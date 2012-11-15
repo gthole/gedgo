@@ -9,9 +9,23 @@ Ged-go is written in Django with d3.js visualizations, based on the idea that a 
 
 Most of the web-based genealogy software out there is pretty ugly and difficult to navigate in.  There are often silly little icons and information is presented in hard to read tables.  Instead, the philosophy of Ged-go is to have fewer features, but to present a gedcom in a clear and well designed way.
 
+<table align=center>
+  <tr><td>
+    <a href="https://raw.github.com/gthole/gedgo/master/static/screenshots/individualview.png">
+      <img src="https://raw.github.com/gthole/gedgo/master/static/screenshots/individualview.png" height=250 width=300>
+    </a>
+  </td><td>
+    <a href="https://raw.github.com/gthole/gedgo/master/static/screenshots/timeline.png">
+      <img src="https://raw.github.com/gthole/gedgo/master/static/screenshots/timeline.png" height=250 width=250>
+    </a>
+  </td></tr>
+</table>
+
+
 Gedgo's current features include:
 * Individual view
    * Easy to read podded display
+   * Pedigree charts
    * Timeline of events coincided with major world historical events
 * Gedcom view
 * Basic search
@@ -22,9 +36,9 @@ Gedgo's current features include:
 * Secure login and Admin pages
 * Gedcom parser and update mechanism
 
+
 Ged-go is under active development.  Future features:
 * Family view
-* Pedigree charts
 * Gedcom statistics and network graph
 * Advanced search
 * Multiple templates

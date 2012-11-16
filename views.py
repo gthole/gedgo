@@ -32,10 +32,6 @@ def gedcom(request, gedcom_id):
 	return render_to_response('gedgo/gedcom.html', {'gedcom': g, 'post': post, 'form': form}, 
 		context_instance=RequestContext(request))
 
-@login_required
-def gedcom_redirect(request):
-	return redirect('/gedgo/1/')
-
 
 @login_required
 def person(request, gedcom_id, person_id):
@@ -86,10 +82,6 @@ def documentaries(request, gedcom_id):
 		{'documentaries': documentaries, 'gedcom': g, 'user': request.user},
 		context_instance=RequestContext(request))
 
-@login_required
-def documentaries_redirect(request):
-	return redirect('/gedgo/1/documentaries/')
-	
 
 @login_required
 def search(request):
@@ -181,11 +173,6 @@ def blog(request, gedcom_id, year, month):
 @login_required
 def blog_list(request, gedcom_id):
 	return blog(request, gedcom_id, None, None)
-
-
-@login_required
-def blog_redirect(request):
-	return redirect('/gedgo/1/blog/')
 
 
 @login_required

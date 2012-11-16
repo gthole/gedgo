@@ -33,46 +33,50 @@
 <!-- H-line -->
 
 <!-- Basic information pod -->
-{% if person.birth or person.death %}
+{% if person.birth or person.death or person.education or person.religion %}
 <div class="pod">
+	<div class="pod-title">Biographical Information:</div>
+	{% if person.birth or person.death %}
 	<table>
-	{% if person.birth.date %}<tr><td><div class="pod-title">Born: </div></td><td> {{ person.birth.date_string }} {% if person.birth.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-	{% if person.birth.place %}<tr><td><div class="pod-title">Birthplace: </div></td><td> {{ person.birth.place }} </td></tr>{% endif %}
-	{% if person.death.date %}<tr><td><div class="pod-title">Died: </div></td><td> {{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-	{% if person.death.place %}<tr><td><div class="pod-title">Deathplace: </div></td><td> {{ person.death.place }} </td></tr>{% endif %}
+		{% if person.birth.date %}<tr><td><div class="subpod-title">Born: </div></td><td> {{ person.birth.date_string }} {% if person.birth.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if person.birth.place %}<tr><td><div class="subpod-title">Birthplace: </div></td><td> {{ person.birth.place }} </td></tr>{% endif %}
+		{% if person.death.date %}<tr><td><div class="subpod-title">Died: </div></td><td> {{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if person.death.place %}<tr><td><div class="subpod-title">Deathplace: </div></td><td> {{ person.death.place }} </td></tr>{% endif %}
 	</table>
-</div>
-{% endif %}
-
-{% if person.education or person.religion %}
-<div class="pod">
+	{% endif %}
+	{% if person.birth and person.education or person.birth and person.religion %}
+	<hr>
+	{% endif %}
+	{% if person.education or person.religion %}
 	<table>
-	{% if person.education %}<tr><td><div class="pod-title">Education: </div></td><td> {{ person.education_delimited|linebreaksbr }}</td></tr>{% endif %}
-	{% if person.religion %}<tr><td><div class="pod-title">Religion: </div></td><td> {{ person.religion }} </td></tr>{% endif %}
+		{% if person.education %}<tr><td><div class="subpod-title">Education: </div></td><td> {{ person.education_delimited|linebreaksbr }}</td></tr>{% endif %}
+		{% if person.religion %}<tr><td><div class="subpod-title">Religion: </div></td><td> {{ person.religion }} </td></tr>{% endif %}
 	</table>
+	{% endif %}
 </div>
 {% endif %}
 
 <!-- Families -->
 {% if person.child_family %}
 <div class="pod">
+	<div class="pod-title">Born to:</div>
 	<!-- Fathers -->
 	{% for somebody in person.child_family.husbands.all %}
-		<div class="card-title">Father:</div>
+		<div class="subpod-title">Father:</div>
 		{% include "gedgo/person-card.html" %}
 	{% endfor %}
 	
 	<!-- Mothers -->
 	{% for somebody in person.child_family.wives.all %}
 		<hr>
-		<div class="card-title">Mother:</div>
+		<div class="subpod-title">Mother:</div>
 		{% include "gedgo/person-card.html" %}
 	{% endfor %}
 	
 	<!-- Siblings -->
 	{% if person.child_family.children.all and not person.child_family.single_child == person %}
 		<hr>
-		<div class="card-title">Siblings:</div>
+		<div class="subpod-title">Siblings:</div>
 		{% for somebody in person.child_family.children.all %}
 			{% if not somebody == person %}
 				{% include "gedgo/person-card.html" %}
@@ -84,17 +88,18 @@
 
 {% for family in person.spousal_families.all %}
 <div class="pod">
+	<div class="pod-title">Spousal family:</div>
 	<!-- Spouses -->
 	{% for somebody in family.husbands.all %}
 		{% if not somebody == person %}
-			<div class="card-title">Husband:</div>
+			<div class="subpod-title">Husband:</div>
 			{% include "gedgo/person-card.html" %}
 		{% endif %}
 	{% endfor %}
 	
 	{% for somebody in family.wives.all %}
 		{% if not somebody == person %}
-			<div class="card-title">Wife:</div>
+			<div class="subpod-title">Wife:</div>
 			{% include "gedgo/person-card.html" %}
 		{% endif %}
 	{% endfor %}
@@ -103,17 +108,17 @@
 	{% if family.marriage.date or family.marriage.place or family.divorce.date %}
 		<hr>
 		<table>
-		{% if family.marriage.date %}<tr><td><div class="pod-title">Married: </div></td><td> {{ family.marriage.date_string }} {% if family.marriage.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-		{% if family.marriage.place %}<tr><td><div class="pod-title">Place: </div></td><td> {{ family.marriage.place }} </td></tr>{% endif %}
-		{% if family.divorce.date %}<tr><td><div class="pod-title">Divorced: </div></td><td> {{ family.divorce.date_string }} {% if family.divorce.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-		{% if family.divorce.place %}<tr><td><div class="pod-title">Place: </div></td><td> {{ family.divorce.place }} </td></tr>{% endif %}
+		{% if family.marriage.date %}<tr><td><div class="subpod-title">Married: </div></td><td> {{ family.marriage.date_string }} {% if family.marriage.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if family.marriage.place %}<tr><td><div class="subpod-title">Place: </div></td><td> {{ family.marriage.place }} </td></tr>{% endif %}
+		{% if family.divorce.date %}<tr><td><div class="subpod-title">Divorced: </div></td><td> {{ family.divorce.date_string }} {% if family.divorce.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if family.divorce.place %}<tr><td><div class="subpod-title">Place: </div></td><td> {{ family.divorce.place }} </td></tr>{% endif %}
 		</table>
 	{% endif %}
 	
 	<!-- Children -->
 	{% if family.children.all %}
 		<hr>
-		<div class="card-title">Children:</div>
+		<div class="subpod-title">Children:</div>
 		{% for somebody in family.children.all %}
 			{% include "gedgo/person-card.html" %}
 		{% endfor %}

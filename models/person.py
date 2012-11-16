@@ -2,8 +2,6 @@ from django.db import models
 from django.utils.datetime_safe import date
 from django.conf import settings
 
-import requests
-
 from document import Document
 
 class Person(models.Model):

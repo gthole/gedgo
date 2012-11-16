@@ -23,6 +23,7 @@
 
 {% for family in gedcom.key_families.all %}
 <div class="pod">
+	<div class="pod-title"><a href="{{ family.pointer }}">The {{ family.family_name }} Family</a></div>
 	<!-- Spouses -->
 	{% for somebody in family.husbands.all %}
 		{% include "gedgo/person-card.html" %}

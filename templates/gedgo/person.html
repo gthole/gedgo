@@ -59,7 +59,7 @@
 <!-- Families -->
 {% if person.child_family %}
 <div class="pod">
-	<div class="pod-title">Born to:</div>
+	<div class="pod-title"><a href="/gedgo/{{ gedcom.id }}/{{ person.child_family.pointer }}">Born to:</a></div>
 	<!-- Fathers -->
 	{% for somebody in person.child_family.husbands.all %}
 		<div class="subpod-title">Father:</div>
@@ -88,7 +88,7 @@
 
 {% for family in person.spousal_families.all %}
 <div class="pod">
-	<div class="pod-title">Spousal family:</div>
+	<div class="pod-title"><a href="/gedgo/{{ gedcom.id }}/{{ family.pointer }}">Spousal family:</a></div>
 	<!-- Spouses -->
 	{% for somebody in family.husbands.all %}
 		{% if not somebody == person %}

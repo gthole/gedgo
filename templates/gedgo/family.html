@@ -19,23 +19,24 @@
 
 
 <div class="pod">
+	<div class="pod-title">Family members:</div>
 	<!-- Fathers -->
 	{% for somebody in family.husbands.all %}
-		<div class="card-title">Husband:</div>
+		<div class="subpod-title">Husband:</div>
 		{% include "gedgo/person-card.html" %}
 	{% endfor %}
 	
 	<!-- Mothers -->
 	{% for somebody in family.wives.all %}
 		<hr>
-		<div class="card-title">Wife:</div>
+		<div class="subpod-title">Wife:</div>
 		{% include "gedgo/person-card.html" %}
 	{% endfor %}
 	
 	<!-- Siblings -->
 	{% if family.children.all %}
 		<hr>
-		<div class="card-title">Children:</div>
+		<div class="subpod-title">Children:</div>
 		{% for somebody in family.children.all %}
 			{% if not somebody == person %}
 				{% include "gedgo/person-card.html" %}
@@ -47,11 +48,12 @@
 
 {% if family.marriage.date or family.marriage.place or family.divorce.date %}
 <div class="pod">
+	<div class="pod-title">Details:</div>
 	<table>
-		{% if family.marriage.date %}<tr><td><div class="pod-title">Married: </div></td><td> {{ family.marriage.date_string }} {% if family.marriage.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-		{% if family.marriage.place %}<tr><td><div class="pod-title">Place: </div></td><td> {{ family.marriage.place }} </td></tr>{% endif %}
-		{% if family.divorce.date %}<tr><td><div class="pod-title">Divorced: </div></td><td> {{ family.divorce.date_string }} {% if family.divorce.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-		{% if family.divorce.place %}<tr><td><div class="pod-title">Place: </div></td><td> {{ family.divorce.place }} </td></tr>{% endif %}
+		{% if family.marriage.date %}<tr><td><div class="subpod-title">Married: </div></td><td> {{ family.marriage.date_string }} {% if family.marriage.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if family.marriage.place %}<tr><td><div class="subpod-title">Place: </div></td><td> {{ family.marriage.place }} </td></tr>{% endif %}
+		{% if family.divorce.date %}<tr><td><div class="subpod-title">Divorced: </div></td><td> {{ family.divorce.date_string }} {% if family.divorce.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
+		{% if family.divorce.place %}<tr><td><div class="subpod-title">Place: </div></td><td> {{ family.divorce.place }} </td></tr>{% endif %}
 	</table>
 </div>
 {% endif %}

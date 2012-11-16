@@ -25,7 +25,7 @@ class Family(models.Model):
 		return nm.strip(' / ')
 	
 	def __unicode__(self):
-		txt = family_name(self)
+		txt = self.family_name()
 		return (txt + ' (' + self.pointer + ')')
 	
 	def single_child(self):

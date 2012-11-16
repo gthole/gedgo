@@ -35,10 +35,11 @@ Gedgo's current features include:
 * Email contact form
 * Secure login and Admin pages
 * Gedcom parser and update mechanism
+* Family view
 
 
 Ged-go is under active development.  Future features:
-* Family view
+* Descendancy charts
 * Gedcom statistics and network graph
 * Advanced search
 * Multiple templates

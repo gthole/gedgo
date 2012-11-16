@@ -23,7 +23,7 @@ def gedcom(request, gedcom_id):
 		post = post[0]
 	
 	if request.method == 'POST':
-		form = comment_action(request, 'gedcom ' + gedcom.id)
+		form = comment_action(request, 'Gedcom #' + str(g.id))
 		return render_to_response('gedgo/gedcom.html', {'gedcom': g, 'post': post, 'form': form},
 			context_instance=RequestContext(request))
 	else:
@@ -41,7 +41,7 @@ def person(request, gedcom_id, person_id):
 	events, hindex = timeline(p)
 	
 	if request.method == 'POST':
-		form = comment_action(request, p.full_name() + '(' + p.pointer + ')')
+		form = comment_action(request, p.full_name() + ' (' + p.pointer + ')')
 		return render_to_response('gedgo/person.html', 
 			{'person':p, 'posts': posts, 'gedcom': g, 'events': events, 'hindex': hindex, 'form': form},
 			context_instance=RequestContext(request))
@@ -60,7 +60,7 @@ def family(request, family_id, gedcom_id):
 	f = get_object_or_404(Family, gedcom=g, pointer=family_id)
 	
 	if request.method == 'POST':
-		form = comment_action(request, f.family_name() + '(' + f.pointer + ')')
+		form = comment_action(request, f.family_name() + ' (' + f.pointer + ')')
 		return render_to_response('gedgo/family.html', 
 			{'family':f, 'gedcom': g, 'form': form},
 			context_instance=RequestContext(request))
@@ -181,9 +181,18 @@ def blogpost(request, post_id, gedcom_id):
 	g = get_object_or_404(Gedcom, id=gedcom_id)
 	post = get_object_or_404(BlogPost, id=post_id)
 	
+	if request.method == 'POST':
+		form = comment_action(request, post.title + ' (blog post comment)')
+		return render_to_response('gedgo/blogpost.html', 
+			{'post': post, 'gedcom': g, 'form': form, 'user': request.user},
+			context_instance=RequestContext(request))
+	else:
+		form = CommentForm()
+	
 	return render_to_response("gedgo/blogpost.html", 
-		{'post': post, 'gedcom': g, 'user': request.user},
+		{'post': post, 'gedcom': g, 'form': form, 'user': request.user},
 		context_instance=RequestContext(request))
+
 
 def month_list():
 	"Month archive list"

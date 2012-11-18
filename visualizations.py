@@ -2,6 +2,26 @@ from gedgo.models import Person, Family
 from datetime import datetime
 
 import random
+import json
+
+def json_tree(person):
+	n = node(person, 0)
+	return json.dumps(n)
+
+def node(person, level):
+	r = {}
+	r['name'] = person.full_name()
+	r['span'] = '(' + person.year_range() + ')'
+	if (level < 2) and person.child_family:
+		r['children'] = []
+		if person.child_family.husbands.all():
+			for parent in person.child_family.husbands.all():
+				r['children'].append(node(parent, level+1))
+		if person.child_family.wives.all():
+			for parent in person.child_family.wives.all():
+				r['children'].append(node(parent, level+1))
+	return r
+
 
 def timeline(person):
 	

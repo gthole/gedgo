@@ -1,50 +1,6 @@
 		<div id="pedigree-tree"></div>
 		<script>
-			var treeData = {
-				"name" : "{{ person.full_name|truncatechars:28 }}",
-				"span": "({{ person.year_range }})",
-				"children" : [
-					{% for father in person.child_family.husbands.all %}
-						{
-							"name" : "{{ father.full_name|truncatechars:28 }}",
-							"span": "({{ father.year_range }})",
-							"children": [
-								{% for grandfather in father.child_family.husbands.all %}
-									{"name": "{{ grandfather.full_name|truncatechars:28 }}", "span": "({{ grandfather.year_range }})"}
-									{% if forloop.last %}{% else %},
-									{% endif %}
-								{% endfor %}
-								{% for grandmother in father.child_family.wives.all %}
-									,
-									{"name": "{{ grandmother.full_name|truncatechars:28 }}", "span": "({{ grandmother.year_range }})"}
-								{% endfor %}
-							]
-						}
-						{% if forloop.last %}{% else %},
-						{% endif %}
-					{% endfor %}
-					{% for mother in person.child_family.wives.all %}
-						,
-						{
-							"name" : "{{ mother.full_name|truncatechars:28 }}",
-							"span": "({{ mother.year_range }})",
-							"children": [
-								{% for grandfather in mother.child_family.husbands.all %}
-									{"name": "{{ grandfather.full_name|truncatechars:28 }}", "span": "({{ grandfather.year_range }})"}
-									{% if forloop.last %}{% else %},
-									{% endif %}
-								{% endfor %}
-								{% for grandmother in mother.child_family.wives.all %}
-									,
-									{"name": "{{ grandmother.full_name|truncatechars:28 }}", "span": "({{ grandmother.year_range }})"}
-								{% endfor %}
-							]
-						}
-						{% if forloo.last %}{% else %},
-						{% endif %}
-					{% endfor %}
-				]
-			};
+			var treeData = {{ tree|safe }};
  
       // Create a svg canvas
       var vis = d3.select("#pedigree-tree").append("svg:svg")
@@ -66,10 +22,6 @@
       // Create an array with all the links
       var links = tree.links(nodes);
  
-      console.log(treeData)
-      console.log(nodes)
-      console.log(links)
- 
       var link = vis.selectAll("pathlink")
       .data(links)
       .enter().append("svg:path")
@@ -82,7 +34,6 @@
       .data(nodes)
       .enter().append("svg:g")
       .attr("transform", function(d) { 
-      	console.log([d.y, d.x]);
       	return "translate(" + d.y + "," + d.x + ")"; })
  
       // Add the dot at every node

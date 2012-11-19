@@ -7,6 +7,7 @@ class GedcomAdmin(admin.ModelAdmin):
 
 
 class BlogPostAdmin(admin.ModelAdmin):
+	list_display = ("title", "created", "body")
 	search_fields = ["title"]
 	filter_horizontal = ('tagged_people','tagged_photos',)
 

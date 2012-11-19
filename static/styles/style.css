@@ -146,3 +146,13 @@ label {
 .family-card {
 	float: center;
 }
+rect {
+	fill: white;
+	stroke: orange;
+	stroke-width: 2;
+}
+path {
+	fill: none;
+	stroke: gray;
+	stroke-width: 2;
+}

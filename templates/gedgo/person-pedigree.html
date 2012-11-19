@@ -25,9 +25,6 @@
       var link = vis.selectAll("pathlink")
       .data(links)
       .enter().append("svg:path")
-      .attr("fill", "none")
-      .attr("stroke", "grey")
-      .attr("stroke-width", 2)
       .attr("d", diagonal)
  
       var node = vis.selectAll("g.node")
@@ -42,9 +39,6 @@
       .attr("ry", 10)
       .attr("y", -30)
       .attr("x", -20)
-      .attr("fill", "white")
-      .attr("stroke", "orange")
-      .attr("stroke-width", 2)
       .attr("width", 200)
       .attr("height", 50);
  

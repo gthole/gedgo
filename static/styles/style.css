@@ -63,13 +63,21 @@ body {
 .sidebar-title {
 	font-weight: bold;
 }
+.foot-extender {
+	clear:both;
+	height:0px;
+	width:778px;
+}
 .footer {
 	background-color:#274257;
 	color:#FFFFFA;
 	clear:both;
 	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
 	padding-top: 2px;
 	padding-bottom: 6px;
+	width:778px;
 }
 h1 {
 	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;

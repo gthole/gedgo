@@ -1,10 +1,9 @@
-{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <title>{% if gedcom.title %}{{ gedcom.title }}{% else %}Ged-go!{% endif %}{% if person %} : {{ person.full_name }}{% endif %}</title>
 <head>
-	<link rel="stylesheet" type="text/css" href="{% static "styles/style.css" %}">
-	<script type="text/javascript" src="{% static "js/d3.v2.js" %}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}styles/style.css">
+	<script type="text/javascript" src="{{ STATIC_URL }}js/d3.v2.js""></script>
 </head>
 <body>
 <div class="header-backing"></div>

@@ -1,10 +1,10 @@
 body {
-	background-color:#F9F9F9;
+	background-color:#F9F9F9; /* #E6EFC2 */
 	font-family: Baskerville;
 	margin:0px;
 }
 .container {
-	background-color:#F9F9F9;
+	background-color:#F9F9F9; /* #E6EFC2 */
 	margin-left:auto;
 	margin-right:auto;
 	width:1000px;
@@ -66,24 +66,34 @@ body {
 }
 .sidebar {
 	border-radius: 5px;
-	margin-right:5px;
-	margin-top:100px;
-	padding-left:20px;
-	padding-top:12px;
-	padding-bottom:25px;
-	background-color:#FFFFFF;
-	width:228px;
-	float:right;
+	/*
+	border-style: solid;
+	border-color: teal;
+	border-width: 1px;
+	*/
+	margin-right: 5px;
+	margin-top: 100px;
+	padding-left: 20px;
+	padding-top: 18px;
+	padding-bottom: 35px;
+	background-color: #FFFFFF;
+	width: 228px;
+	float: right;
 }
 .content {
-	background-color:#F9F9F9;
-	width:722px;
-	float:left;
-	padding-top:15px;
-	margin-top:60px;
+	background-color: #F9F9F9; /* #E6EFC2 */
+	width: 722px;
+	float: left;
+	padding-top: 15px;
+	margin-top: 60px;
 }
 .pod {
-	background-color:#FFFFFF;
+	background-color: #FFFFFF; /* #F9F9F9 */
+	/*
+	border-style: solid;
+	border-color: teal;
+	border-width: 1px;
+	*/
 	border-radius: 5px;
 	padding-top: 10px;
 	padding-left: 15px;

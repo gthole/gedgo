@@ -1,5 +1,6 @@
 body {
 	background-color:#F9F9F9; /* #E6EFC2 */
+	background-image:url(https://raw.github.com/gthole/gedgo/master/static/styles/soft_wallpaper.png);
 	font-family: Baskerville;
 	margin:0px;
 }
@@ -82,6 +83,7 @@ body {
 }
 .content {
 	background-color: #F9F9F9; /* #E6EFC2 */
+	background-image:url(https://raw.github.com/gthole/gedgo/master/static/styles/soft_wallpaper.png);
 	width: 722px;
 	float: left;
 	padding-top: 15px;
@@ -153,33 +155,6 @@ a {
 }
 .leftsidebar {
 	color:#274257;
-}
-td {
-	padding-right: 5px;
-}
-input {
-	color: #888888;
-	background-color: #FFFFFA;
-	border-radius: 3px;
-	font-family: Baskerville;
-}
-form {
-	font-family: Baskerville;
-}
-ul { 
-	margin: 0;
-	padding:0;
-	list-style:none;
-	display: inline; 
-	margin: 0; 
-}
-textarea {
-	color: #888888;
-	border-radius: 3px;
-	resize:none;
-}
-label {
-	font-weight:normal;
 }
 .card {
 	padding-right: 15px;

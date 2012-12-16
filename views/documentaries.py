@@ -3,14 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render_to_response
 
 from gedgo.models import Gedcom, Document
-from gedgo.forms import CommentForm, comment_action
 
 
 @login_required
 def documentaries(request, gedcom_id):
 	g = get_object_or_404(Gedcom, id=gedcom_id)
 	documentaries = Document.objects.filter(kind='DOCUV').order_by('-last_updated')
-	
-	return render_to_response("gedgo/documentaries.html", 
+
+	return render_to_response("gedgo/documentaries.html",
 		{'documentaries': documentaries, 'gedcom': g, 'user': request.user},
 		context_instance=RequestContext(request))

@@ -123,6 +123,7 @@ body {
 h1 {
 	font-family:Baskerville;
 	color:#FFFFFA;
+	text-shadow: 1px 1px 1px #ccc;
 	padding-left: 7px;
 	padding-right: 7px;
 	padding-bottom: 5px;

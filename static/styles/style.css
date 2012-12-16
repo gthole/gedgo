@@ -43,6 +43,7 @@ body {
 	padding-top:15px;
 	padding-left:15px;
 	padding-right:15px;
+	background-image:url(https://raw.github.com/gthole/gedgo/master/static/styles/gray_jean.png);
 }
 .pod {
 	background-color:#FFFFFA;
@@ -85,6 +86,7 @@ h1 {
 	padding-left: 7px;
 	padding-right: 7px;
 	padding-bottom: 10px;
+	text-shadow: 1px 1px 1px #ccc;
 }
 hr {
 	color: #EEEEEE;

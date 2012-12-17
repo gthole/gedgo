@@ -102,6 +102,7 @@ def __gatherby(inlist, func, equivalencefunc=lambda a, b: a == b):
 		gathered[index].append(item)
 	return gathered
 
+# TODO: Switch to database storage?
 HISTORICAL = [
 	['First Peanuts cartoon strip', 1950],
 	['Color TV introduced', 1951],

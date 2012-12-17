@@ -3,23 +3,23 @@ body {
 	font-family: Baskerville, serif;
 }
 .container {
-	background-color:#DFC184;
+	background-color:#7EB5D6;
 	margin-left:auto;
 	margin-right:auto;
 	width:778px;
 }
 .header {
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 25px;
+	padding: 10px 0 25px 15px;
 	background-color:#274257;
 	color: #FFFFFA;
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
 }
 .search {
 	float:right;
 	background-color:#274257;
 	padding-bottom: 5px;
-	padding-right: 10px;
+	padding-right: 18px;
 	color: #FFFFFA;
 }
 .navbar {
@@ -29,33 +29,30 @@ body {
 	padding-right: 10px;
 	color: #FFFFFA;
 }
-.sidebar {
-	margin-left:20px;
-	margin-top:20px;
+.content-container {
 	background-color:#DFC184;
-	width:228px;
-	float:left;
+	float: left;
+	width: 778px;
+}
+.sidebar {
+	margin-left: 20px;
+	margin-top: 20px;
+	background-color: #DFC184;
+	width: 228px;
+	float: left;
 }
 .content {
-	background-color:#EEEEEE;
-	width:500px;
-	float:left;
-	padding-top:15px;
-	padding-left:15px;
-	padding-right:15px;
+	background-color: #EEEEEE;
+	width: 500px;
+	float: left;
+	padding: 15px 15px 0 15px;
 	background-image:url(https://raw.github.com/gthole/gedgo/master/static/styles/gray_jean.png);
 }
 .pod {
 	background-color:#FFFFFA;
 	border-radius: 15px;
-	padding-top: 10px;
-	padding-left: 15px;
-	padding-right: 15px;
-	padding-bottom: 20px;
-	margin-top: 25px;
-	margin-bottom: 25px;
-	margin-left: 5px;
-	margin-right: 5px;
+	padding: 10px 15px 20px 15px;
+	margin: 25px 5px 25px 5px;
 }
 .pod-title {
 	font-weight: bold;
@@ -66,7 +63,6 @@ body {
 }
 .foot-extender {
 	clear:both;
-	height:0px;
 	width:778px;
 }
 .footer {
@@ -79,13 +75,13 @@ body {
 	padding-top: 2px;
 	padding-bottom: 6px;
 	width:778px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
 }
 h1 {
 	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
 	color:#FFFFFA;
-	padding-left: 7px;
-	padding-right: 7px;
-	padding-bottom: 10px;
+	padding: 0 7px 10px 7px;
 	text-shadow: 1px 1px 1px #ccc;
 }
 hr {

@@ -1,12 +1,13 @@
-from gedgo.models import Person, Family
 from datetime import datetime
 
 import random
 import json
 
+
 def json_tree(person):
 	n = node(person, 0)
 	return json.dumps(n)
+
 
 def node(person, level):
 	r = {}
@@ -16,25 +17,24 @@ def node(person, level):
 		r['children'] = []
 		if person.child_family.husbands.all():
 			for parent in person.child_family.husbands.all():
-				r['children'].append(node(parent, level+1))
+				r['children'].append(node(parent, level + 1))
 		if person.child_family.wives.all():
 			for parent in person.child_family.wives.all():
-				r['children'].append(node(parent, level+1))
+				r['children'].append(node(parent, level + 1))
 	return r
 
 
 def timeline(person):
-	
 	personal = []
 	now = datetime.now().year
-	
+
 	if not valid_event_date(person.birth):
 		return ([], 0)
 	if (not valid_event_date(person.death)) & (now - person.birth.date.year > 100):
 		return ([], 0)
-	
+
 	personal.append(['born', person.birth.date.year])
-	
+
 	if person.spousal_families.all():
 		for family in person.spousal_families.all():
 			if valid_event_date(family.marriage):
@@ -47,14 +47,14 @@ def timeline(person):
 				if valid_event_date(child.death):
 					if child.death.date.year < person.birth.date.year:
 						personal.append([child.full_name() + " died", child.death.date.year])
-	
+
 	if not valid_event_date(person.death):
 		personal.append(["now", now])
 	else:
 		personal.append(["died", person.death.date.year])
-	
+
 	lifespan = (personal[-1][1] - personal[0][1])
-	
+
 	gathered = __gatherby(personal, lambda e: e[1])
 	personal = []
 	for events in gathered:
@@ -65,17 +65,18 @@ def timeline(person):
 			for event in events:
 				name.append(event[0])
 			personal.append([', '.join(name), events[0][1]])
-	
+
 	dates = map(lambda x: x[1], personal)
-	dates = dates + map(lambda x: x+1, dates) + map(lambda x: x-1, dates)
+	dates = dates + map(lambda x: x + 1, dates) + map(lambda x: x - 1, dates)
 	historical = filter(lambda x: (x[1] not in dates) & (x[1] > dates[0]) & (x[1] < dates[-1]), HISTORICAL)
 	number = max((lifespan / 6) + 2 - len(personal), 5)
-	historical = random.sample(historical, min([len(historical), number])) #TODO: auto fill in by heuristic
-	
+	historical = random.sample(historical, min([len(historical), number]))  # TODO: auto fill in by heuristic
+
 	if len(personal) < 3:
 		return ([], 0)
-	
+
 	return (historical + personal, len(historical))
+
 
 def valid_event_date(event):
 	if event != None:
@@ -83,22 +84,23 @@ def valid_event_date(event):
 			return True
 	return False
 
-def __gatherby(inlist, func, equivalencefunc = lambda a,b : a == b):
-    "__gatherby(list, func) returns a list of lists of items in list which have equal values of func(item)."
-    keys = []
-    gathered = []
-    for item in inlist:
-        key = func(item)
-        index = -1
-        for i in range(0, len(keys)):
-            if equivalencefunc(key, keys[i]):
-                index = i
-                break
-        if index == -1:
-            keys.append(key)
-            gathered.append([])
-        gathered[index].append(item)
-    return gathered
+
+def __gatherby(inlist, func, equivalencefunc=lambda a, b: a == b):
+	"__gatherby(list, func) returns a list of lists of items in list which have equal values of func(item)."
+	keys = []
+	gathered = []
+	for item in inlist:
+		key = func(item)
+		index = -1
+		for i in range(0, len(keys)):
+			if equivalencefunc(key, keys[i]):
+				index = i
+				break
+		if index == -1:
+			keys.append(key)
+			gathered.append([])
+		gathered[index].append(item)
+	return gathered
 
 HISTORICAL = [
 	['First Peanuts cartoon strip', 1950],

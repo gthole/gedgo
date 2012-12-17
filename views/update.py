@@ -1,8 +1,8 @@
 from gedgo.models import Gedcom
 from gedgo.forms import UpdateForm
-from gedgo.update import update
+from gedgo.tasks import async_update
 
-from celery import task
+from os.path import isfile
 
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.contrib.auth.decorators import login_required
@@ -16,17 +16,25 @@ def update_view(request, gedcom_id):
 
 	if request.method == 'POST':
 		form = UpdateForm(request.POST, request.FILES)
+		# check for temp file
 		if form.is_valid():
 
 			# Need to distribute-task this
-			tmp = open(settings.MEDIA_ROOT + 'documents/tmp.ged', 'r+')
+			tmpname = settings.MEDIA_ROOT + 'documents/tmp.ged'
+			if isfile(tmpname):
+				return redirect('/gedgo/')  # Needs to return a "wait" message.
+
+			tmp = open(tmpname, 'w+')
 			tmp.write(request.FILES['gedcom_file'].read())
 			tmp.close()
 
+			async_update.delay(g, tmpname)
+
 			# Redirect to the document list after POST
-			return redirect('/gedgo/' + str(g.id))
+			return redirect('/gedgo/' + str(g.id))  # Needs to return a success message.
 		else:
-			return redirect('/gedgo/')
+			return redirect('/gedgo/')  # Needs to return an error message.
+
 	else:
 		form = UpdateForm()
 
@@ -35,8 +43,3 @@ def update_view(request, gedcom_id):
 		'gedgo/update.html',
 		{'form': form, 'gedcom': g},
 		context_instance=RequestContext(request))
-
-
-@task()
-def cel_task(gedcom, target):
-	update(gedcom, target)

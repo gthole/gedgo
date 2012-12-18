@@ -15,6 +15,8 @@ urlpatterns = patterns('',
 	url(r'^(?P<gedcom_id>\d+)/blog/post/(?P<post_id>\d+)/$', views.blogpost),
 	url(r'^(?P<gedcom_id>\d+)/documentaries/$', views.documentaries),
 	url(r'^(?P<gedcom_id>\d+)/update/$', views.update_view),
+
+	url(r'^media/(?P<file_base_name>.*)$', views.media),
 	url(r'^api/', include(person_resource.urls)),
 	url(r'^search/$', views.search),
 

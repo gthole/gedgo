@@ -50,6 +50,7 @@ Installation / Set up
 -----------
 Installation is generally not for the faint of heart.  More complete instructions will follow, but the essential idea is:
 * Install Django
+* Install dependencies: dj-celery, PIL
 * Include Ged-go as an installed app in your Django project
 * Put all photos etc. into a flat file in your media directory
 * Make sure your various email settings are set for the comment form

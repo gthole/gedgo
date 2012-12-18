@@ -5,9 +5,10 @@ from gedcom import gedcom
 from update import update_view
 from documentaries import documentaries
 from blog import blog, blog_list, blogpost
+from media import media
 
 __all__ = [
 	'person', 'gedcom', 'update_view', 'search',
 	'family', 'documentaries', 'blogpost',
-	'blog', 'blog_list'
+	'blog', 'blog_list', 'media'
 ]

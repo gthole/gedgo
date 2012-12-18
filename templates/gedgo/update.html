@@ -6,11 +6,15 @@
 </div>
 
 <div class="pod">
-		<form action="/gedgo/{{ gedcom.id }}/update/" method="post" enctype="multipart/form-data">
-			{% csrf_token %}
-			{{ form }}
-			<p><input type="submit" value="Upload" /></p>
-		</form>
+		{% if form %}
+			&nbsp;
+			<form action="/gedgo/{{ gedcom.id }}/update/" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ form }}
+				<p><input type="submit" value="Upload" /></p>
+			</form>
+		{% endif %}
+		{% if message %}{{ message }}{% endif %}
 </div>
 
 <div class="pod">

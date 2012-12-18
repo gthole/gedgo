@@ -7,19 +7,19 @@ from datetime import datetime
 from django.conf import settings
 from django.core.mail import send_mail
 
-from os import remove
-
 
 @task(name='gedgo.tasks.async_update')
-def async_update(gedcom, target):
+def async_update(gedcom, content):
 	start = datetime.now()
+
 	errstr = ''
 	try:
-		update(gedcom, target)
-	except Exception as e:
-		errstr = 'There was an error!\n' + e.strerror
-	remove(target)  # Delete temporary file.
+		update(gedcom, content)
+	except:
+		errstr = 'There was an error!'
+
 	end = datetime.now()
+
 	send_mail(
 			'Update finished!',
 			'Started:  ' + start.strftime('%B %d, %Y at %I:%M %p') + '\n' +

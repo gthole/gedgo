@@ -1,20 +1,21 @@
 from re import findall
 from entry import Entry
 
+
 class GedcomFile:
-	"""File class represents a GEDCOM file.
+	"""
+	File class represents a GEDCOM file.
 	Attributes are header, trailer, and entries where header and trailer
 	are a single entry each and entries is the list of all Entry instances
 	parsed in between.
 	
 	"""
 	
-	def __init__(self, file_name):
-		self.header, self.entries, self.trailer = self.__parse(file_name)
+	def __init__(self, content):
+		# TODO: Match file names and import them.
+		self.header, self.entries, self.trailer = self.__parse(content)
 	
-	def __parse(self, file_name):
-		# TODO: Fix \r or \n issue.
-		lines = open(file_name).read().split("\r")
+	def __parse(self, lines):
 		
 		pos = 0
 		entries = []
@@ -33,8 +34,8 @@ class GedcomFile:
 	
 	__line_reader_regex = (
 						'^(\d{1,2})' +			# Level
-						'(?: (@[A-Z\d]+@))?' +	# Pointer
-						' _?([A-Z\d]{3,4})' +	# Tag
+						'(?: (@[A-Z\d]+@))?' +  # Pointer
+						' _?([A-Z\d]{3,4})' +   # Tag
 						'(?: (.+))?$')			# Value
 	
 	def __process_element(self, lines, pos):
@@ -66,8 +67,8 @@ class GedcomFile:
 		return int(lines[pos][:2]) if pos + 1 < len(lines) else 0
 	
 	def get_entries_by_tag(self, tag):
-		return filter(lambda c : c.tag == tag, self.entries)
+		return filter(lambda c: c.tag == tag, self.entries)
 	
 	def get_entry_by_pointer(self, pointer):
-		found = filter(lambda e : e.pointer == pointer, self.entries)
+		found = filter(lambda e: e.pointer == pointer, self.entries)
 		return found[0] if len(found) > 0 else None

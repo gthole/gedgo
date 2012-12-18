@@ -47,7 +47,6 @@
 {% if gedcom.file_name or gedcom.last_update %}
 <div class="pod">
 	<table>
-	{% if gedcom.file_name %}<tr><td><div class="pod-title">From File: </div></td><td> {{ gedcom.file_name }}</td></tr>{% endif %}
 	{% if gedcom.last_updated %}<tr><td><div class="pod-title">Last Updated: </div></td><td> {{ gedcom.last_updated }} </td></tr>{% endif %}
 	</table>
 </div>

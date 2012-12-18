@@ -1,6 +1,6 @@
 body {
 	background-color:#F9F9F9; /* #E6EFC2 */
-	background-image:url(https://raw.github.com/gthole/gedgo/master/static/styles/soft_wallpaper.png);
+	background-image:url(https://raw.github.com/gthole/gedgo/master/static/img/soft_wallpaper.png);
 	font-family: Baskerville;
 	margin:0px;
 }
@@ -83,7 +83,7 @@ body {
 }
 .content {
 	background-color: #F9F9F9; /* #E6EFC2 */
-	background-image:url(https://raw.github.com/gthole/gedgo/master/static/styles/soft_wallpaper.png);
+	background-image:url(https://raw.github.com/gthole/gedgo/master/static/img/soft_wallpaper.png);
 	width: 722px;
 	float: left;
 	padding-top: 15px;

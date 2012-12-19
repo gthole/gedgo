@@ -3,8 +3,8 @@
 
 {% block leftsidebar %}
 {% for photo in gedcom.photo_sample %}
-	<a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% elif photo.key_family_tag %}{{ photo.key_family_tag.pointer }}{% else %}{{ photo.docfile.url }}{% endif %}">
-		<img src="{{ MEDIA_URL }}{{ photo.thumb }}" height=100px width=100px border=1>
+	<a href="{{ photo.docfile.url }}">
+		<img src="{{ photo.thumb.url }}" height=100px width=100px border=1>
 	</a>
 {% endfor %}
 {% endblock %}

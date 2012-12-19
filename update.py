@@ -6,7 +6,9 @@ from django.utils import timezone
 from django.conf import settings
 from datetime import datetime
 from re import findall
-from os import path
+from os import path, mkdir
+
+import Image
 
 
 def update_from_file(g, file_name):
@@ -145,7 +147,10 @@ def __process_Person(entry, g):
 	# Media
 	document_entries = entry.get_children_by_tag('OBJE')
 	for m in document_entries:
-		__process_Document(m, p, g)
+		try:
+			__process_Document(m, p, g)
+		except:
+			pass
 
 	return p
 
@@ -169,7 +174,10 @@ def __process_Family(entry, g):
 	# Media
 	document_entries = entry.get_children_by_tag('OBJE')
 	for m in document_entries:
-		__process_Document(m, f, g)
+		try:
+			__process_Document(m, f, g)
+		except:
+			pass
 
 	f.save()
 
@@ -233,11 +241,15 @@ def __process_Note(entry, g):
 def __process_Document(entry, object, g):
 	if not __valid_document_entry(entry):
 		return None
-	
+
 	file_name = __strip_files_directories(entry)
 	kind = entry.get_child_value_by_tags('TYPE')
+
 	if kind == 'PHOTO':
-		thumb = 'thumbs/' + file_name  # TODO: Fix for non-Linux
+		try:
+			thumb = _make_thumbnail(file_name)
+		except:
+			return None  # Bail on document creation if thumb fails
 	else:
 		thumb = None
 	
@@ -318,19 +330,47 @@ def __object_from_pointer(objects, pointer):
 
 
 def __valid_document_entry(e):
-	# TODO: Fix Windows issues.
-	file_value = e.get_child_value_by_tags('FILE')
-	img_presence = settings.MEDIA_ROOT + path.basename(file_value)
-	thmb_presence = settings.MEDIA_ROOT + path.join('thumbs', path.basename(file_value))
-	return ((type(file_value) is str) &
-			(not file_value == '') &
-			(path.exists(img_presence)) &
-			((e.get_child_value_by_tags('TYPE') != 'PHOTO') |
-				(path.exists(thmb_presence)))
+	file_name = e.get_child_value_by_tags('FILE')
+	img_presence = path.join(settings.MEDIA_ROOT, path.basename(file_name))
+
+	return ((type(file_name) is str) &
+			(not file_name == '') &
+			(path.exists(img_presence))
 		)
 
 
 def __strip_files_directories(object_entry):
 	file_name = object_entry.get_child_value_by_tags('FILE')
-	# TODO: Real file name splitting, allow for non-flat directories, search, other operating systems.
-	return file_name.split('/')[-1]
+	return path.basename(file_name)
+
+
+def __make_thumbnail(file_name):
+	base_name = path.basename(file_name)
+	dir_name = path.dirname(file_name)
+
+	thumb_path = path.join(dir_name, 'thumbs')
+	thumb_file = path.join(thumb_path, base_name)
+
+	if not path.exists(thumb_path):
+		mkdir(thumb_path)  # Worry about permissions?
+
+	size = 150, 150
+
+	if path.exists(thumb_file):
+		return thumb_file
+
+	im = Image.open(file_name)
+	width, height = im.size
+
+	if width > height:
+		offset = (width - height) / 2
+		box = (offset, 0, offset + height, height)
+	else:
+		offset = ((height - width) * 3) / 10
+		box = (0, offset, width, offset + width)
+
+	cropped = im.crop(box)
+	cropped.thumbnail(size, Image.ANTIALIAS)
+	cropped.save(thumb_file)
+
+	return thumb_file

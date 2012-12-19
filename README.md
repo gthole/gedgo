@@ -36,6 +36,7 @@ Gedgo's current features include:
 * Secure login and Admin pages
 * Gedcom parser and update mechanism
 * Family view
+* Automatic thumbnail creation
 
 
 Ged-go is under active development.  Future features:
@@ -50,7 +51,7 @@ Installation / Set up
 -----------
 Installation is generally not for the faint of heart.  More complete instructions will follow, but the essential idea is:
 * Install Django
-* Install dependencies: dj-celery, PIL
+* Install dependencies: dj-celery, PIL, and tastypie
 * Include Ged-go as an installed app in your Django project
 * Put all photos etc. into a flat file in your media directory
 * Make sure your various email settings are set for the comment form
@@ -58,7 +59,7 @@ Installation is generally not for the faint of heart.  More complete instruction
 
 ```python
 >>> from gedgo.update import update
->>> update(None, 'mygedcomfile.ged')
+>>> update_from_file(None, '/path/to/mygedcomfile.ged')
 ```
 
 License

@@ -247,9 +247,12 @@ def __process_Document(entry, object, g):
 
 	if kind == 'PHOTO':
 		try:
-			thumb = _make_thumbnail(file_name)
+			__make_thumbnail(path.join(settings.MEDIA_ROOT, file_name))
+			thumb = path.join('thumbs', file_name)
 		except:
+			print '  Warning: failed to make or find thumbnail: ' + file_name
 			return None  # Bail on document creation if thumb fails
+
 	else:
 		thumb = None
 	

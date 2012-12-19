@@ -3,6 +3,7 @@ import random
 
 from document import Document
 from blogpost import BlogPost
+from documentary import Documentary
 
 
 class Gedcom(models.Model):
@@ -38,4 +39,4 @@ class Gedcom(models.Model):
 		return True if BlogPost.objects.all() else False
 
 	def showdocumentaries(self):
-		return True if Document.objects.filter(gedcom=self, kind='DOCUV') else False
+		return True if Documentary.objects.filter(gedcom=self) else False

@@ -1,4 +1,4 @@
-from gedgo.models import Gedcom, Person, BlogPost, Document
+from gedgo.models import Gedcom, Person, BlogPost, Document, Documentary
 from django.contrib import admin
 
 # from djcelery.models import (TaskState, WorkerState,
@@ -29,10 +29,16 @@ class DocumentAdmin(admin.ModelAdmin):
 	search_fields = ['docfile']
 	filter_horizontal = ('tagged_people', 'tagged_families',)
 
+
+class DocumentaryAdmin(admin.ModelAdmin):
+	filter_horizontal = ('tagged_people', 'tagged_families',)
+
+
 admin.site.register(Gedcom, GedcomAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Document, DocumentAdmin)
+admin.site.register(Documentary, DocumentaryAdmin)
 
 """
 admin.site.unregister(TaskState)

@@ -13,8 +13,7 @@ class Document(models.Model):
 	thumb = models.FileField(upload_to='uploaded/thumbs', null=True, blank=True)
 
 	kind = models.CharField(max_length=5,
-		choices=(('DOCUM', 'Document'), ('VIDEO', 'Video'), ('DOCUV', 'Documentary'),
-			('PHOTO', 'Image')))
+		choices=(('DOCUM', 'Document'), ('VIDEO', 'Video'), ('PHOTO', 'Image')))
 
 	tagged_people = models.ManyToManyField('Person',
 		related_name='media_tagged_people', null=True, blank=True)

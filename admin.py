@@ -27,7 +27,9 @@ class PersonAdmin(admin.ModelAdmin):
 
 class DocumentAdmin(admin.ModelAdmin):
 	search_fields = ['docfile']
-	filter_horizontal = ('tagged_people', 'tagged_families',)
+	exclude = ('title', 'description', 'thumb', 'tagged_people',
+		'tagged_families', 'gedcom')
+	#filter_horizontal = ('tagged_people', 'tagged_families',)
 
 
 class DocumentaryAdmin(admin.ModelAdmin):

@@ -39,4 +39,4 @@ class Entry:
 			return None
 	
 	def get_children_by_tag(self, tag):
-		return filter(lambda c : c.tag == tag, self.children)
+		return filter(lambda c: c.tag == tag, self.children)

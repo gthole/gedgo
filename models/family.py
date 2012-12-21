@@ -1,6 +1,7 @@
 from django.db import models
 
-from gedgo.models.document import Document
+from document import Document
+from documentary import Documentary
 
 
 class Family(models.Model):
@@ -35,3 +36,6 @@ class Family(models.Model):
 
 	def photos(self):
 		return Document.objects.filter(tagged_families=self, kind='PHOTO')
+
+	def documentaries(self):
+		return Documentary.objects.filter(tagged_families=self)

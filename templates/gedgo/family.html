@@ -59,6 +59,16 @@
 {% endif %}
 
 
+{% if family.documentaries %}
+<div class="pod">
+	<div class="pod-title">Documentaries:</div>
+	{% for doc in family.documentaries %}
+		<a href="{{ doc.location }}">{{ doc.title }}</a><br>
+	{% endfor %}
+</div>
+{% endif %}
+
+
 {% if family.notes.all %}
 <div class="pod">
 	<div class="pod-title">Notes:</div>

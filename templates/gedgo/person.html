@@ -139,7 +139,7 @@
 <div class="pod">
 	<div class="pod-title">Documentaries:</div>
 	{% for doc in person.documentaries %}
-		<a href="{{ doc.docfile.url }}">{{ doc.docfile.name }}</a><br>
+		<a href="{{ doc.location }}">{{ doc.title }}</a><br>
 	{% endfor %}
 </div>
 {% endif %}

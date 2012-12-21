@@ -1,6 +1,7 @@
 from django.db import models
 
 from document import Document
+from documentary import Documentary
 
 from re import findall
 
@@ -44,7 +45,7 @@ class Person(models.Model):
 		return filter(lambda v: (v.kind != 'PHOTO') and (v.kind != 'DOCUV'), docs)
 
 	def documentaries(self):
-		return Document.objects.filter(tagged_people=self, kind='DOCUV')
+		return Documentary.objects.filter(tagged_people=self)
 
 	def key_photo(self):
 		if len(self.profile.all()) > 0:

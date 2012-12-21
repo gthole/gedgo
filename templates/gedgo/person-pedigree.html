@@ -43,7 +43,9 @@
       .attr("height", 50);
  
       // place the name atribute left or right depending if children
-      node.append("svg:text")
+      node.append("svg:a")
+      .attr("xlink:href", function(d) { return "/gedgo/{{ gedcom.id }}/" + d.id})
+      .append("text")
       .attr("dx", -10)
       .attr("dy", -10)
       .attr("text-anchor", "start")

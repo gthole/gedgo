@@ -1,8 +1,8 @@
-from gedgo.models import Gedcom, Person, BlogPost, Document, Documentary
+from gedgo.models import Gedcom, BlogPost, Document, Documentary
 from django.contrib import admin
 
-# from djcelery.models import (TaskState, WorkerState,
-#		PeriodicTask, IntervalSchedule, CrontabSchedule)
+from djcelery.models import (TaskState, WorkerState,
+		PeriodicTask, IntervalSchedule, CrontabSchedule)
 
 
 class GedcomAdmin(admin.ModelAdmin):
@@ -16,20 +16,11 @@ class BlogPostAdmin(admin.ModelAdmin):
 	filter_horizontal = ('tagged_people', 'tagged_photos',)
 
 
-class PersonAdmin(admin.ModelAdmin):
-	search_fields = ["first_name", "last_name"]
-	filter_horizontal = ('profile',)
-	exclude = ('pointer', 'gedcom', 'birth', 'death',
-			'notes', 'child_family', 'spousal_families',
-			'education', 'last_name', 'first_name', 'religion',
-			'prefix', 'suffix')
-
-
 class DocumentAdmin(admin.ModelAdmin):
 	search_fields = ['docfile']
+	# Include docfile and kind for uploading new (for blog posts.)
 	exclude = ('title', 'description', 'thumb', 'tagged_people',
 		'tagged_families', 'gedcom')
-	#filter_horizontal = ('tagged_people', 'tagged_families',)
 
 
 class DocumentaryAdmin(admin.ModelAdmin):
@@ -38,14 +29,11 @@ class DocumentaryAdmin(admin.ModelAdmin):
 
 admin.site.register(Gedcom, GedcomAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
-admin.site.register(Person, PersonAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Documentary, DocumentaryAdmin)
 
-"""
 admin.site.unregister(TaskState)
 admin.site.unregister(WorkerState)
 admin.site.unregister(IntervalSchedule)
 admin.site.unregister(CrontabSchedule)
 admin.site.unregister(PeriodicTask)
-"""

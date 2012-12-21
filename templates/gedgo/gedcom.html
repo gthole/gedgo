@@ -21,6 +21,15 @@
 	</div>
 {% endif %}
 
+{% if post %}
+	<div class="pod">
+		<b><a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
+		{{ post.body|safe|linebreaks|truncatewords:50 }}
+		<br><br>
+		<a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">Read more</a>, or see <a href="../{{ gedcom.id }}/blog/">all posts</a>.
+	</div>
+{% endif %}
+
 {% for family in gedcom.key_families.all %}
 <div class="pod">
 	<div class="pod-title"><a href="{{ family.pointer }}">The {{ family.family_name }} Family</a></div>
@@ -34,15 +43,6 @@
 	{% endfor %}
 </div>
 {% endfor %}
-
-{% if post %}
-	<div class="pod">
-		<b><a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
-		{{ post.body|safe|linebreaks|truncatewords:50 }}
-		<br><br>
-		<a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">Read more</a>, or see <a href="../{{ gedcom.id }}/blog/">all posts</a>.
-	</div>
-{% endif %}
 
 {% if gedcom.file_name or gedcom.last_update %}
 <div class="pod">

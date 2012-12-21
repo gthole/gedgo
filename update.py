@@ -27,6 +27,9 @@ def update(g, content):
 		g.title = gedcom.header.get_child_value_by_tags('TITL', default='')
 		g.last_updated = timezone.now()
 	else:
+		print 'Clearing previous content'
+		for obj in [Person, Family, Note, Document, Event]:
+			obj.objects.filter(gedcom=g).delete()
 		g.last_updated = timezone.now()
 
 	g.save()
@@ -58,6 +61,7 @@ def update(g, content):
 
 #--- Second Level script functions
 def __process_all_relations(gedcom_model, gedcom):
+	print '  Starting Person objects.'
 	# Process Person objects
 	for person in gedcom_model.people.all():
 		entry = gedcom.get_entry_by_pointer(person.pointer)
@@ -66,6 +70,7 @@ def __process_all_relations(gedcom_model, gedcom):
 		else:
 			raise ValueError('Cannot find Person with pointer: ' + person.pointer)
 	print '  Finished Person objects.'
+	print '  Starting Family objects.'
 
 	# Process Family objects
 	for family in gedcom_model.families.all():
@@ -148,7 +153,9 @@ def __process_Person(entry, g):
 	document_entries = entry.get_children_by_tag('OBJE')
 	for m in document_entries:
 		try:
-			__process_Document(m, p, g)
+			d = __process_Document(m, p, g)
+			if (d != None) & (m.get_child_value_by_tags('PRIM') == 'Y'):
+				p.profile.add(d)
 		except:
 			pass
 
@@ -271,6 +278,8 @@ def __process_Document(entry, object, g):
 		m.tagged_people.add(object)
 	elif (type(object) is Family) & (len(m.tagged_families.filter(pointer=object.pointer)) == 0):
 		m.tagged_families.add(object)
+
+	return m
 
 
 # --- Helper Functions

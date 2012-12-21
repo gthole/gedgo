@@ -1,10 +1,14 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
+from django.conf.urls import include
 from django.views.generic.simple import redirect_to
-from gedgo.api import PersonResource
+from tastypie.api import Api
+from gedgo.api import PersonResource, FamilyResource
 
 from gedgo import views
 
-person_resource = PersonResource()
+v1_api = Api(api_name='v1')
+v1_api.register(PersonResource())
+v1_api.register(FamilyResource())
 
 urlpatterns = patterns('',
 	url(r'^(?P<gedcom_id>\d+)/(?P<person_id>I\d+)/$', views.person, name='person'),
@@ -17,7 +21,7 @@ urlpatterns = patterns('',
 	url(r'^(?P<gedcom_id>\d+)/update/$', views.update_view),
 
 	url(r'^media/(?P<file_base_name>.*)$', views.media),
-	url(r'^api/', include(person_resource.urls)),
+	url(r'^api/', include(v1_api.urls)),
 	url(r'^search/$', views.search),
 
 	# Redirects

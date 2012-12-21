@@ -3,6 +3,8 @@ from django.core.servers.basehttp import FileWrapper
 
 from os import path
 
+import mimetypes
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -17,6 +19,6 @@ def media(request, file_base_name):
 	if not path.exists(filename):
 		raise Http404
 	wrapper = FileWrapper(file(filename))
-	response = HttpResponse(wrapper, content_type='text/plain')
+	response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
 	response['Content-Length'] = path.getsize(filename)
 	return response

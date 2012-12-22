@@ -24,9 +24,9 @@ def node(person, level):
 				r['children'].append(node(parent, level + 1))
 		while len(r['children']) < 2:
 			if person.child_family.husbands.all():
-				r['children'].append({'name': 'unknown', 'span': ''})
+				r['children'].append({'name': 'unknown', 'span': '', 'id': ''})
 			else:
-				r['children'].prepend({'name': 'unknown', 'span': ''})
+				r['children'] = [{'name': 'unknown', 'span': '', 'id': ''}] + r['children']
 	return r
 
 

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 
 from gedgo.models import Gedcom, Person, BlogPost
+from gedgo.views.util import site_context
 
 from re import findall
 
@@ -32,8 +33,8 @@ def search(request):
 
 		return render_to_response('gedgo/search_results.html',
 			{'people': people, 'gedcom': g, 'posts': posts, 'query': q},
-			context_instance=RequestContext(request))
+			context_instance=RequestContext(request, site_context(request)))
 	else:
 		return render_to_response('gedgo/search_results.html',
 			{'people': Person.objects.none(), 'gedcom': g, 'posts': BlogPost.objects.none()},
-			context_instance=RequestContext(request))
+			context_instance=RequestContext(request, site_context(request)))

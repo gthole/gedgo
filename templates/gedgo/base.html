@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>{% if gedcom.title %}{{ gedcom.title }}{% else %}Ged-go!{% endif %}{% if person %} : {{ person.full_name }}{% endif %}</title>
+<title>{% if site_title %}{{ site_title }}{% else %}Ged-go!{% endif %}{% if person %} : {{ person.full_name }}{% endif %}</title>
 <head>
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}styles/style.css">
 	<script type="text/javascript" src="{{ STATIC_URL }}js/d3.v2.js""></script>
@@ -11,17 +11,19 @@
 <div class="container">
 <div class="header">
 <a href="/gedgo/">
-	<h1 style="margin-bottom:0;">{% if gedcom.title %}{{ gedcom.title }}{% else %}Ged-go!{% endif %}</h1>
+	<h1 style="margin-bottom:0;">{% if site_title %}{{ site_title }}{% else %}Ged-go!{% endif %}</h1>
 </a>
 
 <a href="/gedgo/">About</a> 
-{% if gedcom.showblog %}| 
+{% if show_blog %}| 
 <a href="/gedgo/blog/">Blog</a> 
 {% endif %}
-{% if gedcom.showdocumentaries %}| 
+{% if show_documentaries %}| 
 <a href="/gedgo/documentaries/">Documentaries</a>
 {% endif %}
-
+{% if show_researchfiles %}|
+<a href="/gedgo/researchfiles/">Research Files</a>
+{% endif %}
 <div class="search">
 	<form action="/gedgo/search/" method="get">
 		search
@@ -48,7 +50,10 @@
 
 
 <div class="footer">
-Powered by ged-go.
+<!-- TODO: fix permanent link colors -->
+<a style="color:#FFFFFA" href="http://github.com/gthole/gedgo/">
+Powered by ged-go</a>{% if user.is_active %} | <a style="color:#FFFFFA" href="/gedgo/logout/">log out</a> {% if user.is_staff %} | 
+<a style="color:#FFFFFA" href="/admin/">admin panel</a>{% endif %}{% endif %}
 </div>
 
 </body>

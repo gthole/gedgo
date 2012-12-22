@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from gedgo.models import Gedcom, BlogPost, Person
 from gedgo.forms import CommentForm, comment_action
 from gedgo.visualizations import timeline, json_tree
+from gedgo.views.util import site_context
 
 
 @login_required
@@ -20,11 +21,11 @@ def person(request, gedcom_id, person_id):
 		return render_to_response('gedgo/person.html',
 			{'person': p, 'posts': posts, 'gedcom': g, 'events': events,
 			'hindex': hindex, 'tree': ancestral_tree, 'form': form},
-			context_instance=RequestContext(request))
+			context_instance=RequestContext(request, site_context(request)))
 	else:
 		form = CommentForm()
 
 	return render_to_response('gedgo/person.html',
 		{'person': p, 'posts': posts, 'gedcom': g, 'events': events,
 		'hindex': hindex, 'tree': ancestral_tree, 'form': form},
-		context_instance=RequestContext(request))
+		context_instance=RequestContext(request, site_context(request)))

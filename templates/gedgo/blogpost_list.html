@@ -3,7 +3,7 @@
 {% block leftsidebar %}
 	<div class="sidebar-title">Archive</div>
 	{% for month in months %}
-		<a href="/gedgo/{{ gedcom.id }}/blog/{{ month.0 }}/{{ month.1 }}/">{{ month.2 }} {{ month.0 }}</a> <br />
+		<a href="/gedgo/blog/{{ month.0 }}/{{ month.1 }}/">{{ month.2 }} {{ month.0 }}</a> <br />
 	{% endfor %}
 {% endblock %}
 
@@ -12,7 +12,7 @@
     	{% if posts.object_list %}
             {% for post in posts.object_list %}
             <div class="pod">
-                <a href="/gedgo/{{ gedcom.id }}/blog/post/{{ post.id }}"><h2>{{ post.title }}</h2></a>
+                <a href="/gedgo/blog/post/{{ post.id }}"><h2>{{ post.title }}</h2></a>
                 <div class="body">{{ post.body|linebreaks|truncatewords:200 }}</div>
                 <div class="time">{{ post.created }}</div>
             </div>

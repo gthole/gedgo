@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 
 from gedgo.models import Gedcom, Family
 from gedgo.forms import CommentForm, comment_action
+from gedgo.views.util import site_context
 
 
 @login_required
@@ -15,10 +16,10 @@ def family(request, family_id, gedcom_id):
 		form = comment_action(request, f.family_name() + ' (' + f.pointer + ')')
 		return render_to_response('gedgo/family.html',
 			{'family': f, 'gedcom': g, 'form': form},
-			context_instance=RequestContext(request))
+			context_instance=RequestContext(request, site_context(request)))
 	else:
 		form = CommentForm()
 
 	return render_to_response('gedgo/family.html',
 		{'family': f, 'gedcom': g, 'form': form},
-		context_instance=RequestContext(request))
+		context_instance=RequestContext(request, site_context(request)))

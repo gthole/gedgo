@@ -1,0 +1,17 @@
+{% extends "gedgo/base.html" %}
+
+
+{% block leftsidebar %}
+
+
+{% endblock %}
+
+{% block content %}
+<div class="pod">
+	<ul>
+		{% for d in contents %}
+			<li><a href="/gedgo/researchfiles{{ path }}/{{ d }}">{{ d }}</a></li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}

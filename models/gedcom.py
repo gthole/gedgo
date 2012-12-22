@@ -2,8 +2,6 @@ from django.db import models
 import random
 
 from document import Document
-from blogpost import BlogPost
-from documentary import Documentary
 
 
 class Gedcom(models.Model):
@@ -34,9 +32,3 @@ class Gedcom(models.Model):
 	def photo_sample(self):
 		photos = Document.objects.filter(gedcom=self, kind='PHOTO')
 		return random.sample(photos, min(20, len(photos)))
-
-	def showblog(self):
-		return True if BlogPost.objects.all() else False
-
-	def showdocumentaries(self):
-		return True if Documentary.objects.filter(gedcom=self) else False

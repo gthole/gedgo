@@ -1,6 +1,7 @@
 from gedgo.models import Gedcom
 from gedgo.forms import UpdateForm
 from gedgo.tasks import async_update
+from gedgo.views.util import site_context
 
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.contrib.auth.decorators import login_required
@@ -45,4 +46,4 @@ def update_view(request, gedcom_id):
 	return render_to_response(
 		'gedgo/update.html',
 		{'form': form, 'message': message, 'gedcom': g},
-		context_instance=RequestContext(request))
+		context_instance=RequestContext(request, site_context(request)))

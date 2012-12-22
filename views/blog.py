@@ -3,16 +3,16 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 
-from gedgo.models import Gedcom, BlogPost
+from gedgo.models import BlogPost
 from gedgo.forms import CommentForm, comment_action
+from gedgo.views.util import site_context
 
 from datetime import datetime
 
 
 @login_required
-def blog(request, gedcom_id, year, month):
+def blog(request, year, month):
 	"Blog front page - listing posts by creation date."
-	g = get_object_or_404(Gedcom, id=gedcom_id)
 	posts = BlogPost.objects.all().order_by("-created")
 
 	if year:
@@ -32,33 +32,34 @@ def blog(request, gedcom_id, year, month):
 	except (InvalidPage, EmptyPage):
 		posts = paginator.page(paginator.num_pages)
 
+	months = month_list()
+
 	return render_to_response("gedgo/blogpost_list.html",
-		{'posts': posts, 'gedcom': g, 'user': request.user, 'months': month_list()},
-		context_instance=RequestContext(request))
+		{'posts': posts, 'months': months},
+		context_instance=RequestContext(request, site_context(request)))
 
 
 @login_required
-def blog_list(request, gedcom_id):
-	return blog(request, gedcom_id, None, None)
+def blog_list(request):
+	return blog(request, None, None)
 
 
 @login_required
-def blogpost(request, post_id, gedcom_id):
+def blogpost(request, post_id):
 	"Single post."
-	g = get_object_or_404(Gedcom, id=gedcom_id)
 	post = get_object_or_404(BlogPost, id=post_id)
 
 	if request.method == 'POST':
 		form = comment_action(request, post.title + ' (blog post comment)')
 		return render_to_response('gedgo/blogpost.html',
-			{'post': post, 'gedcom': g, 'form': form, 'user': request.user},
-			context_instance=RequestContext(request))
+			{'post': post, 'form': form},
+			context_instance=RequestContext(request, site_context(request)))
 	else:
 		form = CommentForm()
 
 	return render_to_response("gedgo/blogpost.html",
-		{'post': post, 'gedcom': g, 'form': form, 'user': request.user},
-		context_instance=RequestContext(request))
+		{'post': post, 'form': form},
+		context_instance=RequestContext(request, site_context(request)))
 
 
 def month_list():

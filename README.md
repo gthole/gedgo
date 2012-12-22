@@ -55,11 +55,10 @@ Installation is generally not for the faint of heart.  More complete instruction
 * Include Ged-go as an installed app in your Django project
 * Put all photos etc. into a flat file in your media directory
 * Make sure your various email settings are set for the comment form
-* To parse and read in your gedcom file, from the manage.py shell:
+* To add a new gedcom file, use the manage.py command:
 
-```python
->>> from gedgo.update import update
->>> update_from_file(None, '/path/to/mygedcomfile.ged')
+```
+$ python manage.py add_gedcom /path/to/your/file.ged
 ```
 
 License

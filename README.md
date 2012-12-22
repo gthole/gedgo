@@ -61,6 +61,15 @@ Installation is generally not for the faint of heart.  More complete instruction
 $ python manage.py add_gedcom /path/to/your/file.ged
 ```
 
+To update your gedcom, you can either use the manage.py command, passing it the integer ID of the gedcom object you'd like to update, for example:
+
+```
+$ python manage.py update_gedcom 1 /path/to/your/file.ged
+```
+
+Or you can turn on a Celery worker server and distribute tasks to it via a web interface accessible from the "gedgo/<gedcom_id>/update" URL.
+
+
 License
 ----------
 Copyright (c) 2012 Gregory Thole

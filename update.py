@@ -27,9 +27,9 @@ def update(g, content):
 		g.title = gedcom.header.get_child_value_by_tags('TITL', default='')
 		g.last_updated = timezone.now()
 	else:
-		print 'Clearing previous content'
-		for obj in [Person, Family, Note, Document, Event]:
-			obj.objects.filter(gedcom=g).delete()
+		#print 'Clearing previous content'
+		#for obj in [Person, Family, Note, Document, Event]:
+		#	obj.objects.filter(gedcom=g).delete()
 		g.last_updated = timezone.now()
 
 	g.save()

@@ -49,6 +49,9 @@
 	<table>
 	{% if gedcom.last_updated %}<tr><td><div class="pod-title">Last Updated: </div></td><td> {{ gedcom.last_updated }} </td></tr>{% endif %}
 	</table>
+	{% if user.is_staff %}
+		<a href="/admin/gedgo/gedcom/{{ gedcom.id }}/">Edit this page</a>
+	{% endif %}
 </div>
 {% endif %}
 

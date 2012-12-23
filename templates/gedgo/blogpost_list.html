@@ -1,6 +1,9 @@
 {% extends "gedgo/base.html" %}
 
 {% block leftsidebar %}
+    {% if user.is_staff %}
+        <a href="/admin/gedgo/blogpost/add/">Add new post</a>
+    {% endif %}<br /><br />
 	<div class="sidebar-title">Archive</div>
 	{% for month in months %}
 		<a href="/gedgo/blog/{{ month.0 }}/{{ month.1 }}/">{{ month.2 }} {{ month.0 }}</a> <br />

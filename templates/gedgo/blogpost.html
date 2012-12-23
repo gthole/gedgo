@@ -18,8 +18,11 @@
 
 <div class="pod">
     Posted: {{ post.created }}<br>
-    <a href="/gedgo/blog/">Back to the post list</a><br>
-    <a href="/gedgo/">Main site</a>  
+    <a href="/gedgo/blog/">Back to the post list</a><br />
+    <a href="/gedgo/">Main site</a><br />
+    {% if user.is_staff %}
+        <a href="/admin/gedgo/blogpost/{{ post.id }}/">Edit this post</a>
+    {% endif %}
 </div>
 
 {% if post.tagged_people.all %}

@@ -2,15 +2,26 @@
 
 
 {% block leftsidebar %}
-
-
+	<ul>
+	{% for l in levels %}
+		{% with forloop.counter as i %}
+		<li><a href="/gedgo/researchfiles{% for l in levels %}{% if forloop.counter <= i %}{{ l }}/{% endif %}{% endfor %}">{% if forloop.first %}Research Files{% else %}{{ l|truncatechars:20 }}{% endif %}</a></li>
+		{% endwith %}
+	{% endfor %}
+	</ul>
 {% endblock %}
 
 {% block content %}
+
 <div class="pod">
+	<h3>{{ current_level }}</h3>
 	<ul>
 		{% for d in contents %}
-			<li><a href="/gedgo/researchfiles{{ path }}/{{ d }}">{{ d }}</a></li>
+			<li><a href="/gedgo/researchfiles{{ path }}/{{ d.1 }}">
+					<img src="{{ STATIC_URL }}img/{% if d.0 %}folder.png{% else %}file.png{% endif %}">
+					{{ d.1|truncatechars:45 }}
+				</a>
+			</li>
 		{% endfor %}
 	</ul>
 </div>

@@ -9,7 +9,10 @@ from os import listdir
 
 from gedgo.views.util import serve_content, site_context
 
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def researchfiles(request, pathname):
 	try:
 		root = settings.RESEARCH_FILES_ROOT

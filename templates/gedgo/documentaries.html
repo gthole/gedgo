@@ -1,12 +1,10 @@
-{% extends "gedgo/base.html" %}
+{% extends "base.html" %}
 
+{% block docuactive %}
+	class="active"
+{% endblock %}
 
 {% block leftsidebar %}
-{% for photo in gedcom.photo_sample %}
-	<a href="{{ photo.docfile.url }}">
-		<img src="{{ photo.thumb.url }}" height=100px width=100px border=1>
-	</a>
-{% endfor %}
 {% endblock %}
 
 

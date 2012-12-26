@@ -1,4 +1,4 @@
-{% extends "gedgo/base.html" %}
+{% extends "base.html" %}
 
 
 {% block leftsidebar %}
@@ -23,10 +23,11 @@
 
 {% if post %}
 	<div class="pod">
-		<b><a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
+		<div class="pod-title">Latest Blog Post</div>
+		<b><a href="../blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
 		{{ post.body|safe|linebreaks|truncatewords:50 }}
-		<br><br>
-		<a href="../{{ gedcom.id }}/blog/post/{{ post.id }}">Read more</a>, or see <a href="../{{ gedcom.id }}/blog/">all posts</a>.
+		<br>
+		<a href="../blog/post/{{ post.id }}">Read more</a>, or see <a href="../blog/">all posts</a>.
 	</div>
 {% endif %}
 
@@ -46,9 +47,10 @@
 
 {% if gedcom.file_name or gedcom.last_update %}
 <div class="pod">
-	<table>
-	{% if gedcom.last_updated %}<tr><td><div class="pod-title">Last Updated: </div></td><td> {{ gedcom.last_updated }} </td></tr>{% endif %}
-	</table>
+	{% if gedcom.last_updated %}
+		<div class="pod-title">Last Updated:</div>{{ gedcom.last_updated }}
+	{% endif %}
+	<br><br>
 	{% if user.is_staff %}
 		<a href="/admin/gedgo/gedcom/{{ gedcom.id }}/">Edit this page</a>
 	{% endif %}

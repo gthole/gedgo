@@ -1,15 +1,12 @@
-{% extends 'gedgo/base.html' %}
+{% extends 'base.html' %}
 
 {% block leftsidebar %}
-
+	You searched for: <strong>{{ query }}</strong><br>
+	Found {% if people %}{{ people|length }} person{{ people|pluralize }}{% endif %}{% if posts %}{% if people %}, and {% endif %}{{ posts|length }} blog post{{ posts|pluralize }}{% endif %}.
 {% endblock %}
 
 {% block content %}
 {% if people or posts %}
-	<div class="pod">
-		You searched for: <strong>{{ query }}</strong><br>
-		Found {% if people %}{{ people|length }} person{{ people|pluralize }}{% endif %}{% if posts %}{% if people %}, and {% endif %}{{ posts|length }} blog post{{ posts|pluralize }}{% endif %}.
-	</div>
 	<div class="pod">
 	{% for person in people %}
 		<table><tr>

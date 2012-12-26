@@ -8,8 +8,8 @@ from gedgo.views.util import site_context
 
 @login_required
 def documentaries(request):
-	dv = site_context(request)
-	dv['documentaries'] = Documentary.objects.all().order_by('-last_updated')
+	documentaries = Documentary.objects.all().order_by('-last_updated')
 
-	return render_to_response("gedgo/documentaries.html", dv,
-		context_instance=RequestContext(request))
+	return render_to_response("gedgo/documentaries.html",
+		{'documentaries': documentaries},
+		context_instance=RequestContext(request, site_context(request)))

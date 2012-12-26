@@ -1,0 +1,135 @@
+html {
+  height: 100%;
+}
+body {
+  margin:0px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
+  padding:0;
+  background-color: #7EB5D6;
+  height: 100%;
+}
+
+/*
+  Bootstrap overrides.
+*/
+.span8 {
+  width: 518px;
+}
+.span4 {
+  width: 238px;
+}
+.navbar-fixed-top .container {
+  margin-top:10px;
+  width: 778px;
+}
+.container{
+  width: 778px;
+}
+
+
+.wrapper {
+  min-height: 100%;
+  position:relative;
+}
+.main {
+    padding-top: 80px;
+    padding-bottom:30px;
+}
+.sidebar-nav {
+  padding: 9px 0;
+}
+.pod {
+  background-color: #FFFBFF;
+  border-radius: 10px;
+  padding: 15px 15px 20px 15px;
+  margin: 25px 0 25px 0;
+  border-style: solid;
+  border-color: #6E6E6E;
+  border-width: 1px;
+  min-height: 80px;
+}
+.pod ul { 
+  margin: 0;
+  padding:0;
+  list-style:none;
+  display: inline; 
+}
+.pod li {
+  margin: 5px;
+}
+.pod a:link {
+  color:#274257;
+}
+.pod a:visited {
+  color:#274257;
+}
+.pod a:hover {
+  color:#FFA540;
+}
+.pod a:active {
+  color:#FFA540;
+}
+.pod-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.subpod-title {
+  font-style: italic;
+  color: #989898;
+  margin-bottom: 2px;
+}
+.footlist {
+  display:inline;
+  margin: 0 40px 0 40px;
+}
+.footer {
+  background-color:#000000;
+  color:#FFFFFA;
+  text-align: center;
+  position: absolute;
+  bottom: 0px;
+  height: 30px;
+  width: 100%;
+}
+.footer a:link {
+  color:#989898;
+}
+.footer a:visited {
+  color:#989898;
+}
+.footer a:hover {
+  color:#FFFFFF;
+  text-decoration: none
+}
+.footer a:active {
+  color:#FFFFFF;
+}
+.search {
+  float:right;
+  margin-top: 5px;
+}
+td {
+  padding-right: 5px;
+}
+textarea {
+  color: #888888;
+  border-radius: 3px;
+  resize:none;
+  width: 468px;
+}
+img {
+  margin-bottom:4px;
+}
+rect {
+  fill: white;
+  stroke: teal;
+  stroke-width: 2;
+}
+path {
+  fill: none;
+  stroke: gray;
+  stroke-width: 2;
+}

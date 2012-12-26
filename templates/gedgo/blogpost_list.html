@@ -1,4 +1,8 @@
-{% extends "gedgo/base.html" %}
+{% extends "base.html" %}
+
+{% block blogactive %}
+    class="active"
+{% endblock %}
 
 {% block leftsidebar %}
     {% if user.is_staff %}

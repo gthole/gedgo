@@ -10,7 +10,7 @@
 		{% with forloop.counter as i %}
 		<li>
 			{% if forloop.last %}
-			{% if forloop.first %}Research Files{% else %}{{ l|truncatechars:20 }}{% endif %}
+			<b>{% if forloop.first %}Research Files{% else %}{{ l|truncatechars:20 }}{% endif %}</b>
 			{% else %}
 			<a href="/gedgo/researchfiles{% for l in levels %}{% if forloop.counter <= i %}{{ l }}/{% endif %}{% endfor %}">
 			{% if forloop.first %}Research Files{% else %}{{ l|truncatechars:20 }}{% endif %}</a></li>

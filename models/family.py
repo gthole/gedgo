@@ -14,8 +14,9 @@ class Family(models.Model):
 	wives = models.ManyToManyField('Person', related_name='family_wives')
 	children = models.ManyToManyField('Person', related_name='family_children')
 
-	marriage = models.ForeignKey('Event', related_name='family_marriage', blank=True, null=True)
-	divorce = models.ForeignKey('Event', related_name='family_divorce', blank=True, null=True)
+	kind = models.CharField('Event', related_name='family_kind', blank=True, null=True)
+	joined = models.ForeignKey('Event', related_name='family_joined', blank=True, null=True)
+	separated = models.ForeignKey('Event', related_name='family_separated', blank=True, null=True)
 
 	notes = models.ManyToManyField('Note', null=True)
 

@@ -173,8 +173,14 @@ def __process_Family(entry, g):
 	f.pointer = entry.pointer
 	f.gedcom = g
 
-	f.marriage = __create_Event(entry.get_child_by_tag('MARR'), g, f.marriage)
-	f.divorce = __create_Event(entry.get_child_by_tag('DIVC'), g, f.divorce)
+	for k in ['MARR', 'DPAR']:
+		f.joined = __create_Event(entry.get_child_by_tag(k), g, f.joined)
+		if f.joined:
+			f.kind = k
+			break
+
+	for k in ['DIVF', 'DIVC']:
+		f.separated = __create_Event(entry.get_child_by_tag(k), g, f.separated)
 
 	f.save()
 

@@ -52,7 +52,7 @@
 	<table>
 		{% if family.joined.date %}
 			<tr>
-				<td><div class="subpod-title">{% family.kind = "MARR" %}Married{% else %}Domestic Partners{% endif %}: </div></td>
+				<td><div class="subpod-title">{% if family.kind = "MARR" %}Married{% else %}Domestic Partners{% endif %}: </div></td>
 				<td> {{ family.joined.date_string }} {% if family.joined.date_approxQ %}(approximate){% endif %}</td>
 			</tr>
 		{% endif %}
@@ -64,7 +64,7 @@
 		{% endif %}
 		{% if family.separated.date %}
 			<tr>
-				<td><div class="subpod-title">{% family.kind = "MARR" %}Divorced{% else %}Separated{% endif %}: </div></td>
+				<td><div class="subpod-title">{% if family.kind = "MARR" %}Divorced{% else %}Separated{% endif %}: </div></td>
 				<td> {{ family.separated.date_string }} {% if family.separated.date_approxQ %}(approximate){% endif %}</td>
 			</tr>
 		{% endif %}

@@ -47,10 +47,10 @@ def timeline(person):
 
 	if person.spousal_families.all():
 		for family in person.spousal_families.all():
-			if valid_event_date(family.marriage):
-				personal.append(["married", family.marriage.date.year])
-			if valid_event_date(family.divorce):
-				personal.append(["divorced", family.divorce.date.year])
+			if valid_event_date(family.joined):
+				personal.append(["married", family.joined.date.year])
+			if valid_event_date(family.separated):
+				personal.append(["divorced", family.separated.date.year])
 			for child in family.children.all():
 				if valid_event_date(child.birth):
 					personal.append([child.full_name() + " born", child.birth.date.year])

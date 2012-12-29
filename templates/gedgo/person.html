@@ -105,14 +105,36 @@
 	{% endfor %}
 	
 	<!-- Marital Facts -->
-	{% if family.marriage.date or family.marriage.place or family.divorce.date %}
-		<hr>
+	{% if family.joined.date or family.joined.place or family.separated.date %}
+	<div class="pod">
+		<div class="pod-title">Details:</div>
 		<table>
-		{% if family.marriage.date %}<tr><td><div class="subpod-title">Married: </div></td><td> {{ family.marriage.date_string }} {% if family.marriage.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-		{% if family.marriage.place %}<tr><td><div class="subpod-title">Place: </div></td><td> {{ family.marriage.place }} </td></tr>{% endif %}
-		{% if family.divorce.date %}<tr><td><div class="subpod-title">Divorced: </div></td><td> {{ family.divorce.date_string }} {% if family.divorce.date_approxQ %}(approximate){% endif %}</td></tr>{% endif %}
-		{% if family.divorce.place %}<tr><td><div class="subpod-title">Place: </div></td><td> {{ family.divorce.place }} </td></tr>{% endif %}
+			{% if family.joined.date %}
+				<tr>
+					<td><div class="subpod-title">{% family.kind = "MARR" %}Married{% else %}Domestic Partners{% endif %}: </div></td>
+					<td> {{ family.joined.date_string }} {% if family.joined.date_approxQ %}(approximate){% endif %}</td>
+				</tr>
+			{% endif %}
+			{% if family.joined.place %}
+				<tr>
+					<td><div class="subpod-title">Place: </div></td>
+					<td> {{ family.joined.place }} </td>
+				</tr>
+			{% endif %}
+			{% if family.separated.date %}
+				<tr>
+					<td><div class="subpod-title">{% family.kind = "MARR" %}Divorced{% else %}Separated{% endif %}: </div></td>
+					<td> {{ family.separated.date_string }} {% if family.separated.date_approxQ %}(approximate){% endif %}</td>
+				</tr>
+			{% endif %}
+			{% if family.separated.place %}
+				<tr>
+					<td><div class="subpod-title">Place: </div></td>
+					<td> {{ family.separated.place }} </td>
+				</tr>
+			{% endif %}
 		</table>
+	</div>
 	{% endif %}
 	
 	<!-- Children -->

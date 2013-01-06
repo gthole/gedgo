@@ -5,13 +5,20 @@
 {% endblock %}
 
 {% block leftsidebar %}
+	{% if documentaries.all %}
+	<ul>
+	{% for documentary in documentaries %}
+		<li><a href="#{{ documentary.pk }}">{{ documentary.title }}</a></li>
+	{% endfor %}
+	</ul>
+	{% endif %}
 {% endblock %}
 
 
 {% block content %}
 {% if documentaries.all %}
 	{% for documentary in documentaries.all %}
-		<div class="pod">
+		<div class="pod" id="{{ documentary.pk }}">
 			<div class="pod-title">{{ documentary.title }}</div>
 			{% if documentary.tagline %}{{ documentary.tagline }}{% endif %}<br><br>
 			<a href="{{ documentary.location }}"><img src="{{ MEDIA_URL }}{{ documentary.thumb }}" width=460></a>

@@ -16,8 +16,8 @@ def comment_action(request, noun):
 		send_mail(
 			'Comment from ' + cd['name'] + ' about ' + noun,
 			cd['message'],
-			cd.get('email', 'noreply@example.com'),
-			[settings.SERVER_EMAIL],
+			cd.get('email', 'noreply@gedgo.com'),
+			settings.SERVER_EMAIL,
 		)
 		return form
 

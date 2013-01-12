@@ -14,10 +14,10 @@ class Person(models.Model):
 	gedcom = models.ForeignKey('Gedcom')
 
 	# Name
-	first_name = models.CharField(max_length=30)
-	last_name = models.CharField(max_length=30)
-	prefix = models.CharField(max_length=10)
-	suffix = models.CharField(max_length=10)
+	first_name = models.CharField(max_length=255)
+	last_name = models.CharField(max_length=255)
+	prefix = models.CharField(max_length=255)
+	suffix = models.CharField(max_length=255)
 
 	# Life dates
 	birth = models.ForeignKey('Event', related_name='person_birth', null=True, blank=True)
@@ -25,7 +25,7 @@ class Person(models.Model):
 
 	# Details
 	education = models.TextField(null=True)
-	religion = models.CharField(max_length=50, null=True, blank=True)
+	religion = models.CharField(max_length=255, null=True, blank=True)
 
 	# Family
 	child_family = models.ForeignKey('Family', related_name='person_child_family', null=True, blank=True)

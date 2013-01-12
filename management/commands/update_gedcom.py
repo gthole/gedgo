@@ -59,6 +59,6 @@ class Command(BaseCommand):
 					'Started:  ' + start.strftime('%B %d, %Y at %I:%M %p') + '\n' +
 					'Finished: ' + end.strftime('%B %d, %Y at %I:%M %p') + '\n\n' +
 					errstr,
-					settings.SERVER_EMAIL,
+					'noreply@gedgo.com',
 					map(lambda x: x[1], settings.ADMINS),
 				)

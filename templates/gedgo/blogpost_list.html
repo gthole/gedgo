@@ -32,20 +32,20 @@
         
         <!-- Next/Prev page links  -->
         {% if posts.object_list and posts.paginator.num_pages > 1 %}
-        <div class="pagination" style="margin-top: 20px; margin-left: -20px; ">
-            <span class="step-links">
+	<div class="pod">
+	    <div style="text-align: center;">
                 {% if posts.has_previous %}
                     <a href= "?page={{ posts.previous_page_number }}">newer entries &lt;&lt; </a>
                 {% endif %}
 
                 <span class="current">
                     &nbsp;Page {{ posts.number }} of {{ posts.paginator.num_pages }}
-                </span>
+                </span> {# post list #}
 
                 {% if posts.has_next %}
                     <a href="?page={{ posts.next_page_number }}"> &gt;&gt; older entries</a>
-                {% endif %}
-            </span>
+                {% endif %} 
+	    </div>
         </div>
-        {% endif %}
+	{% endif %}
 {% endblock %}

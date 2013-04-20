@@ -83,6 +83,8 @@
 			{% endif %}
 		{% endfor %}
 	{% endif %}
+	<br />
+	<a href="/gedgo/{{ gedcom.id }}/{{ person.child_family.pointer }}">(more about the {{ person.child_family.family_name }} family)</a>
 </div>
 {% endif %}
 
@@ -145,6 +147,8 @@
 			{% include "gedgo/person-card.html" %}
 		{% endfor %}
 	{% endif %}
+	<br />
+	<a href="/gedgo/{{ gedcom.id }}/{{ family.pointer }}">(more about the {{ family.family_name }} family)</a>
 </div>
 {% endfor %}
 

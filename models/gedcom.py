@@ -13,10 +13,6 @@ class Gedcom(models.Model):
 	description = models.TextField(null=True, blank=True)
 	last_updated = models.DateTimeField()
 
-	people = models.ManyToManyField('Person', related_name='gedcom_people')
-	families = models.ManyToManyField('Family', related_name='gedcom_families')
-	notes = models.ManyToManyField('Note', related_name='gedcom_notes')
-
 	key_people = models.ManyToManyField('Person',
 		related_name='gedcom_key_people', null=True, blank=True)
 

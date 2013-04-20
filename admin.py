@@ -6,7 +6,7 @@ from djcelery.models import (TaskState, WorkerState,
 
 
 class GedcomAdmin(admin.ModelAdmin):
-	exclude = ('people', 'families', 'notes', 'key_people')
+	exclude = ('key_people',)
 	filter_horizontal = ('key_families',)
 
 

@@ -12,8 +12,7 @@ import Image
 
 
 def update_from_file(g, file_name):
-	# TODO: Fix \r or \n issue.
-	lines = open(file_name).read().split("\r")
+	lines = open(file_name).read().splitlines()
 
 	update(g, lines)
 
@@ -63,7 +62,7 @@ def update(g, content):
 def __process_all_relations(gedcom_model, gedcom):
 	print '  Starting Person objects.'
 	# Process Person objects
-	for person in gedcom_model.people.all():
+	for person in gedcom_model.person_set.iterator():
 		entry = gedcom.get_entry_by_pointer(person.pointer)
 		if entry is not None:
 			__process_person_relations(gedcom_model, person, entry)
@@ -73,7 +72,7 @@ def __process_all_relations(gedcom_model, gedcom):
 	print '  Starting Family objects.'
 
 	# Process Family objects
-	for family in gedcom_model.families.all():
+	for family in gedcom_model.family_set.iterator():
 		entry = gedcom.get_entry_by_pointer(family.pointer)
 		if entry is not None:
 			__process_family_relations(gedcom_model, family, entry)
@@ -83,53 +82,53 @@ def __process_all_relations(gedcom_model, gedcom):
 
 
 def __process_person_relations(gedcom, person, entry):
+	families = gedcom.family_set.all()
+	notes = gedcom.note_set.all()
+
 	# "FAMS"
 	person.spousal_families = []
-	person.spousal_families.add(*__objects_from_entry_tag(gedcom.families.all(), entry, 'FAMS'))
+	person.spousal_families.add(*__objects_from_entry_tag(families, entry, 'FAMS'))
 
 	# "FAMC"
-	child_family = __objects_from_entry_tag(gedcom.families.all(), entry, 'FAMC')
+	child_family = __objects_from_entry_tag(families, entry, 'FAMC')
 	if len(child_family) > 0:
 		person.child_family = child_family[0]
 
 	# "NOTE"
 	person.notes = []
-	person.notes.add(*__objects_from_entry_tag(gedcom.notes.all(), entry, 'NOTE'))
+	person.notes.add(*__objects_from_entry_tag(notes, entry, 'NOTE'))
 
 	person.save()
 
 
 def __process_family_relations(gedcom, family, entry):
+	people = gedcom.person_set.all()
+	notes = gedcom.note_set.all()
+
 	# "HUSB"
 	family.husbands = []
-	family.husbands.add(*__objects_from_entry_tag(gedcom.people.all(), entry, 'HUSB'))
+	family.husbands.add(*__objects_from_entry_tag(people, entry, 'HUSB'))
 
 	# "WIFE"
 	family.wives = []
-	family.wives.add(*__objects_from_entry_tag(gedcom.people.all(), entry, 'WIFE'))
+	family.wives.add(*__objects_from_entry_tag(people, entry, 'WIFE'))
 
 	# "CHIL"
 	family.children = []
-	family.children.add(*__objects_from_entry_tag(gedcom.people.all(), entry, 'CHIL'))
+	family.children.add(*__objects_from_entry_tag(people, entry, 'CHIL'))
 
 	# "NOTE"
 	family.notes = []
-	family.notes.add(*__objects_from_entry_tag(gedcom.notes.all(), entry, 'NOTE'))
+	family.notes.add(*__objects_from_entry_tag(notes, entry, 'NOTE'))
 
 	family.save()
 
 
 # --- Import Constructors
 def __process_Person(entry, g):
-	known = Person.objects.filter(pointer=entry.pointer)
-
-	if len(known) == 0:
-		p = Person()
-		p.pointer = entry.pointer
-		p.gedcom = g
-		g.people.add(p)
-	else:
-		p = known[0]
+	p, _ = Person.objects.get_or_create(
+		pointer=entry.pointer,
+		gedcom=g)
 
 	# Name
 	name_value = entry.get_child_value_by_tags('NAME', default='')
@@ -147,8 +146,6 @@ def __process_Person(entry, g):
 	p.education = entry.get_child_value_by_tags('EDUC')
 	p.religion = entry.get_child_value_by_tags('RELI')
 
-	p.save()
-
 	# Media
 	document_entries = entry.get_children_by_tag('OBJE')
 	for m in document_entries:
@@ -159,19 +156,15 @@ def __process_Person(entry, g):
 		except:
 			pass
 
+	p.save()
+
 	return p
 
 
 def __process_Family(entry, g):
-	known = Family.objects.filter(pointer=entry.pointer)
-
-	if len(known) == 0:
-		f = Family()
-	else:
-		f = known[0]
-
-	f.pointer = entry.pointer
-	f.gedcom = g
+	f, _ = Family.objects.get_or_create(
+		pointer=entry.pointer,
+		gedcom=g)
 
 	for k in ['MARR', 'DPAR']:
 		f.joined = __create_Event(entry.get_child_by_tag(k), g, f.joined)
@@ -182,8 +175,6 @@ def __process_Family(entry, g):
 	for k in ['DIVF', 'DIVC']:
 		f.separated = __create_Event(entry.get_child_by_tag(k), g, f.separated)
 
-	f.save()
-
 	# Media
 	document_entries = entry.get_children_by_tag('OBJE')
 	for m in document_entries:
@@ -193,8 +184,6 @@ def __process_Family(entry, g):
 			pass
 
 	f.save()
-
-	g.families.add(f)
 
 	return f
 
@@ -226,15 +215,10 @@ def __create_Event(entry, g, e):
 
 
 def __process_Note(entry, g):
-	known = Note.objects.filter(pointer=entry.pointer)
+	n, _ = Note.objects.get_or_create(
+		pointer=entry.pointer,
+		gedcom=g)
 	
-	if len(known) == 0:
-		n = Note()
-	else:
-		n = known[0]
-	
-	n.pointer = entry.pointer
-	n.gedcom = g
 	n.text = ''
 	
 	for child in entry.children:
@@ -245,8 +229,6 @@ def __process_Note(entry, g):
 	n.text = n.text.strip('\n')
 	
 	n.save()
-	
-	g.notes.add(n)
 	
 	return n
 

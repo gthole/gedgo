@@ -7,5 +7,5 @@ from os import path
 
 @login_required
 def media(request, file_base_name):
-	filename = path.join(settings.MEDIA_ROOT, file_base_name)
-	return serve_content(filename)
+    filename = path.join(settings.MEDIA_ROOT, file_base_name)
+    return serve_content(filename)

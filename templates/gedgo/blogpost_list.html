@@ -8,15 +8,15 @@
     {% if user.is_staff %}
         <a href="/admin/gedgo/blogpost/add/">Add new post</a>
     {% endif %}<br /><br />
-	<div class="sidebar-title">Archive</div>
-	{% for month in months %}
-		<a href="/gedgo/blog/{{ month.0 }}/{{ month.1 }}/">{{ month.2 }} {{ month.0 }}</a> <br />
-	{% endfor %}
+    <div class="sidebar-title">Archive</div>
+    {% for month in months %}
+        <a href="/gedgo/blog/{{ month.0 }}/{{ month.1 }}/">{{ month.2 }} {{ month.0 }}</a> <br />
+    {% endfor %}
 {% endblock %}
 
 {% block content %}
-    	<!-- Posts  -->
-    	{% if posts.object_list %}
+        <!-- Posts  -->
+        {% if posts.object_list %}
             {% for post in posts.object_list %}
             <div class="pod">
                 <a href="/gedgo/blog/post/{{ post.id }}"><h2>{{ post.title }}</h2></a>
@@ -25,15 +25,15 @@
             </div>
             {% endfor %}
         {% else %}
-        	<div class="pod">
-        		No blog posts written yet.
-        	</div>
+            <div class="pod">
+                No blog posts written yet.
+            </div>
         {% endif %}
         
         <!-- Next/Prev page links  -->
         {% if posts.object_list and posts.paginator.num_pages > 1 %}
-	<div class="pod">
-	    <div style="text-align: center;">
+    <div class="pod">
+        <div style="text-align: center;">
                 {% if posts.has_previous %}
                     <a href= "?page={{ posts.previous_page_number }}">newer entries &lt;&lt; </a>
                 {% endif %}
@@ -45,7 +45,7 @@
                 {% if posts.has_next %}
                     <a href="?page={{ posts.next_page_number }}"> &gt;&gt; older entries</a>
                 {% endif %} 
-	    </div>
         </div>
-	{% endif %}
+        </div>
+    {% endif %}
 {% endblock %}

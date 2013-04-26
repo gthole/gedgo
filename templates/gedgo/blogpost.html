@@ -6,11 +6,11 @@
 
 {% block leftsidebar %}
 {% if post.tagged_photos.all %}
-	{% for photo in post.tagged_photos.all %}
-		<a href="{{ photo.docfile.url }}">
-			<img src="{{ photo.docfile.url }}" width=205px border=1>
-		</a>
-	{% endfor %}
+    {% for photo in post.tagged_photos.all %}
+        <a href="{{ photo.docfile.url }}">
+            <img src="{{ photo.docfile.url }}" width=205px border=1>
+        </a>
+    {% endfor %}
 {% endif %}
 {% endblock %}
 
@@ -33,17 +33,17 @@
 <div class="pod">
     People in this post:<br>
     {% for somebody in post.tagged_people.all %}
-    	
-	    	{% include "gedgo/person-card.html" %}
-	    	
-    	{% if forloop.last %}{% else %}<hr>{% endif %}
+        
+            {% include "gedgo/person-card.html" %}
+            
+        {% if forloop.last %}{% else %}<hr>{% endif %}
     {% endfor %}
 </div>
 {% endif %}
 
 <!-- Comments  -->
 <div class="pod">
-	{% include "gedgo/comment_form.html" %}
+    {% include "gedgo/comment_form.html" %}
 </div>
 
 {% endblock %}

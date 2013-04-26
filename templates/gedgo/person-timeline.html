@@ -1,90 +1,90 @@
-	<div id="timeline"></div>
-		<script type="text/javascript">
+    <div id="timeline"></div>
+        <script type="text/javascript">
 
-			var events = [{% for event in events %}["{{ event|first }}", {{ event|last }}]{% if forloop.last %}{% else %}, {% endif %}{% endfor %}];
-			var hindex = {{ hindex }};
-			
-			var hscale = d3.scale.linear()
-							.domain([0, 35])
-							.range([20, 400])
-			
-			var birthyear = events[hindex][1]
-			var deathyear = events[events.length - 1][1]
-			
-			//Width and height
-			var w = 480;
-			var h = hscale(deathyear - birthyear);
+            var events = [{% for event in events %}["{{ event|first }}", {{ event|last }}]{% if forloop.last %}{% else %}, {% endif %}{% endfor %}];
+            var hindex = {{ hindex }};
+            
+            var hscale = d3.scale.linear()
+                            .domain([0, 35])
+                            .range([20, 400])
+            
+            var birthyear = events[hindex][1]
+            var deathyear = events[events.length - 1][1]
+            
+            //Width and height
+            var w = 480;
+            var h = hscale(deathyear - birthyear);
 
-			var scale = d3.scale.linear()
-                   		.domain([birthyear, deathyear])
-                   		.range([10, h - 10]);
+            var scale = d3.scale.linear()
+                           .domain([birthyear, deathyear])
+                           .range([10, h - 10]);
 
 
-			// Create SVG element
-			var svg = d3.select("#timeline")
-           	.append("svg:svg")
-           	.attr("width", w)
-           	.attr("height", h);
+            // Create SVG element
+            var svg = d3.select("#timeline")
+               .append("svg:svg")
+               .attr("width", w)
+               .attr("height", h);
 
-			svg.selectAll("line")
-				.data([1])
-				.enter()
-				.append("line")
-				.attr("x1", w/2).attr("y1", 10)
-				.attr("x2", w/2).attr("y2", h - 10)
-				.attr("stroke", "teal");
+            svg.selectAll("line")
+                .data([1])
+                .enter()
+                .append("line")
+                .attr("x1", w/2).attr("y1", 10)
+                .attr("x2", w/2).attr("y2", h - 10)
+                .attr("stroke", "teal");
 
-			svg.selectAll("circle")
-				.data(events)
-				.enter()
-				.append("circle")
-				.attr("cx", w/2)
-				.attr("cy", function(d) {
-					return scale(d[1])
-				})
-				.attr("r", 5)
-				.attr("fill", function(d, i) {
-					if (i == hindex || i == events.length - 1) {
-						return "teal"
-					} else {
-						return "white"
-					}
-				})
-				.attr("stroke-width", 3)
-				.attr("stroke", function(d, i) {
-					if (i < hindex) {
-						return "orange"
-					} else {
-						return "teal"
-					}
-				});
+            svg.selectAll("circle")
+                .data(events)
+                .enter()
+                .append("circle")
+                .attr("cx", w/2)
+                .attr("cy", function(d) {
+                    return scale(d[1])
+                })
+                .attr("r", 5)
+                .attr("fill", function(d, i) {
+                    if (i == hindex || i == events.length - 1) {
+                        return "teal"
+                    } else {
+                        return "white"
+                    }
+                })
+                .attr("stroke-width", 3)
+                .attr("stroke", function(d, i) {
+                    if (i < hindex) {
+                        return "orange"
+                    } else {
+                        return "teal"
+                    }
+                });
 
-			svg.selectAll("text")
-  				.data(events)
-  				.enter()
-  				.append("text")
-				.text(function(d) {
-       			return d[1] + ': ' + d[0];
-  				})
-				.attr("x", function(d, i) {
-					if (i < hindex) {
-	        			return w/2 - 20
-	        		} else {
-	        			return w/2 + 20
-	        		}
-  				})
-  				.attr("y", function(d) {
-       			return scale(d[1]) + 5;
-  				})
-  				.attr("text-anchor", function(d,i) {
-  					if (i < hindex) {
-  						return "end"
-  					} else {
-  						return "start"
-  					}
-  				})
-  				.attr("font-family", "Baskerville")
-  				.attr("font-size", "9pt")
-  				.attr("fill", "gray")
+            svg.selectAll("text")
+                  .data(events)
+                  .enter()
+                  .append("text")
+                .text(function(d) {
+                   return d[1] + ': ' + d[0];
+                  })
+                .attr("x", function(d, i) {
+                    if (i < hindex) {
+                        return w/2 - 20
+                    } else {
+                        return w/2 + 20
+                    }
+                  })
+                  .attr("y", function(d) {
+                   return scale(d[1]) + 5;
+                  })
+                  .attr("text-anchor", function(d,i) {
+                      if (i < hindex) {
+                          return "end"
+                      } else {
+                          return "start"
+                      }
+                  })
+                  .attr("font-family", "Baskerville")
+                  .attr("font-size", "9pt")
+                  .attr("fill", "gray")
 
-		</script>
+        </script>

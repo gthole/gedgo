@@ -1,6 +1,6 @@
-		<div id="pedigree-tree"></div>
-		<script>
-			var treeData = {{ tree|safe }};
+        <div id="pedigree-tree"></div>
+        <script>
+            var treeData = {{ tree|safe }};
  
       // Create a svg canvas
       var vis = d3.select("#pedigree-tree").append("svg:svg")
@@ -11,7 +11,7 @@
  
       // Create a tree "canvas"
       var tree = d3.layout.tree()
-		.size([800,230]);
+        .size([800,230]);
  
       var diagonal = d3.svg.diagonal()
       // change x and y (for the left to right tree)
@@ -31,7 +31,7 @@
       .data(nodes)
       .enter().append("svg:g")
       .attr("transform", function(d) { 
-      	return "translate(" + d.y + "," + d.x + ")"; })
+          return "translate(" + d.y + "," + d.x + ")"; })
  
       // Add the dot at every node
       node.append("svg:rect")
@@ -50,8 +50,8 @@
       .attr("dy", -10)
       .attr("text-anchor", "start")
       .text(function(d) { return d.name; })
-	  .attr("font-family", "Baskerville")
-	  .attr("font-size", "11pt")
+      .attr("font-family", "Baskerville")
+      .attr("font-size", "11pt")
       
       
       node.append("svg:text")
@@ -59,8 +59,8 @@
       .attr("dy", 8)
       .attr("text-anchor", "start")
       .text(function(d) { return d.span; })
-	  .attr("font-family", "Baskerville")
-	  .attr("font-size", "11pt")
-	  .attr("fill", "gray")
+      .attr("font-family", "Baskerville")
+      .attr("font-size", "11pt")
+      .attr("fill", "gray")
  
     </script>

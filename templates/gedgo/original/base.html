@@ -2,8 +2,8 @@
 <html>
 <title>{% if site_title %}{{ site_title }}{% else %}Ged-go!{% endif %}{% if person %} : {{ person.full_name }}{% endif %}</title>
 <head>
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}styles/style-blue.css">
-	<script type="text/javascript" src="{{ STATIC_URL }}js/d3.v2.js""></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}styles/style-blue.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/d3.v2.js""></script>
 </head>
 <body>
 <div class="header-backing"></div>
@@ -11,7 +11,7 @@
 <div class="container">
 <div class="header">
 <a href="/gedgo/">
-	<h1 style="margin-bottom:0;">{% if site_title %}{{ site_title }}{% else %}Ged-go!{% endif %}</h1>
+    <h1 style="margin-bottom:0;">{% if site_title %}{{ site_title }}{% else %}Ged-go!{% endif %}</h1>
 </a>
 
 <a href="/gedgo/">About</a> 
@@ -25,22 +25,22 @@
 <a href="/gedgo/researchfiles/">Research Files</a>
 {% endif %}
 <div class="search">
-	<form action="/gedgo/search/" method="get">
-		search
-		<input type="text" name="q" value="{{ query }}" size="30">
-	</form>
+    <form action="/gedgo/search/" method="get">
+        search
+        <input type="text" name="q" value="{{ query }}" size="30">
+    </form>
 </div>
 
 </div>
 
 <div class="content-container">
-	<div class="sidebar">
-	{% block leftsidebar %}{% endblock %}
-	</div>
+    <div class="sidebar">
+    {% block leftsidebar %}{% endblock %}
+    </div>
 
-	<div class="content">
-	{% block content %}{% endblock %}
-	<br></div>
+    <div class="content">
+    {% block content %}{% endblock %}
+    <br></div>
 </div>
 
 <div class="foot-extender"></div>

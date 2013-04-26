@@ -1,36 +1,36 @@
 {% extends "base.html" %}
 
 {% block docuactive %}
-	class="active"
+    class="active"
 {% endblock %}
 
 {% block leftsidebar %}
-	{% if documentaries.all %}
-	<ul>
-	{% for documentary in documentaries %}
-		<li><a href="#{{ documentary.pk }}">{{ documentary.title }}</a></li>
-	{% endfor %}
-	</ul>
-	{% endif %}
+    {% if documentaries.all %}
+    <ul>
+    {% for documentary in documentaries %}
+        <li><a href="#{{ documentary.pk }}">{{ documentary.title }}</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}
 
 
 {% block content %}
 {% if documentaries.all %}
-	{% for documentary in documentaries.all %}
-		<div class="pod" id="{{ documentary.pk }}">
-			<div class="pod-title">{{ documentary.title }}</div>
-			{% if documentary.tagline %}{{ documentary.tagline }}{% endif %}<br><br>
-			<a href="{{ documentary.location }}"><img src="{{ MEDIA_URL }}{{ documentary.thumb }}" width=460></a>
-			<hr>
-			{{ documentary.description|linebreaks }}
-			Last updated: {{ documentary.last_updated }}
-		</div>
-	{% endfor %}
+    {% for documentary in documentaries.all %}
+        <div class="pod" id="{{ documentary.pk }}">
+            <div class="pod-title">{{ documentary.title }}</div>
+            {% if documentary.tagline %}{{ documentary.tagline }}{% endif %}<br><br>
+            <a href="{{ documentary.location }}"><img src="{{ MEDIA_URL }}{{ documentary.thumb }}" width=460></a>
+            <hr>
+            {{ documentary.description|linebreaks }}
+            Last updated: {{ documentary.last_updated }}
+        </div>
+    {% endfor %}
 {% else %}
-	<div class="pod">
-		No documentaries yet.  Check back soon.
-	</div>
+    <div class="pod">
+        No documentaries yet.  Check back soon.
+    </div>
 {% endif %}
 {% endblock %}
 

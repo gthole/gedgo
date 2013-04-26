@@ -1,12 +1,12 @@
 {% if form.errors %}
     <p style="color: red;">
-    	Please correct the error{{ form.errors|pluralize }} below.
+        Please correct the error{{ form.errors|pluralize }} below.
     </p>
 {% endif %}
 <p>Send us a comment about {% if person %}{{ person.full_name }}{% elif family %}the {{ family.family_name }} family{% elif post %}this blog post{% else %}this gedcom{% endif %}.</p>
 <form action="" method="post">
-	{% csrf_token %}
-	<input type="text" value="{% if user.get_full_name %}{{ user.get_full_name }}{% else %} your name{% endif %}" name="name" onblur="if (this.value == '') {this.value = ' your name';}"  onfocus="if (this.value == ' your name') {this.value = '';}" size="40"/><br>
+    {% csrf_token %}
+    <input type="text" value="{% if user.get_full_name %}{{ user.get_full_name }}{% else %} your name{% endif %}" name="name" onblur="if (this.value == '') {this.value = ' your name';}"  onfocus="if (this.value == ' your name') {this.value = '';}" size="40"/><br>
     <input type="text" value="{% if user.email %}{{ user.email }}{% else %} your email address{% endif %}" name="email" onblur="if (this.value == '') {this.value = ' your email address';}"  onfocus="if (this.value == ' your email address') {this.value = '';}" size="40"/>
     <br>
     <textarea name="message" rows="10" cols="54">{{ message }}</textarea>

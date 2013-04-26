@@ -1,13 +1,13 @@
 <div class="card">
 <table>
-	<tr>
-		<td><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/"><img src="{{ MEDIA_URL }}thumbs/{% if somebody.photos %}{{ somebody.key_photo }}{% else %}generic_person.gif{% endif %}" height=50px width=50px></a></td>
-		<td>
-			<table>
-				<tr><td><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/">{{ somebody.full_name }}</a></td></tr>
-				<tr><td>({{ somebody.year_range }})</td><tr>
-			</table>
-		</td>
-	</tr>
+    <tr>
+        <td><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/"><img src="{{ MEDIA_URL }}thumbs/{% if somebody.photos %}{{ somebody.key_photo }}{% else %}generic_person.gif{% endif %}" height=50px width=50px></a></td>
+        <td>
+            <table>
+                <tr><td><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/">{{ somebody.full_name }}</a></td></tr>
+                <tr><td>({{ somebody.year_range }})</td><tr>
+            </table>
+        </td>
+    </tr>
 </table>
 </div>

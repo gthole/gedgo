@@ -9,7 +9,7 @@ from media import media
 from researchfiles import researchfiles
 
 __all__ = [
-	'person', 'gedcom', 'update_view', 'search',
-	'family', 'documentaries', 'blogpost',
-	'blog', 'blog_list', 'media', 'researchfiles'
+    'person', 'gedcom', 'update_view', 'search',
+    'family', 'documentaries', 'blogpost',
+    'blog', 'blog_list', 'media', 'researchfiles'
 ]

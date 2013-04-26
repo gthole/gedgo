@@ -3,63 +3,63 @@
 
 {% block leftsidebar %}
 {% for photo in gedcom.photo_sample %}
-	<a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% elif photo.key_family_tag %}{{ photo.key_family_tag.pointer }}{% else %}{{ photo.docfile.url }}{% endif %}">
-		<img src="{{ MEDIA_URL }}{{ photo.thumb }}" height=100px width=100px border=1>
-	</a>
+    <a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% elif photo.key_family_tag %}{{ photo.key_family_tag.pointer }}{% else %}{{ photo.docfile.url }}{% endif %}">
+        <img src="{{ MEDIA_URL }}{{ photo.thumb }}" height=100px width=100px border=1>
+    </a>
 {% endfor %}
 {% endblock %}
 
 
 {% block content %}
 <div class="pod">
-	<h2 style="text-align:center;">Welcome!&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+    <h2 style="text-align:center;">Welcome!&nbsp;&nbsp;&nbsp;&nbsp;</h2>
 </div>
 
 {% if gedcom.description %}
-	<div class="pod">
-	{{ gedcom.description|safe|linebreaks }}
-	</div>
+    <div class="pod">
+    {{ gedcom.description|safe|linebreaks }}
+    </div>
 {% endif %}
 
 {% if post %}
-	<div class="pod">
-		<div class="pod-title">Latest Blog Post</div>
-		<b><a href="../blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
-		{{ post.body|safe|linebreaks|truncatewords:50 }}
-		<br>
-		<a href="../blog/post/{{ post.id }}">Read more</a>, or see <a href="../blog/">all posts</a>.
-	</div>
+    <div class="pod">
+        <div class="pod-title">Latest Blog Post</div>
+        <b><a href="../blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
+        {{ post.body|safe|linebreaks|truncatewords:50 }}
+        <br>
+        <a href="../blog/post/{{ post.id }}">Read more</a>, or see <a href="../blog/">all posts</a>.
+    </div>
 {% endif %}
 
 {% for family in gedcom.key_families.all %}
 <div class="pod">
-	<div class="pod-title"><a href="{{ family.pointer }}">The {{ family.family_name }} Family</a></div>
-	<!-- Spouses -->
-	{% for somebody in family.husbands.all %}
-		{% include "gedgo/person-card.html" %}
-	{% endfor %}
-	<hr>
-	{% for somebody in family.wives.all %}
-		{% include "gedgo/person-card.html" %}
-	{% endfor %}
+    <div class="pod-title"><a href="{{ family.pointer }}">The {{ family.family_name }} Family</a></div>
+    <!-- Spouses -->
+    {% for somebody in family.husbands.all %}
+        {% include "gedgo/person-card.html" %}
+    {% endfor %}
+    <hr>
+    {% for somebody in family.wives.all %}
+        {% include "gedgo/person-card.html" %}
+    {% endfor %}
 </div>
 {% endfor %}
 
 {% if gedcom.file_name or gedcom.last_update %}
 <div class="pod">
-	{% if gedcom.last_updated %}
-		<div class="pod-title">Last Updated:</div>{{ gedcom.last_updated }}
-	{% endif %}
-	<br><br>
-	{% if user.is_staff %}
-		<a href="/admin/gedgo/gedcom/{{ gedcom.id }}/">Edit this page</a>
-	{% endif %}
+    {% if gedcom.last_updated %}
+        <div class="pod-title">Last Updated:</div>{{ gedcom.last_updated }}
+    {% endif %}
+    <br><br>
+    {% if user.is_staff %}
+        <a href="/admin/gedgo/gedcom/{{ gedcom.id }}/">Edit this page</a>
+    {% endif %}
 </div>
 {% endif %}
 
 
 <div class="pod">
-	{% include "gedgo/comment_form.html" %}
+    {% include "gedgo/comment_form.html" %}
 </div>
 
 {% endblock %}

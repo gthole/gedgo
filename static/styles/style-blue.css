@@ -1,166 +1,166 @@
 body {
-	background-color:#7EB5D6;
-	font-family: Baskerville, serif;
+    background-color:#7EB5D6;
+    font-family: Baskerville, serif;
 }
 .container {
-	background-color:#7EB5D6;
-	margin-left:auto;
-	margin-right:auto;
-	width:778px;
+    background-color:#7EB5D6;
+    margin-left:auto;
+    margin-right:auto;
+    width:778px;
 }
 .header {
-	padding: 10px 0 25px 15px;
-	background-color:#274257;
-	color: #FFFFFA;
-	border-top-left-radius: 7px;
-	border-top-right-radius: 7px;
+    padding: 10px 0 25px 15px;
+    background-color:#274257;
+    color: #FFFFFA;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
 }
 .search {
-	float:right;
-	background-color:#274257;
-	padding-bottom: 5px;
-	padding-right: 18px;
-	color: #FFFFFA;
+    float:right;
+    background-color:#274257;
+    padding-bottom: 5px;
+    padding-right: 18px;
+    color: #FFFFFA;
 }
 .navbar {
-	float:right;
-	background-color:#274257;
-	padding-top: 7px;
-	padding-right: 10px;
-	color: #FFFFFA;
+    float:right;
+    background-color:#274257;
+    padding-top: 7px;
+    padding-right: 10px;
+    color: #FFFFFA;
 }
 .content-container {
-	background-color:#DFC184;
-	float: left;
-	width: 778px;
+    background-color:#DFC184;
+    float: left;
+    width: 778px;
 }
 .sidebar {
-	margin-left: 20px;
-	margin-top: 20px;
-	background-color: #DFC184;
-	width: 228px;
-	float: left;
+    margin-left: 20px;
+    margin-top: 20px;
+    background-color: #DFC184;
+    width: 228px;
+    float: left;
 }
 .content {
-	background-color: #EEEEEE;
-	width: 500px;
-	float: left;
-	padding: 15px 15px 0 15px;
-	background-image:url(https://raw.github.com/gthole/gedgo/master/static/img/gray_jean.png);
+    background-color: #EEEEEE;
+    width: 500px;
+    float: left;
+    padding: 15px 15px 0 15px;
+    background-image:url(https://raw.github.com/gthole/gedgo/master/static/img/gray_jean.png);
 }
 .pod {
-	background-color:#FFFFFA;
-	border-radius: 15px;
-	padding: 10px 15px 20px 15px;
-	margin: 25px 5px 25px 5px;
+    background-color:#FFFFFA;
+    border-radius: 15px;
+    padding: 10px 15px 20px 15px;
+    margin: 25px 5px 25px 5px;
 }
 .pod-title {
-	font-weight: bold;
-	margin-bottom: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 .sidebar-title {
-	font-weight: bold;
+    font-weight: bold;
 }
 .foot-extender {
-	clear:both;
-	width:778px;
+    clear:both;
+    width:778px;
 }
 .footer {
-	background-color:#274257;
-	color:#FFFFFA;
-	clear:both;
-	text-align:center;
-	margin-left:auto;
-	margin-right:auto;
-	padding-top: 2px;
-	padding-bottom: 6px;
-	width:778px;
-	border-bottom-left-radius: 7px;
-	border-bottom-right-radius: 7px;
+    background-color:#274257;
+    color:#FFFFFA;
+    clear:both;
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+    padding-top: 2px;
+    padding-bottom: 6px;
+    width:778px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
 }
 h1 {
-	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
-	color:#FFFFFA;
-	padding: 0 7px 10px 7px;
-	text-shadow: 1px 1px 1px #ccc;
+    font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+    color:#FFFFFA;
+    padding: 0 7px 10px 7px;
+    text-shadow: 1px 1px 1px #ccc;
 }
 hr {
-	color: #EEEEEE;
+    color: #EEEEEE;
 }
 a {
-	color:#274257;
-	text-decoration: none;
+    color:#274257;
+    text-decoration: none;
 }
 .content a:link {
-	color:#274257;
+    color:#274257;
 }
 .content a:visited {
-	color:#274257;
+    color:#274257;
 }
 .content a:hover {
-	color:#FFA540;
+    color:#FFA540;
 }
 .content a:active {
-	color:#FFA540;
+    color:#FFA540;
 }
 .header a {
-	color:#FFFFFA;
-	padding-left: 5px;
-	padding-right: 5px;
+    color:#FFFFFA;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 .leftsidebar {
-	color:#274257;
+    color:#274257;
 }
 td {
-	padding-right: 5px;
+    padding-right: 5px;
 }
 input {
-	color: #888888;
-	background-color: #FFFFFA;
-	border-radius: 3px;
-	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+    color: #888888;
+    background-color: #FFFFFA;
+    border-radius: 3px;
+    font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
 }
 form {
-	font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+    font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
 }
 ul { 
-	margin: 0;
-	padding:0;
-	list-style:none;
-	display: inline; 
+    margin: 0;
+    padding:0;
+    list-style:none;
+    display: inline; 
 }
 li {
-	margin: 5px;
+    margin: 5px;
 }
 textarea {
-	color: #888888;
-	border-radius: 3px;
-	resize:none;
+    color: #888888;
+    border-radius: 3px;
+    resize:none;
 }
 label {
-	font-weight:normal;
+    font-weight:normal;
 }
 .card {
-	padding-right: 15px;
+    padding-right: 15px;
 }
 .card-title {
-	font-weight: bold;
+    font-weight: bold;
 }
 .subpod-title {
-	font-style: italic;
-	color: #989898;
-	margin-bottom: 5px;
+    font-style: italic;
+    color: #989898;
+    margin-bottom: 5px;
 }
 .family-card {
-	float: center;
+    float: center;
 }
 rect {
-	fill: white;
-	stroke: orange;
-	stroke-width: 2;
+    fill: white;
+    stroke: orange;
+    stroke-width: 2;
 }
 path {
-	fill: none;
-	stroke: gray;
-	stroke-width: 2;
+    fill: none;
+    stroke: gray;
+    stroke-width: 2;
 }

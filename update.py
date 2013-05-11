@@ -11,29 +11,24 @@ from os import path, mkdir
 import Image
 
 
-def update_from_file(g, file_name):
+def update_from_file(g, file_name, verbose=True):
     lines = open(file_name).read().splitlines()
 
-    update(g, lines)
+    update(g, lines, verbose)
 
 
-def update(g, content):
-    print 'Parsing content'
+def update(g, content, verbose=True):
+    if verbose: print 'Parsing content'
     gedcom = GedcomFile(content)  # This is horrible naming.
 
     if g is None:
-        g = Gedcom()
-        g.title = gedcom.header.get_child_value_by_tags('TITL', default='')
-        g.last_updated = timezone.now()
-    else:
-        #print 'Clearing previous content'
-        #for obj in [Person, Family, Note, Document, Event]:
-        #    obj.objects.filter(gedcom=g).delete()
-        g.last_updated = timezone.now()
+        g = Gedcom.objects.create(
+            title=gedcom.header.get_child_value_by_tags(
+                'TITL', default=''),
+            last_updated=datetime(1920, 1, 1)
+        )
 
-    g.save()
-
-    print 'Importing entries to models'
+    if verbose: print 'Importing entries to models'
     person_counter = family_counter = note_counter = 0
     for entry in gedcom.entries:
         tag = entry.tag
@@ -48,19 +43,23 @@ def update(g, content):
             __process_Note(entry, g)
             note_counter += 1
 
-    print ('Found ' +
+    if verbose:
+        print ('Found ' +
            str(person_counter) + ' people, ' +
            str(family_counter) + ' families, ' +
            str(note_counter) + ' notes, and ' +
            str(len(Document.objects.all())) + ' documents.')
 
-    print 'Creating ForeignKey links'
-    __process_all_relations(g, gedcom)
+    if verbose: print 'Creating ForeignKey links'
+    __process_all_relations(g, gedcom, verbose)
+
+    g.last_updated = timezone.now()
+    g.save()
 
 
 #--- Second Level script functions
-def __process_all_relations(gedcom_model, gedcom):
-    print '  Starting Person objects.'
+def __process_all_relations(gedcom_model, gedcom, verbose=True):
+    if verbose: print '  Starting Person objects.'
     # Process Person objects
     for person in gedcom_model.person_set.iterator():
         entry = gedcom.get_entry_by_pointer(person.pointer)
@@ -68,8 +67,8 @@ def __process_all_relations(gedcom_model, gedcom):
             __process_person_relations(gedcom_model, person, entry)
         else:
             person.delete()
-    print '  Finished Person objects.'
-    print '  Starting Family objects.'
+    if verbose: print '  Finished Person objects.'
+    if verbose: print '  Starting Family objects.'
 
     # Process Family objects
     for family in gedcom_model.family_set.iterator():
@@ -78,7 +77,7 @@ def __process_all_relations(gedcom_model, gedcom):
             __process_family_relations(gedcom_model, family, entry)
         else:
             family.delete()
-    print '  Finished Family objects.'
+    if verbose: print '  Finished Family objects.'
 
 
 def __process_person_relations(gedcom, person, entry):
@@ -126,6 +125,9 @@ def __process_family_relations(gedcom, family, entry):
 
 # --- Import Constructors
 def __process_Person(entry, g):
+    if __check_unchanged(entry, g):
+        return
+
     p, _ = Person.objects.get_or_create(
         pointer=entry.pointer,
         gedcom=g)
@@ -158,10 +160,11 @@ def __process_Person(entry, g):
 
     p.save()
 
-    return p
-
 
 def __process_Family(entry, g):
+    if __check_unchanged(entry, g):
+        return
+
     f, _ = Family.objects.get_or_create(
         pointer=entry.pointer,
         gedcom=g)
@@ -185,15 +188,14 @@ def __process_Family(entry, g):
 
     f.save()
 
-    return f
-
 
 def __create_Event(entry, g, e):
     if entry is None:
         return None
 
-    date_results = __parse_gen_date(entry.get_child_value_by_tags('DATE'))
-    (rdate, date_format, year_range_end, date_approxQ) = date_results
+    (rdate, date_format, 
+     year_range_end, date_approxQ) = __parse_gen_date(
+        entry.get_child_value_by_tags('DATE'))
 
     place = entry.get_child_value_by_tags('PLAC', default='')
 
@@ -201,8 +203,7 @@ def __create_Event(entry, g, e):
         return None
 
     if e is None:
-        e = Event()
-        e.gedcom = g
+        e = Event(gedcom=g)
 
     e.date = rdate
     e.place = place
@@ -271,6 +272,13 @@ def __process_Document(entry, object, g):
 
 
 # --- Helper Functions
+def __check_unchanged(entry, g):
+    changed = __parse_gen_date(
+        entry.get_child_value_by_tags(['CHAN', 'DATE']))[0]
+    return (changed and g.last_updated and
+            (changed <= g.last_updated))
+
+
 DATE_FORMATS = [
     ('%Y', '%Y'),
     ('%d %b %Y', '%B %d, %Y'),

@@ -44,15 +44,16 @@ Ged-go is under active development.  Future features:
 * Gedcom statistics and network graph
 * Advanced search
 * Multiple templates
- 
- 
- 
+
+
+
 Installation / Set up
 -----------
 Installation is generally not for the faint of heart.  More complete instructions will follow, but the essential idea is:
 * Install Django
-* Install dependencies: dj-celery, PIL, and tastypie
-* Include Ged-go as an installed app in your Django project
+* Install dependencies: pip install -r reqs.pip
+* Include Ged-go as an installed app in your Django project, also add 'south' and 'djcelery'
+* Update database with: ``python manage.py syncdb --migrate --noinput``
 * Put all photos etc. into a flat file in your media directory
 * Make sure your various email settings are set for the comment form
 * To add a new gedcom file, use the manage.py command:

@@ -1,0 +1,4 @@
+# django==1.4.5
+django-celery==3.0.17
+django-tastypie==0.9.15
+PIL

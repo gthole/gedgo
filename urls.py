@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from django.conf.urls import include
-from django.views.generic.simple import redirect_to
+from django.shortcuts import redirect
 from tastypie.api import Api
 from gedgo.api import PersonResource, FamilyResource
 
@@ -26,5 +26,5 @@ urlpatterns = patterns('',
     url(r'^search/$', views.search),
     url(r'^logout/$', views.util.logout_view),
 
-    url(r'^$', redirect_to, {'url': '/gedgo/1/'}),
+    url(r'^$', lambda r: redirect('/gedgo/1/')),
 )

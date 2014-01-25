@@ -1,7 +1,7 @@
 <div class="card">
 <table>
     <tr>
-        <td><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/"><img src="{{ MEDIA_URL }}thumbs/{% if somebody.photos %}{{ somebody.key_photo }}{% else %}generic_person.gif{% endif %}" height=50px width=50px></a></td>
+        <td><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/"><img src="{% if somebody.photos %}{{ MEDIA_URL }}thumbs/{{ somebody.key_photo }}{% else %}{{ STATIC_URL }}img/generic_person.gif{% endif %}" height=50px width=50px></a></td>
         <td>
             <table>
                 <tr><td><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/">{{ somebody.full_name }}</a></td></tr>

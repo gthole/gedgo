@@ -20,8 +20,8 @@
     <tr>
         <td>
         <div style="width: 115px; height: 115px; overflow: hidden">
-            <a href="{{ MEDIA_URL }}{% if person.photos %}{{ person.key_photo }}{% else %}generic_person.gif{% endif %}">    
-                <img src="{{ MEDIA_URL }}thumbs/{% if person.photos %}{{ person.key_photo }}{% else %}generic_person.gif{% endif %}" height=115 width=115>
+            <a href="{% if person.photos %}{{ MEDIA_URL }}{{ person.key_photo }}{% else %}#{% endif %}">    
+                <img src="{% if person.photos %}{{ MEDIA_URL }}thumbs/{{ person.key_photo }}{% else %}{{ STATIC_URL }}img/generic_person.gif{% endif %}" height=115 width=115>
             </a>
         </div>
         </td>

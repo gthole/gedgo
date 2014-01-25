@@ -2,7 +2,7 @@ html {
   height: 100%;
 }
 body {
-  margin:0px;
+  margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 20px;
@@ -16,10 +16,10 @@ body {
   Bootstrap overrides.
 */
 .span8 {
-  width: 518px;
+  width: 512px;
 }
 .span4 {
-  width: 238px;
+  width: 236px;
 }
 .navbar-fixed-top .container {
   margin-top:10px;

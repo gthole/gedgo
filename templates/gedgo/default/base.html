@@ -2,9 +2,9 @@
 <html>
   <head>
     <title>{% if site_title %}{{ site_title }}{% else %}Ged-go!{% endif %}{% if person %} : {{ person.full_name }}{% endif %}</title>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/d3.v3.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.0/d3.min.js"></script>
     <!-- Bootstrap -->
-    <link href="{{ STATIC_URL }}styles/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" media="screen">
     <link href="{{ STATIC_URL }}styles/style-default.css" rel="stylesheet" type="text/css" >
   </head>
   <body>
@@ -38,7 +38,7 @@
             </div>
           </div>
           <div class="span8">
-            {% block content %}{% endblock %}<br>
+            {% block content %}{% endblock %}<br>&nbsp;
           </div>
         </div>
       </div>
@@ -60,5 +60,5 @@
     </div>
   </body>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
-  <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 </html>

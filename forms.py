@@ -8,18 +8,14 @@ class CommentForm(forms.Form):
     email = forms.EmailField(required=False)
     message = forms.CharField()
 
-
-def comment_action(request, noun):
-    form = CommentForm(request.POST)
-    if form.is_valid():
-        cd = form.cleaned_data
+    def email_comment(self, noun):
+        cd = self.cleaned_data
         send_mail(
-            'Comment from ' + cd['name'] + ' about ' + noun,
+            'Comment from %s about %s' % (cd['name'], noun),
             cd['message'],
             cd.get('email', 'noreply@gedgo.com'),
-            settings.SERVER_EMAIL,
+            settings.SERVER_EMAIL
         )
-        return form
 
 
 class UpdateForm(forms.Form):

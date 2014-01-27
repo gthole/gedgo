@@ -1,11 +1,9 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from gedgo.models import BlogPost
-from gedgo.forms import CommentForm, comment_action
-from gedgo.views.util import site_context
+from gedgo.views.util import render, process_comments
 
 from datetime import datetime
 
@@ -16,9 +14,9 @@ def blog(request, year, month):
     posts = BlogPost.objects.all().order_by("-created")
 
     if year:
-        posts = posts & BlogPost.objects.filter(created__year=year)
+        posts = posts.filter(created__year=year)
     if month:
-        posts = posts & BlogPost.objects.filter(created__month=month)
+        posts = posts.filter(created__month=month)
 
     paginator = Paginator(posts, 2)
 
@@ -36,10 +34,11 @@ def blog(request, year, month):
         (d.year, d.month, datetime(2012, d.month, 1).strftime('%B'))
         for d in BlogPost.objects.values_list('created', flat=True))
 
-    return render_to_response(
+    return render(
+        request,
         "gedgo/blogpost_list.html",
         {'posts': posts, 'months': months},
-        context_instance=RequestContext(request, site_context(request)))
+    )
 
 
 @login_required
@@ -50,18 +49,13 @@ def blog_list(request):
 @login_required
 def blogpost(request, post_id):
     "Single post."
-    post = get_object_or_404(BlogPost, id=post_id)
+    context = {
+        'post': get_object_or_404(BlogPost, id=post_id),
+        'form': process_comments()
+    }
 
-    if request.method == 'POST':
-        form = comment_action(request, post.title + ' (blog post comment)')
-        return render_to_response(
-            'gedgo/blogpost.html',
-            {'post': post, 'form': form},
-            context_instance=RequestContext(request, site_context(request)))
-    else:
-        form = CommentForm()
-
-    return render_to_response(
+    return render(
+        request,
         "gedgo/blogpost.html",
-        {'post': post, 'form': form},
-        context_instance=RequestContext(request, site_context(request)))
+        context
+    )

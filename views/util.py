@@ -1,17 +1,56 @@
 from django.http import HttpResponse
 from django.core.servers.basehttp import FileWrapper
-
-from gedgo.models import BlogPost, Documentary
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.conf import settings
 from django.contrib.sites.models import get_current_site
 from django.shortcuts import redirect
 from django.contrib.auth import logout
+from django.contrib import messages
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+from gedgo.models import BlogPost, Documentary
+from gedgo.forms import CommentForm
 
 from os import path
-
 import mimetypes
 
-from django.http import Http404
+
+@login_required
+def media(request, file_base_name):
+    """
+    Authenticated view to serve media content if necessary
+    """
+    filename = path.join(settings.MEDIA_ROOT, file_base_name)
+    return serve_content(filename)
+
+
+def process_comments(request, noun):
+    if request.POST:
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.email_comment(noun)
+            messages.success(
+                request,
+                'Your comment has ben sent.  Thank you!'
+            )
+        else:
+            messages.error(
+                request,
+                "We're sorry, your comment was not sent."
+            )
+    else:
+        form = CommentForm()
+    return form
+
+
+def render(request, template, context):
+    return render_to_response(
+        template,
+        context,
+        context_instance=RequestContext(request, site_context(request))
+    )
 
 
 def site_context(request):

@@ -24,7 +24,7 @@ urlpatterns = patterns('',
     url(r'^researchfiles/(?P<pathname>.*)$', views.researchfiles),
     url(r'^api/', include(v1_api.urls)),
     url(r'^search/$', views.search),
-    url(r'^logout/$', views.util.logout_view),
+    url(r'^logout/$', views.logout_view),
 
     url(r'^$', lambda r: redirect('/gedgo/1/')),
 )

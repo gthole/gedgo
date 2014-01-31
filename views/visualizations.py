@@ -4,8 +4,6 @@ import random
 import json
 
 
-# TODO: Move this module into view package.
-
 def json_tree(person):
     n = node(person, 0)
     return json.dumps(n)

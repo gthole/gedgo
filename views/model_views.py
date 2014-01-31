@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 
 from gedgo.models import Gedcom, Family, Person, BlogPost, Documentary
 from gedgo.views.util import site_context, process_comments
-from gedgo.visualizations import timeline, json_tree
+from gedgo.views.visualizations import timeline, json_tree
 
 
 @login_required

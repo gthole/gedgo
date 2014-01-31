@@ -1,13 +1,14 @@
 from django.test import TestCase
-from gedgo.update import update_from_file
+from gedgo.update import update
 from gedgo.models import Person, Family, Gedcom
 from datetime import date
+
 
 class UpdateGedcom(TestCase):
 
     def setUp(self):
         self.file_ = 'gedgo/static/test/test.ged'
-        update_from_file(None, self.file_, verbose=False)
+        update(None, self.file_, verbose=False)
 
     def test_person_import(self):
         self.assertEqual(Person.objects.count(), 6)
@@ -33,6 +34,6 @@ class UpdateGedcom(TestCase):
 
     def test_update_from_gedcom(self):
         g = Gedcom.objects.get()
-        update_from_file(g, self.file_, verbose=False)
+        update(g, self.file_, verbose=False)
         self.assertEqual(Person.objects.count(), 6)
         self.assertEqual(Family.objects.count(), 2)

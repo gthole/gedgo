@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from optparse import make_option  # TODO: Switch to argparser
 
 from gedgo.models import Gedcom
-from gedgo.update import update_from_file
+from gedgo.update import update
 from os import path
 from sys import exc_info
 import traceback
@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
             errstr = ''
             try:
-                update_from_file(g, file_name)
+                update(g, file_name)
             except:
                 e = exc_info()[0]
                 errstr = 'There was an error: %s\n%s' % (e, traceback.format_exc())

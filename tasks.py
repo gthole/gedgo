@@ -6,6 +6,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.core.mail import send_mail
+import traceback
 
 
 @task(name='gedgo.tasks.async_update')
@@ -16,15 +17,17 @@ def async_update(gedcom, content):
     try:
         update(gedcom, content)
     except:
-        errstr = 'There was an error!'
+        errstr = traceback.format_exc()
 
     end = datetime.now()
 
     send_mail(
-            'Update finished!',
-            'Started:  ' + start.strftime('%B %d, %Y at %I:%M %p') + '\n' +
-            'Finished: ' + end.strftime('%B %d, %Y at %I:%M %p') + '\n\n' +
-            errstr,
-            'noreply@example.com',
-            [settings.SERVER_EMAIL],
-        )
+        'Update finished!',
+        'Started:  %s\nFinished: %s\n\n%s' % (
+            start.strftime('%B %d, %Y at %I:%M %p'),
+            end.strftime('%B %d, %Y at %I:%M %p'),
+            errstr
+        ),
+        'noreply@example.com',
+        [settings.SERVER_EMAIL],
+    )

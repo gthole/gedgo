@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from gedgo.update import update_from_file
+from gedgo.update import update
 from os import path
 
 
@@ -19,4 +19,4 @@ class Command(BaseCommand):
         if (not len(file_name) > 4) or (not file_name[-4:] == '.ged'):
             raise CommandError('File "%s" does not appear to be a .ged file.' % file_name)
 
-        update_from_file(None, file_name)
+        update(None, file_name)

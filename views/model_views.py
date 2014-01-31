@@ -1,9 +1,8 @@
-from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404
 
 from gedgo.models import Gedcom, Family, Person, BlogPost, Documentary
-from gedgo.views.util import site_context, process_comments
+from gedgo.views.util import render, process_comments
 from gedgo.views.visualizations import timeline, json_tree
 
 
@@ -13,14 +12,14 @@ def gedcom(request, gedcom_id):
     post = BlogPost.objects.all().order_by("-created").first()
     noun = g.title or ("Gedcom #%d" % g.id)
 
-    return render_to_response(
+    return render(
+        request,
         'gedgo/gedcom.html',
         {
             'gedcom': g,
             'post': post,
             'form': process_comments(request, noun)
-        },
-        context_instance=RequestContext(request, site_context(request))
+        }
     )
 
 
@@ -30,14 +29,14 @@ def family(request, family_id, gedcom_id):
     f = get_object_or_404(Family, gedcom=g, pointer=family_id)
     noun = "%s (%s)" % (f.family_name, f.pointer)
 
-    return render_to_response(
+    return render(
+        request,
         'gedgo/family.html',
         {
             'gedcom': g,
             'family': f,
             'form': process_comments(request, noun)
-        },
-        context_instance=RequestContext(request, site_context(request))
+        }
     )
 
 
@@ -56,19 +55,15 @@ def person(request, gedcom_id, person_id):
     }
     context['events'], context['hindex'] = timeline(p)
 
-    return render_to_response(
-        'gedgo/person.html',
-        context,
-        context_instance=RequestContext(request, site_context(request))
-    )
+    return render(request, 'gedgo/person.html', context)
 
 
 @login_required
 def documentaries(request):
     documentaries = Documentary.objects.all().order_by('-last_updated')
 
-    return render_to_response(
+    return render(
+        request,
         "gedgo/documentaries.html",
-        {'documentaries': documentaries},
-        context_instance=RequestContext(request, site_context(request))
+        {'documentaries': documentaries}
     )

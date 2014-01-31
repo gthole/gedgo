@@ -54,18 +54,22 @@ def render(request, template, context):
 
 
 def site_context(request):
-    show_blog = (len(BlogPost.objects.all()) > 0)
-    show_documentaries = (len(Documentary.objects.all()) > 0)
-    try:
-        show_researchfiles = (type(settings.RESEARCH_FILES_ROOT) is str)
-    except:
-        show_researchfiles = False
+    show_blog = BlogPost.objects.exists()
+    show_documentaries = Documentary.objects.exists()
+    show_researchfiles = isinstance(
+        getattr(settings, 'RESEARCH_FILES_ROOT'),
+        basestring
+    )
     site_title = get_current_site(request).name
     user = request.user
 
-    return {'show_blog': show_blog, 'show_documentaries': show_documentaries,
-            'show_researchfiles': show_researchfiles, 'site_title': site_title,
-            'user': user}
+    return {
+        'show_blog': show_blog,
+        'show_documentaries': show_documentaries,
+        'show_researchfiles': show_researchfiles,
+        'site_title': site_title,
+        'user': user
+    }
 
 
 def serve_content(filename):

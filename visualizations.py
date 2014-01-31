@@ -4,6 +4,8 @@ import random
 import json
 
 
+# TODO: Move this module into view package.
+
 def json_tree(person):
     n = node(person, 0)
     return json.dumps(n)
@@ -26,7 +28,9 @@ def node(person, level):
             if person.child_family.husbands.all():
                 r['children'].append({'name': 'unknown', 'span': '', 'id': ''})
             else:
-                r['children'] = [{'name': 'unknown', 'span': '', 'id': ''}] + r['children']
+                r['children'] = [
+                    {'name': 'unknown', 'span': '', 'id': ''}
+                ] + r['children']
     return r
 
 
@@ -35,12 +39,20 @@ def truncate(inp):
 
 
 def timeline(person):
+    """
+    TODO: 
+      - Clean up: flake8 and flow control improvements
+      - Extend Historical Events to include 19th Century and before
+      - Balance events so they don't crowd together
+      - Comments
+    """
     personal = []
     now = datetime.now().year
 
     if not valid_event_date(person.birth):
         return ([], 0)
-    if (not valid_event_date(person.death)) & (now - person.birth.date.year > 100):
+    if (not valid_event_date(person.death)) and \
+            (now - person.birth.date.year > 100):
         return ([], 0)
 
     personal.append(['born', person.birth.date.year])
@@ -53,10 +65,20 @@ def timeline(person):
                 personal.append(["divorced", family.separated.date.year])
             for child in family.children.all():
                 if valid_event_date(child.birth):
-                    personal.append([child.full_name() + " born", child.birth.date.year])
+                    personal.append(
+                        [
+                            child.full_name() + " born",
+                            child.birth.date.year
+                        ]
+                    )
                 if valid_event_date(child.death):
                     if child.death.date.year < person.birth.date.year:
-                        personal.append([child.full_name() + " died", child.death.date.year])
+                        personal.append(
+                            [
+                                child.full_name() + " died",
+                                child.death.date.year
+                            ]
+                        )
 
     if not valid_event_date(person.death):
         personal.append(["now", now])
@@ -78,9 +100,13 @@ def timeline(person):
 
     dates = map(lambda x: x[1], personal)
     dates = dates + map(lambda x: x + 1, dates) + map(lambda x: x - 1, dates)
-    historical = filter(lambda x: (x[1] not in dates) & (x[1] > dates[0]) & (x[1] < dates[-1]), HISTORICAL)
+    historical = filter(
+        lambda x: (x[1] not in dates) & (x[1] > dates[0]) & (x[1] < dates[-1]),
+        HISTORICAL
+    )
     number = max((lifespan / 6) + 2 - len(personal), 5)
-    historical = random.sample(historical, min([len(historical), number]))  # TODO: auto fill in by heuristic
+    # TODO: auto fill in by heuristic
+    historical = random.sample(historical, min([len(historical), number]))
 
     if len(personal) < 3:
         return ([], 0)
@@ -96,7 +122,10 @@ def valid_event_date(event):
 
 
 def __gatherby(inlist, func, equivalencefunc=lambda a, b: a == b):
-    "__gatherby(list, func) returns a list of lists of items in list which have equal values of func(item)."
+    """
+    __gatherby(list, func) returns a list of lists of items in list which 
+    have equal values of func(item).
+    """
     keys = []
     gathered = []
     for item in inlist:

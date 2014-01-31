@@ -92,7 +92,7 @@ class Person(models.Model):
         if self.birth_year == '?' and self.death_year == '?':
             return 'unknown'
 
-        return '%s%d - %s%d' % (
+        return '%s%s - %s%s' % (
             '~' if self.birth and self.birth.date_approxQ else '',
             self.birth_year,
             '~' if self.death and self.death.date_approxQ else '',
@@ -108,6 +108,9 @@ class Person(models.Model):
     @property
     def death_year(self):
         if not self.death or not self.death.date:
+            # Don't show '?' for people who might still be alive!
+            if self.birth and self.birth.date and self.birth.date.year > 1910:
+                return ''
             return '?'
         return self.death.date.year
 

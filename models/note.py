@@ -9,8 +9,9 @@ class Note(models.Model):
     text = models.TextField()
     gedcom = models.ForeignKey('Gedcom')
 
-    def br_text(self):
-        return self.text.replace('\n', '<br>')
-
     def __unicode__(self):
         return 'Note (%s)' % self.pointer
+
+    @property
+    def br_text(self):
+        return self.text.replace('\n', '<br>')

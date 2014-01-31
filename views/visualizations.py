@@ -11,16 +11,16 @@ def json_tree(person):
 
 def node(person, level):
     r = {}
-    r['name'] = truncate(person.full_name())
-    r['span'] = '(' + person.year_range() + ')'
+    r['name'] = truncate(person.full_name)
+    r['span'] = '(%s)' % person.year_range
     r['id'] = person.pointer
     if (level < 2) and person.child_family:
         r['children'] = []
-        if person.child_family.husbands.all():
-            for parent in person.child_family.husbands.all():
+        if person.child_family.husbands.exists():
+            for parent in person.child_family.husbands.iterator():
                 r['children'].append(node(parent, level + 1))
-        if person.child_family.wives.all():
-            for parent in person.child_family.wives.all():
+        if person.child_family.wives.exists():
+            for parent in person.child_family.wives.iterator():
                 r['children'].append(node(parent, level + 1))
         while len(r['children']) < 2:
             if person.child_family.husbands.all():
@@ -65,7 +65,7 @@ def timeline(person):
                 if valid_event_date(child.birth):
                     personal.append(
                         [
-                            child.full_name() + " born",
+                            child.full_name + " born",
                             child.birth.date.year
                         ]
                     )
@@ -73,7 +73,7 @@ def timeline(person):
                     if child.death.date.year < person.birth.date.year:
                         personal.append(
                             [
-                                child.full_name() + " died",
+                                child.full_name + " died",
                                 child.death.date.year
                             ]
                         )

@@ -28,7 +28,7 @@ def gedcom(request, gedcom_id):
 def family(request, family_id, gedcom_id):
     g = get_object_or_404(Gedcom, id=gedcom_id)
     f = get_object_or_404(Family, gedcom=g, pointer=family_id)
-    noun = "%s (%s)" % (f.family_name(), f.pointer)
+    noun = "%s (%s)" % (f.family_name, f.pointer)
 
     return render_to_response(
         'gedgo/family.html',
@@ -45,7 +45,7 @@ def family(request, family_id, gedcom_id):
 def person(request, gedcom_id, person_id):
     g = get_object_or_404(Gedcom, id=gedcom_id)
     p = get_object_or_404(Person, gedcom=g, pointer=person_id)
-    noun = "%s (%s)" % (p.full_name(), p.pointer)
+    noun = "%s (%s)" % (p.full_name, p.pointer)
 
     context = {
         'person': p,

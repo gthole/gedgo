@@ -29,6 +29,10 @@ class Family(models.Model):
         null=True
     )
 
+    def __unicode__(self):
+        return '%s (%s)' % (self.family_name, self.pointer)
+
+    @property
     def family_name(self):
         nm = ''
         for set in [self.husbands.all(), self.wives.all()]:
@@ -36,16 +40,15 @@ class Family(models.Model):
                 nm += ' / ' + person.last_name
         return nm.strip(' / ')
 
-    def __unicode__(self):
-        txt = self.family_name()
-        return (txt + ' (' + self.pointer + ')')
-
+    @property
     def single_child(self):
-        if len(self.children.all()) == 1:
-            return self.children.all()[0]
+        if self.children.count() == 1:
+            return self.children.first()
 
+    @property
     def photos(self):
         return Document.objects.filter(tagged_families=self, kind='PHOTO')
 
+    @property
     def documentaries(self):
         return Documentary.objects.filter(tagged_families=self)

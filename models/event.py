@@ -17,6 +17,7 @@ class Event(models.Model):
 
     # Breaks strict MVC conventions.
     # Hack around python datetime's 1900 limitation.
+    @property
     def date_string(self):
         if self.date is None:
             return ''

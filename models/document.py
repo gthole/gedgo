@@ -31,16 +31,19 @@ class Document(models.Model):
         related_name='media_tagged_families', null=True, blank=True
     )
 
-    def key_person_tag(self):
-        if self.tagged_people.all():
-            return self.tagged_people.all()[0]
-
-    def key_family_tag(self):
-        if self.tagged_families.all():
-            return self.tagged_families.all()[0]
-
-    def file_base_name(self):
-        return self.docfile.path.basename()
-
     def __unicode__(self):
         return path.basename(self.docfile.path)
+
+    @property
+    def key_person_tag(self):
+        if self.tagged_people.exists():
+            return self.tagged_people.first()
+
+    @property
+    def key_family_tag(self):
+        if self.tagged_families.exists():
+            return self.tagged_families.first()
+
+    @property
+    def file_base_name(self):
+        return self.docfile.path.basename()

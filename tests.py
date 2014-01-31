@@ -37,3 +37,20 @@ class UpdateGedcom(TestCase):
         update(g, self.file_, verbose=False)
         self.assertEqual(Person.objects.count(), 6)
         self.assertEqual(Family.objects.count(), 2)
+
+
+class TestViews(TestCase):
+    def setUp(self):
+        self.file_ = 'gedgo/static/test/test.ged'
+        update(None, self.file_, verbose=False)
+
+    def test_pages_load(self):
+        pages = [
+            '/gedgo/1/',
+            '/gedgo/1/I1/'
+            '/gedgo/1/F1/'
+        ]
+        for page in pages:
+            print page
+            resp = self.client.get(page)
+            self.assertEqual(resp.status_code, 200, resp.content)

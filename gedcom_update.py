@@ -1,5 +1,5 @@
 from gedcom_parser import GedcomParser
-from models import *
+from models import Gedcom, Person, Family, Note, Document, Event
 
 from django.utils.datetime_safe import date
 from django.utils import timezone
@@ -12,7 +12,8 @@ import Image
 
 
 def update(g, file_name, verbose=True):
-    if verbose: print 'Parsing content'
+    if verbose:
+        print 'Parsing content'
     parsed = GedcomParser(file_name)
 
     if g is None:
@@ -40,7 +41,7 @@ def update(g, file_name, verbose=True):
     if verbose:
         print 'Found %d people, %d families, %d notes, and %d documents' % (
             person_counter, family_counter, note_counter,
-            Documents.objects.count())
+            Document.objects.count())
 
     if verbose:
         print 'Creating ForeignKey links'
@@ -200,8 +201,7 @@ def __create_Event(entry, g, e):
     if entry is None:
         return None
 
-    (rdate, date_format, 
-     year_range_end, date_approxQ) = __parse_gen_date(
+    (rdate, date_format, year_range_end, date_approxQ) = __parse_gen_date(
         __child_value_by_tags(entry, 'DATE'))
 
     place = __child_value_by_tags(entry, 'PLAC', default='')
@@ -328,8 +328,6 @@ def __parse_gen_date(date_value):
         except ValueError:
             pass
     return None, None, None, False
-
-
 
 
 def __objects_from_entry_tag(qset, entry, tag):

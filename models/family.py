@@ -9,16 +9,25 @@ class Family(models.Model):
         app_label = 'gedgo'
     pointer = models.CharField(max_length=10, primary_key=True)
     gedcom = models.ForeignKey('Gedcom')
-
     husbands = models.ManyToManyField('Person', related_name='family_husbands')
     wives = models.ManyToManyField('Person', related_name='family_wives')
     children = models.ManyToManyField('Person', related_name='family_children')
 
-    kind = models.CharField('Event', max_length=10, blank=True, null=True)
-    joined = models.ForeignKey('Event', related_name='family_joined', blank=True, null=True)
-    separated = models.ForeignKey('Event', related_name='family_separated', blank=True, null=True)
-
     notes = models.ManyToManyField('Note', null=True)
+    kind = models.CharField('Event', max_length=10, blank=True, null=True)
+
+    joined = models.ForeignKey(
+        'Event',
+        related_name='family_joined',
+        blank=True,
+        null=True
+    )
+    separated = models.ForeignKey(
+        'Event',
+        related_name='family_separated',
+        blank=True,
+        null=True
+    )
 
     def family_name(self):
         nm = ''

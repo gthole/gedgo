@@ -1,5 +1,5 @@
 from django.test import TestCase
-from gedgo.update import update
+from gedgo.gedcom_update import update
 from gedgo.models import Person, Family, Gedcom
 from datetime import date
 
@@ -12,12 +12,12 @@ class UpdateGedcom(TestCase):
 
     def test_person_import(self):
         self.assertEqual(Person.objects.count(), 6)
+
         p = Person.objects.get(pointer='I1')
         self.assertEqual(p.first_name, "John")
         self.assertEqual(p.last_name, "Doe")
         self.assertEqual(p.birth.place, "Houston, Texas")
-        self.assertEqual(p.birth.date,
-                         date(1950, 3, 22))
+        self.assertEqual(p.birth.date, date(1950, 3, 22))
 
     def test_family_import(self):
         self.assertEqual(Family.objects.count(), 2)

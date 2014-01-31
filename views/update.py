@@ -26,11 +26,10 @@ def update_view(request, gedcom_id):
         form = UpdateForm(request.POST, request.FILES)
         # check for temp file
         if form.is_valid():
-            # TODO: Make friendly to other OSes.
-            content = request.FILES['gedcom_file'].read().split("\r")
+            file_io = request.FILES['gedcom_file']
 
             # Call celery worker
-            async_update.delay(g, content)
+            async_update.delay(g, file_io)
 
             # Redirect to the document list after POST
             form = ''

@@ -79,7 +79,8 @@ def serve_content(filename):
     response = HttpResponse(wrapper, content_type=c_type)
     response['Content-Length'] = path.getsize(filename)
     if c_type is None:
-        response['Content-Disposition'] = "attachment; filename=%s;" % path.basename(filename)
+        response['Content-Disposition'] = "attachment; filename=%s;" % (
+            path.basename(filename))
     return response
 
 

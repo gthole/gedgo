@@ -13,4 +13,4 @@ class Note(models.Model):
         return self.text.replace('\n', '<br>')
 
     def __unicode__(self):
-        return 'Note (' + self.pointer + ')'
+        return 'Note (%s)' % self.pointer

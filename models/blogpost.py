@@ -9,11 +9,18 @@ class BlogPost(models.Model):
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 
-    tagged_photos = models.ManyToManyField('Document',
-        related_name='blogpost_tagged_photos', null=True, blank=True)
-
-    tagged_people = models.ManyToManyField('Person',
-        related_name='blogpost_tagged_people', null=True, blank=True)
+    tagged_photos = models.ManyToManyField(
+        'Document',
+        related_name='blogpost_tagged_photos',
+        null=True,
+        blank=True
+    )
+    tagged_people = models.ManyToManyField(
+        'Person',
+        related_name='blogpost_tagged_people',
+        null=True,
+        blank=True
+    )
 
     def __unicode__(self):
         return self.title

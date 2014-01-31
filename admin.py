@@ -1,8 +1,8 @@
 from gedgo.models import Gedcom, BlogPost, Document, Documentary
 from django.contrib import admin
 
-from djcelery.models import (TaskState, WorkerState,
-        PeriodicTask, IntervalSchedule, CrontabSchedule)
+from djcelery.models import TaskState, WorkerState, \
+    PeriodicTask, IntervalSchedule, CrontabSchedule
 
 
 class GedcomAdmin(admin.ModelAdmin):
@@ -20,7 +20,7 @@ class DocumentAdmin(admin.ModelAdmin):
     search_fields = ['docfile']
     # Include docfile and kind for uploading new (for blog posts.)
     exclude = ('title', 'description', 'thumb', 'tagged_people',
-        'tagged_families', 'gedcom')
+               'tagged_families', 'gedcom')
 
 
 class DocumentaryAdmin(admin.ModelAdmin):

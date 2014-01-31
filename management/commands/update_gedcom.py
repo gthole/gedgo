@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from optparse import make_option  # TODO: Switch to argparser
 
 from gedgo.models import Gedcom
-from gedgo.update import update
+from gedgo.gedcom_update import update
 from os import path
 from sys import exc_info
 import traceback
@@ -39,7 +39,8 @@ class Command(BaseCommand):
         if not path.exists(file_name):
             raise CommandError('Gedcom file "%s" not found.' % file_name)
         if (not len(file_name) > 4) or (not file_name[-4:] == '.ged'):
-            raise CommandError('File "%s" does not appear to be a .ged file.' % file_name)
+            raise CommandError(
+                'File "%s" does not appear to be a .ged file.' % file_name)
 
         # Check file time against gedcom last_update time.
         file_time = datetime.fromtimestamp(path.getmtime(file_name))
@@ -52,15 +53,19 @@ class Command(BaseCommand):
                 update(g, file_name)
             except:
                 e = exc_info()[0]
-                errstr = 'There was an error: %s\n%s' % (e, traceback.format_exc())
+                errstr = 'There was an error: %s\n%s' % (
+                    e, traceback.format_exc())
 
             end = datetime.now()
 
             send_mail(
-                'Gedcom file updated (' + (g.title if g.title else 'id = ' + str(g.id)) + ')',
-                'Started:  ' + start.strftime('%B %d, %Y at %I:%M %p') + '\n' +
-                'Finished: ' + end.strftime('%B %d, %Y at %I:%M %p') + '\n\n' +
-                errstr,
+                'Gedcom file updated (%s)' % (
+                    g.title if g.title else 'id = %' % str(g.id)),
+                'Started:  %s\nFinished: %s\n\n%s' % (
+                    start.strftime('%B %d, %Y at %I:%M %p'),
+                    end.strftime('%B %d, %Y at %I:%M %p'),
+                    errstr
+                ),
                 'noreply@gedgo.com',
                 settings.SERVER_EMAIL,
             )

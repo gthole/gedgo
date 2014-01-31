@@ -1,7 +1,6 @@
-from gedgo.update import update
+from gedgo.gedcom_update import update
 
 from celery import task
-
 from datetime import datetime
 
 from django.conf import settings
@@ -10,12 +9,12 @@ import traceback
 
 
 @task(name='gedgo.tasks.async_update')
-def async_update(gedcom, content):
+def async_update(gedcom, file_):
     start = datetime.now()
 
     errstr = ''
     try:
-        update(gedcom, content)
+        update(gedcom, file_)
     except:
         errstr = traceback.format_exc()
 

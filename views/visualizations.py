@@ -38,7 +38,7 @@ def truncate(inp):
 
 def timeline(person):
     """
-    TODO: 
+    TODO:
       - Clean up: flake8 and flow control improvements
       - Extend Historical Events to include 19th Century and before
       - Balance events so they don't crowd together
@@ -113,15 +113,15 @@ def timeline(person):
 
 
 def valid_event_date(event):
-    if event != None:
-        if event.date != None:
+    if event is not None:
+        if event.date is not None:
             return True
     return False
 
 
 def __gatherby(inlist, func, equivalencefunc=lambda a, b: a == b):
     """
-    __gatherby(list, func) returns a list of lists of items in list which 
+    __gatherby(list, func) returns a list of lists of items in list which
     have equal values of func(item).
     """
     keys = []

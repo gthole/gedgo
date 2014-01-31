@@ -10,9 +10,18 @@ v1_api = Api(api_name='v1')
 v1_api.register(PersonResource())
 v1_api.register(FamilyResource())
 
-urlpatterns = patterns('',
-    url(r'^(?P<gedcom_id>\d+)/(?P<person_id>I\d+)/$', views.person, name='person'),
-    url(r'^(?P<gedcom_id>\d+)/(?P<family_id>F\d+)/$', views.family, name='family'),
+urlpatterns = patterns(
+    '',
+    url(
+        r'^(?P<gedcom_id>\d+)/(?P<person_id>I\d+)/$',
+        views.person,
+        name='person'
+    ),
+    url(
+        r'^(?P<gedcom_id>\d+)/(?P<family_id>F\d+)/$',
+        views.family,
+        name='family'
+    ),
     url(r'^(?P<gedcom_id>\d+)/$', views.gedcom, name='gedcom'),
     url(r'^(?P<gedcom_id>\d+)/update/$', views.update_view),
 

@@ -20,7 +20,9 @@ import mimetypes
 @login_required
 def media(request, file_base_name):
     """
-    Authenticated view to serve media content if necessary
+    Authenticated view to serve media content if necessary,
+    it's much better to have a webserver handle this through
+    an authenticated proxy
     """
     filename = path.join(settings.MEDIA_ROOT, file_base_name)
     return serve_content(filename)

@@ -188,18 +188,15 @@
 </div>
 {% endif %}
 
-
-{% if events %}
-<div class="pod">
+<div class="pod" id="timeline-pod">
     <div class="pod-title">Timeline:</div>
-    {% include "gedgo/person-timeline.html" %}
+    <div id="timeline" data-gid="{{gedcom.id}}" data-pid="{{person.pointer}}"></div>
 </div>
-{% endif %}
 
 {% if person.child_family %}
 <div class="pod">
     <div class="pod-title">Pedigree Chart:</div>
-    {% include "gedgo/person-pedigree.html" %}
+    <div id="pedigree-tree" data-gid="{{gedcom.id}}" data-pid="{{person.pointer}}"></div>
 </div>
 {% endif %}
 
@@ -209,3 +206,9 @@
 
 {%endblock %}
 
+{% block javascript %}
+  {% if person.child_family %}
+    <script src="{{ STATIC_URL }}js/pedigree.js"></script>
+  {% endif %}
+  <script src="{{ STATIC_URL }}js/timeline.js"></script>
+{% endblock %}

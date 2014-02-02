@@ -1,27 +1,38 @@
-from datetime import datetime
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
+from gedgo.models import Person
+from datetime import datetime
+from collections import defaultdict
 import random
 import json
+import logging
 
 
-def json_tree(person):
-    n = node(person, 0)
-    return json.dumps(n)
+@login_required
+def pedigree(request, gid, pid):
+    person = get_object_or_404(Person, gedcom_id=gid, pointer=pid)
+    n = _node(person, 0)
+    return HttpResponse(
+        json.dumps(n),
+        content_type="application/json"
+    )
 
 
-def node(person, level):
+def _node(person, level):
     r = {}
-    r['name'] = truncate(person.full_name)
+    r['name'] = _truncate(person.full_name)
     r['span'] = '(%s)' % person.year_range
     r['id'] = person.pointer
     if (level < 2) and person.child_family:
         r['children'] = []
         if person.child_family.husbands.exists():
             for parent in person.child_family.husbands.iterator():
-                r['children'].append(node(parent, level + 1))
+                r['children'].append(_node(parent, level + 1))
         if person.child_family.wives.exists():
             for parent in person.child_family.wives.iterator():
-                r['children'].append(node(parent, level + 1))
+                r['children'].append(_node(parent, level + 1))
         while len(r['children']) < 2:
             if person.child_family.husbands.all():
                 r['children'].append({'name': 'unknown', 'span': '', 'id': ''})
@@ -32,11 +43,12 @@ def node(person, level):
     return r
 
 
-def truncate(inp):
+def _truncate(inp):
     return (inp[:25] + '..') if len(inp) > 27 else inp
 
 
-def timeline(person):
+@login_required
+def timeline(request, gid, pid):
     """
     TODO:
       - Clean up: flake8 and flow control improvements
@@ -44,72 +56,86 @@ def timeline(person):
       - Balance events so they don't crowd together
       - Comments
     """
-    personal = []
+    person = get_object_or_404(Person, gedcom_id=gid, pointer=pid)
     now = datetime.now().year
 
-    if not valid_event_date(person.birth):
-        return ([], 0)
-    if (not valid_event_date(person.death)) and \
-            (now - person.birth.date.year > 100):
-        return ([], 0)
+    # Don't show timelines for people without valid birth dates.
+    if not valid_event_date(person.birth) or \
+            ((not valid_event_date(person.death)) and \
+                    (now - person.birth.date.year > 100)):
+        return HttpResponse('{"events": []}', content_type="application/json")
 
-    personal.append(['born', person.birth.date.year])
+    start_date = person.birth.date.year
+    events = [
+        {
+            'text': 'born',
+            'year': start_date,
+            'type': 'personal'
+        }
+    ]
 
-    if person.spousal_families.all():
-        for family in person.spousal_families.all():
+    if person.spousal_families.exists():
+        for family in person.spousal_families.iterator():
             if valid_event_date(family.joined):
-                personal.append(["married", family.joined.date.year])
+                events.append({
+                    'text': 'married',
+                    'year': family.joined.date.year,
+                    'type': 'personal'
+                })
             if valid_event_date(family.separated):
-                personal.append(["divorced", family.separated.date.year])
-            for child in family.children.all():
+                events.append({
+                    'text': 'divorced',
+                    'year': family.separated.date.year,
+                    'type': 'personal'
+                })
+            for child in family.children.iterator():
                 if valid_event_date(child.birth):
-                    personal.append(
-                        [
-                            child.full_name + " born",
-                            child.birth.date.year
-                        ]
-                    )
+                    events.append({
+                        'text': child.full_name + " born",
+                        'year': child.birth.date.year,
+                        'type': 'personal'
+                    })
                 if valid_event_date(child.death):
-                    if child.death.date.year < person.birth.date.year:
-                        personal.append(
-                            [
-                                child.full_name + " died",
-                                child.death.date.year
-                            ]
-                        )
+                    if child.death.date < person.birth.date:
+                        events.append({
+                            'name': child.full_name + " died",
+                            'year': child.death.date.year,
+                            'type': 'personal'
+                        })
 
     if not valid_event_date(person.death):
-        personal.append(["now", now])
+        end_date = now
+        events.append({'text': 'now', 'year': now, 'type': 'personal'})
     else:
-        personal.append(["died", person.death.date.year])
+        end_date = person.death.date.year
+        events.append({'text': 'died', 'year': end_date, 'type': 'personal'})
 
-    lifespan = (personal[-1][1] - personal[0][1])
+    # Don't show timelines for people with only birth & end_date.
+    if len(events) < 3:
+        return HttpResponse('{"events": []}', content_type="application/json")
 
-    gathered = __gatherby(personal, lambda e: e[1])
-    personal = []
-    for events in gathered:
-        if len(events) == 1:
-            personal.append(events[0])
-        else:
-            name = []
-            for event in events:
-                name.append(event[0])
-            personal.append([', '.join(name), events[0][1]])
+    # open_years is an set of years where historical events may be added into
+    # the timeline, to prevent overcrowding of items
+    open_years = set(range(start_date + 1, end_date))
+    for e in events:
+        open_years -= set([e['year'] - 1, e['year'], e['year'] + 1])
 
-    dates = map(lambda x: x[1], personal)
-    dates = dates + map(lambda x: x + 1, dates) + map(lambda x: x - 1, dates)
-    historical = filter(
-        lambda x: (x[1] not in dates) & (x[1] > dates[0]) & (x[1] < dates[-1]),
-        HISTORICAL
-    )
-    number = max((lifespan / 6) + 2 - len(personal), 5)
-    # TODO: auto fill in by heuristic
-    historical = random.sample(historical, min([len(historical), number]))
+    number_allowed = max(((end_date - start_date) / 3) + 2 - len(events), 5)
 
-    if len(personal) < 3:
-        return ([], 0)
+    historical_count = 0
+    random.shuffle(HISTORICAL)
+    for text, year in HISTORICAL:
+        if historical_count > number_allowed:
+            break
+        if year not in open_years:
+            continue
+        events.append({'text': text, 'year': year, 'type': 'historical'})
+        # Keep historical events three years apart to keep from crowding.
+        open_years -= set([year - 2, year - 1, year, year + 1, year + 2])
+        historical_count += 1
 
-    return (historical + personal, len(historical))
+    response = {'start':start_date, 'end': end_date, 'events': events}
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 
 def valid_event_date(event):
@@ -119,25 +145,11 @@ def valid_event_date(event):
     return False
 
 
-def __gatherby(inlist, func, equivalencefunc=lambda a, b: a == b):
-    """
-    __gatherby(list, func) returns a list of lists of items in list which
-    have equal values of func(item).
-    """
-    keys = []
-    gathered = []
+def __gatherby(inlist, func):
+    d = defaultdict(list)
     for item in inlist:
-        key = func(item)
-        index = -1
-        for i in range(0, len(keys)):
-            if equivalencefunc(key, keys[i]):
-                index = i
-                break
-        if index == -1:
-            keys.append(key)
-            gathered.append([])
-        gathered[index].append(item)
-    return gathered
+        d[func(item)].append(item)
+    return d.values()
 
 # TODO: Switch to database storage?
 HISTORICAL = [

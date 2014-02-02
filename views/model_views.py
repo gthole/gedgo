@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 
 from gedgo.models import Gedcom, Family, Person, BlogPost, Documentary
 from gedgo.views.util import render, process_comments
-from gedgo.views.visualizations import timeline, json_tree
 
 
 @login_required
@@ -50,10 +49,8 @@ def person(request, gedcom_id, person_id):
         'person': p,
         'posts': BlogPost.objects.filter(tagged_people=p),
         'gedcom': g,
-        'tree': json_tree(p),
         'form': process_comments(request, noun)
     }
-    context['events'], context['hindex'] = timeline(p)
 
     return render(request, 'gedgo/person.html', context)
 

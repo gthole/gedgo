@@ -1,6 +1,7 @@
 from gedcom_parser import GedcomParser
 from models import Gedcom, Person, Family, Note, Document, Event
 
+from django.db import transaction
 from django.utils.datetime_safe import date
 from django.utils import timezone
 from django.conf import settings
@@ -11,6 +12,7 @@ from os import path, mkdir
 import Image
 
 
+@transaction.atomic
 def update(g, file_name, verbose=True):
     if verbose:
         print 'Parsing content'
@@ -156,12 +158,9 @@ def __process_Person(entry, g):
         if c['tag'] == 'OBJE'
     ]
     for m in document_entries:
-        try:
-            d = __process_Document(m, p, g)
-            if (d is not None) & (__child_value_by_tags(m, 'PRIM') == 'Y'):
-                p.profile.add(d)
-        except:
-            pass
+        d = __process_Document(m, p, g)
+        if (d is not None) and (__child_value_by_tags(m, 'PRIM') == 'Y'):
+            p.profile.add(d)
 
     p.save()
 
@@ -189,10 +188,7 @@ def __process_Family(entry, g):
         if c['tag'] == 'OBJE'
     ]
     for m in document_entries:
-        try:
-            __process_Document(m, f, g)
-        except:
-            pass
+        __process_Document(m, f, g)
 
     f.save()
 
@@ -269,10 +265,10 @@ def __process_Document(entry, obj, g):
             m.thumb.name = thumb
         m.save()
 
-    if isinstance(Person, obj) and \
+    if isinstance(obj, Person) and \
             not m.tagged_people.filter(pointer=obj.pointer).exists():
         m.tagged_people.add(obj)
-    elif isinstance(Family, obj) and \
+    elif isinstance(obj, Family) and \
             not m.tagged_families.filter(pointer=obj.pointer).exists():
         m.tagged_families.add(obj)
 

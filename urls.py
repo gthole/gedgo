@@ -37,9 +37,29 @@ urlpatterns = patterns(
     url(r'^researchfiles/(?P<pathname>.*)$', views.researchfiles),
     url(r'^api/', include(v1_api.urls)),
     url(r'^search/$', views.search),
+
+    # Auth
     url(r'^logout/$', views.logout_view),
-    url(r'^/accounts/password/reset/$', password_reset,
-        {'template_name': 'gedgo/password_reset.html'}),
+    url(r'^password_reset/$',
+        'django.contrib.auth.views.password_reset',
+        {
+            'template_name': 'auth/login.html',
+            'email_template_name': 'auth/password_reset_email.html',
+            'post_reset_redirect': '/gedgo/password_reset/done/'
+        }
+    ),
+    url(r'^password_reset/done/$',
+        'django.contrib.auth.views.password_reset_done',
+        {
+            'template_name': 'auth/password_reset_done.html'
+        }
+    ),
+    url(r'^password_reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', 
+        'django.contrib.auth.views.password_reset_confirm', 
+        {
+            'post_reset_redirect' : '/',
+            'template_name': 'auth/password_reset_confirm.html'
+        }),
 
     # Backup media fileserve view
     url(r'^media/(?P<file_base_name>.*)$', views.media),

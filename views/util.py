@@ -29,22 +29,28 @@ def media(request, file_base_name):
 
 
 def process_comments(request, noun):
+    """
+    Returns a tuple of (form, redirect_response) depending on whether a
+    new comment has been posted or not.
+    """
     if request.POST:
         form = CommentForm(request.POST)
         if form.is_valid():
-            form.email_comment(noun)
+            form.email_comment(request.user, noun)
             messages.success(
                 request,
                 'Your comment has ben sent.  Thank you!'
             )
         else:
+            # Shouldn't happen, since there's almost no server-side validation
             messages.error(
                 request,
                 "We're sorry, your comment was not sent."
             )
+        return None, redirect(request.path)
     else:
         form = CommentForm()
-    return form
+    return form, None
 
 
 def render(request, template, context):

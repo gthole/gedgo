@@ -80,7 +80,6 @@
         {% endfor %}
       </div>
     {% endif %}
-    <a href="/gedgo/{{ gedcom.id }}/{{ person.child_family.pointer }}">(more about the {{ person.child_family.family_name }} family)</a>
   {% endif %}
 </div>
 
@@ -125,8 +124,16 @@
     {% endfor %}
     </div>
   {% endif %}
-  <br />
-  <a href="/gedgo/{{ gedcom.id }}/{{ family.pointer }}">(more about the {{ family.family_name }} family)</a>
+
+  {% if family.photos.exists %}
+    <h4>Family Photos:</h4>
+    {% for photo in family.photos.iterator %}
+      <a href="{{ photo.docfile.url }}">
+        <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
+      </a>
+    {% endfor %}
+  {% endif %}
+
 </div>
 {% endfor %}
 

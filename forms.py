@@ -4,16 +4,15 @@ from django.core.mail import send_mail
 
 
 class CommentForm(forms.Form):
-    name = forms.CharField()
-    email = forms.EmailField(required=False)
     message = forms.CharField()
 
-    def email_comment(self, noun):
+    def email_comment(self, user, noun):
         cd = self.cleaned_data
         send_mail(
-            'Comment from %s about %s' % (cd['name'], noun),
+            'Comment from %s %s about %s' % (
+                user.first_name, user.last_name, noun),
             cd['message'],
-            cd.get('email', 'noreply@gedgo.com'),
+            user.email or 'noreply@gedgo.com',
             settings.SERVER_EMAIL
         )
 

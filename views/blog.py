@@ -49,9 +49,16 @@ def blog_list(request):
 @login_required
 def blogpost(request, post_id):
     "Single post."
+
+    noun = "blog post"
+    form, redirect = process_comments(request, noun)
+    if redirect is not None:
+        return redirect
+
     context = {
         'post': get_object_or_404(BlogPost, id=post_id),
-        'form': process_comments(request, "blog post")
+        'form': form,
+        'comment_noun': noun
     }
 
     return render(

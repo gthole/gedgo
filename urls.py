@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, url
 from django.conf.urls import include
 from django.shortcuts import redirect
-from django.contrib.auth.views import password_reset
 from tastypie.api import Api
 from gedgo.api import PersonResource, FamilyResource
 

@@ -9,7 +9,11 @@ from gedgo.views.util import render, process_comments
 def gedcom(request, gedcom_id):
     g = get_object_or_404(Gedcom, id=gedcom_id)
     post = BlogPost.objects.all().order_by("-created").first()
+
     noun = g.title or ("Gedcom #%d" % g.id)
+    form, redirect = process_comments(request, noun)
+    if redirect is not None:
+        return redirect
 
     return render(
         request,
@@ -17,7 +21,8 @@ def gedcom(request, gedcom_id):
         {
             'gedcom': g,
             'post': post,
-            'form': process_comments(request, noun)
+            'form': form,
+            'comment_noun': noun
         }
     )
 
@@ -26,13 +31,18 @@ def gedcom(request, gedcom_id):
 def person(request, gedcom_id, person_id):
     g = get_object_or_404(Gedcom, id=gedcom_id)
     p = get_object_or_404(Person, gedcom=g, pointer=person_id)
+
     noun = "%s (%s)" % (p.full_name, p.pointer)
+    form, redirect = process_comments(request, noun)
+    if redirect is not None:
+        return redirect
 
     context = {
         'person': p,
         'posts': BlogPost.objects.filter(tagged_people=p),
         'gedcom': g,
-        'form': process_comments(request, noun)
+        'form': form,
+        'comment_noun': noun
     }
 
     return render(request, 'person.html', context)

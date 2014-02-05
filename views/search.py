@@ -48,6 +48,6 @@ def search(request):
         context['query'] = q
     return render(
         request,
-        'gedgo/search_results.html',
+        'search_results.html',
         context
     )

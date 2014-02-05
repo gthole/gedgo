@@ -245,7 +245,7 @@ def __process_Document(entry, obj, g):
 
     if kind == 'PHOTO':
         try:
-            __make_thumbnail(path.join(settings.MEDIA_ROOT, file_name))
+            make_thumbnail(path.join(settings.MEDIA_ROOT, file_name))
             thumb = path.join('thumbs', file_name)
         except:
             print '  Warning: failed to make or find thumbnail: ' + file_name
@@ -366,7 +366,7 @@ def __strip_files_directories(e):
     return path.basename(file_name)
 
 
-def __make_thumbnail(file_name):
+def make_thumbnail(file_name):
     base_name = path.basename(file_name)
     dir_name = path.dirname(file_name)
 

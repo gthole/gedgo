@@ -1,0 +1,12 @@
+{% if form.errors %}
+    <p style="color: red;">
+        Please correct the error{{ form.errors|pluralize }} below.
+    </p>
+{% endif %}
+<p>Send us a comment about {% if person %}{{ person.full_name }}{% elif family %}the {{ family.family_name }} family{% elif post %}this blog post{% else %}this gedcom{% endif %}.</p>
+<form action="" method="post" class="form-horizontal" role="form">
+    {% csrf_token %}
+    <textarea name="message" class="comment-area form-control" rows="10">{{ message }}</textarea>
+    <br>
+    <input class="btn btn-primary" type="submit" value="Comment">
+</form>

@@ -36,7 +36,7 @@ def blog(request, year, month):
 
     return render(
         request,
-        "gedgo/blogpost_list.html",
+        "blogpost_list.html",
         {'posts': posts, 'months': months},
     )
 
@@ -51,11 +51,11 @@ def blogpost(request, post_id):
     "Single post."
     context = {
         'post': get_object_or_404(BlogPost, id=post_id),
-        'form': process_comments()
+        'form': process_comments(request, "blog post")
     }
 
     return render(
         request,
-        "gedgo/blogpost.html",
+        "blogpost.html",
         context
     )

@@ -12,7 +12,7 @@
             {% if forloop.last %}
             <b>{% if forloop.first %}Research Files{% else %}{{ l|truncatechars:20 }}{% endif %}</b>
             {% else %}
-            <a href="/gedgo/researchfiles{% for l in levels %}{% if forloop.counter <= i %}{{ l }}/{% endif %}{% endfor %}">
+            <a href="/gedgo/research{% for l in levels %}{% if forloop.counter <= i %}{{ l }}/{% endif %}{% endfor %}">
             {% if forloop.first %}Research Files{% else %}{{ l|truncatechars:20 }}{% endif %}</a></li>
             {% endif %}
         {% endwith %}
@@ -26,7 +26,7 @@
     <h3>{{ current_level }}</h3>
     <ul>
         {% for d in contents %}
-            <li><a href="/gedgo/researchfiles{{ path }}/{{ d.1 }}">
+            <li><a href="/gedgo/research{{ path }}/{{ d.1 }}">
                     <img src="{{ STATIC_URL }}img/{% if d.0 %}folder.png{% else %}file.png{% endif %}">
                     {{ d.1|truncatechars:45 }}
                 </a>

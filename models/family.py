@@ -52,3 +52,10 @@ class Family(models.Model):
     @property
     def documentaries(self):
         return Documentary.objects.filter(tagged_families=self)
+
+    @property
+    def spouses(self):
+        for husband in self.husbands.iterator():
+            yield husband
+        for wife in self.wives.iterator():
+            yield wife

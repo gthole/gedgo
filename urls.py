@@ -34,7 +34,7 @@ urlpatterns = patterns(
     url(r'^blog/(?P<year>\d+)/(?P<month>\d+)/$', views.blog),
     url(r'^blog/post/(?P<post_id>\d+)/$', views.blogpost),
     url(r'^documentaries/$', views.documentaries),
-    url(r'^researchfiles/(?P<pathname>.*)$', views.researchfiles),
+    url(r'^research/(?P<pathname>.*)$', views.research),
     url(r'^api/', include(v1_api.urls)),
     url(r'^search/$', views.search),
 

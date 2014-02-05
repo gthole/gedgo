@@ -44,6 +44,6 @@ def update_view(request, gedcom_id):
     # Render list page with the documents and the form
     return render(
         request,
-        'gedgo/update.html',
+        'update.html',
         {'form': form, 'message': message, 'gedcom': g},
     )

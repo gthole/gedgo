@@ -13,7 +13,7 @@ def gedcom(request, gedcom_id):
 
     return render(
         request,
-        'gedgo/gedcom.html',
+        'gedcom.html',
         {
             'gedcom': g,
             'post': post,
@@ -30,7 +30,7 @@ def family(request, family_id, gedcom_id):
 
     return render(
         request,
-        'gedgo/family.html',
+        'family.html',
         {
             'gedcom': g,
             'family': f,
@@ -52,7 +52,7 @@ def person(request, gedcom_id, person_id):
         'form': process_comments(request, noun)
     }
 
-    return render(request, 'gedgo/person.html', context)
+    return render(request, 'person.html', context)
 
 
 @login_required
@@ -61,6 +61,6 @@ def documentaries(request):
 
     return render(
         request,
-        "gedgo/documentaries.html",
+        "documentaries.html",
         {'documentaries': documentaries}
     )

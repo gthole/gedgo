@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+
+{% block leftsidebar %}
+<br />
+{% for photo in gedcom.photo_sample %}
+  <a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% elif photo.key_family_tag %}{{ photo.key_family_tag.pointer }}{% else %}{{ photo.docfile.url }}{% endif %}">
+    <img src="{{ MEDIA_URL }}{{ photo.thumb }}" class="sidebar-thumb img-rounded">
+  </a>
+{% endfor %}
+{% endblock %}
+
+
+{% block content %}
+<h2 class="welcome">Welcome!</h2>
+
+{% if gedcom.description %}
+  {{ gedcom.description|safe|linebreaks }}
+  <hr />
+{% endif %}
+
+{% if post %}
+  <h3>Latest Blog Post</h3>
+  <b><a href="../blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
+  {{ post.body|safe|linebreaks|truncatewords:50 }}
+  <p>
+    <a href="../blog/post/{{ post.id }}">Read more</a>, or see <a href="../blog/">all posts</a>.
+  </p>
+  <hr />
+{% endif %}
+
+{% for family in gedcom.key_families.all %}
+  <h3>The {{ family.family_name }} Family</h3>
+  <div class="row">
+  {% for somebody in family.spouses %}
+    <div class="col-sm-6">
+      {% include "person-card.html" %}
+    </div>
+  {% endfor %}
+  </div>
+  <a href="{{ family.pointer }}">Read more <span class="glyphicon glyphicon-chevron-right"></span></a>
+  <hr />
+{% endfor %}
+
+
+{% if gedcom.file_name or gedcom.last_update %}
+  {% if gedcom.last_updated %}
+    <div class="pod-title">Last Updated:</div>{{ gedcom.last_updated }}
+  {% endif %}
+  <br><br>
+  {% if user.is_staff %}
+    <a href="/admin/gedgo/gedcom/{{ gedcom.id }}/">Edit this page</a>
+  {% endif %}
+  <hr />
+{% endif %}
+
+{% include "comment_form.html" %}
+
+{% endblock %}
+

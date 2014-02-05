@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required
-def researchfiles(request, pathname):
+def research(request, pathname):
     try:
         root = settings.RESEARCH_FILES_ROOT
     except:
@@ -40,7 +40,7 @@ def researchfiles(request, pathname):
 
         return render(
             request,
-            'gedgo/researchfiles.html',
+            'research.html',
             {
                 'contents': dir_contents,
                 'levels': levels,

@@ -18,11 +18,6 @@ urlpatterns = patterns(
         views.person,
         name='person'
     ),
-    url(
-        r'^(?P<gedcom_id>\d+)/(?P<family_id>F\d+)/$',
-        views.family,
-        name='family'
-    ),
     url(r'^(?P<gedcom_id>\d+)/$', views.gedcom, name='gedcom'),
     url(r'^(?P<gedcom_id>\d+)/update/$', views.update_view),
 

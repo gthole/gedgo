@@ -21,10 +21,10 @@
 
 {% if post %}
   <h3>Latest Blog Post</h3>
-  <b><a href="../blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
+  <b><a href="/gedgo/blog/post/{{ post.id }}">{{ post.title }}</a></b><br>
   {{ post.body|safe|linebreaks|truncatewords:50 }}
   <p>
-    <a href="../blog/post/{{ post.id }}">Read more</a>, or see <a href="../blog/">all posts</a>.
+    <a href="/gedgo/blog/post/{{ post.id }}">Read more</a>, or see <a href="/gedgo/blog/">all posts</a>.
   </p>
   <hr />
 {% endif %}
@@ -38,7 +38,6 @@
     </div>
   {% endfor %}
   </div>
-  <a href="{{ family.pointer }}">Read more <span class="glyphicon glyphicon-chevron-right"></span></a>
   <hr />
 {% endfor %}
 

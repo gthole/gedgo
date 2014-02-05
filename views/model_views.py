@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
-from gedgo.models import Gedcom, Family, Person, BlogPost, Documentary
+from gedgo.models import Gedcom, Person, BlogPost, Documentary
 from gedgo.views.util import render, process_comments
 
 
@@ -17,23 +17,6 @@ def gedcom(request, gedcom_id):
         {
             'gedcom': g,
             'post': post,
-            'form': process_comments(request, noun)
-        }
-    )
-
-
-@login_required
-def family(request, family_id, gedcom_id):
-    g = get_object_or_404(Gedcom, id=gedcom_id)
-    f = get_object_or_404(Family, gedcom=g, pointer=family_id)
-    noun = "%s (%s)" % (f.family_name, f.pointer)
-
-    return render(
-        request,
-        'family.html',
-        {
-            'gedcom': g,
-            'family': f,
             'form': process_comments(request, noun)
         }
     )

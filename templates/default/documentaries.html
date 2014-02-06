@@ -5,26 +5,30 @@
 {% endblock %}
 
 {% block leftsidebar %}
-    {% if documentaries.all %}
-    <ul>
-    {% for documentary in documentaries %}
-        <li><a href="#{{ documentary.pk }}">{{ documentary.title }}</a></li>
-    {% endfor %}
-    </ul>
+    {% if documentaries.exists %}
+    <div class="bs-sidebar hidden-print" role="complementary">
+        <ul class="nav bs-sidenav">
+        {% for documentary in documentaries %}
+            <li><a href="#{{ documentary.pk }}">{{ documentary.title }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
     {% endif %}
 {% endblock %}
 
 
 {% block content %}
-{% if documentaries.all %}
-    {% for documentary in documentaries.all %}
-        <div class="pod" id="{{ documentary.pk }}">
-            <div class="pod-title">{{ documentary.title }}</div>
-            {% if documentary.tagline %}{{ documentary.tagline }}{% endif %}<br><br>
-            <a href="{{ documentary.location }}"><img src="{{ MEDIA_URL }}{{ documentary.thumb }}" width=460></a>
-            <hr>
+{% if documentaries.exists %}
+    {% for documentary in documentaries.iterator %}
+        <div class="media">
+          <a class="pull-left" href="{{ documentary.location }}">
+            <img class="documentary-thumb media-object" src="{{ MEDIA_URL }}{{ documentary.thumb }}">
+          </a>
+          <div class="media-body">
+            <h4 class="media-heading">{{ documentary.title }}</h4>
             {{ documentary.description|linebreaks }}
             Last updated: {{ documentary.last_updated }}
+          </div>
         </div>
     {% endfor %}
 {% else %}

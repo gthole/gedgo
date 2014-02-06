@@ -27,12 +27,12 @@ def search(request):
 
         for term in terms:
             people = Person.objects.filter(
-                Q(last_name__icontains=term) &
-                Q(first_name__icontains=term) &
+                Q(last_name__icontains=term) |
+                Q(first_name__icontains=term) |
                 Q(suffix__icontains=term)
             )
             posts = BlogPost.objects.filter(
-                Q(title__icontains=term) &
+                Q(title__icontains=term) |
                 Q(body__icontains=term)
             )
 

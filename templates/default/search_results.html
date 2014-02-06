@@ -7,17 +7,14 @@
 
 {% block content %}
 {% if people or posts %}
-    <div class="pod">
-    {% for person in people %}
-        <table><tr>
-        <td><a href="../{{ person.gedcom.id }}/{{ person.pointer }}"><img src="{{ MEDIA_URL }}thumbs/{% if person.key_photo %}{{ person.key_photo }}{% else %}generic_person.gif{% endif %}" height=75 width=75></a></td>
-        <td>
-        <a href="../{{ person.gedcom.id }}/{{ person.pointer }}/">{{ person.full_name }}</a><br>
-        ({{ person.year_range }})</td></tr></table>
-        {% if not forloop.last %} <hr> {% endif %}
-    {% endfor %}
+  {% for somebody in people %}
+  <div class="row">
+    <div class="col-sm-6">
+      {% include "person-card.html" %}
     </div>
+  </div>
+  {% endfor %}
 {% else %}
-    <div class="pod">No people matched your search criteria.<br><i>{{ query }}</i></div><br>
+    <p>No people matched your search criteria.<br><i>{{ query }}</i></p>
 {% endif %}
 {% endblock %}

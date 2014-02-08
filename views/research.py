@@ -15,6 +15,7 @@ MIMETYPE_MAPPING = {
     'image': 'picture'
 }
 
+
 @login_required
 def research(request, pathname):
     try:
@@ -61,11 +62,13 @@ def research(request, pathname):
     else:
         raise Http404
 
+
 def _normalize(p):
     p = path.normpath(p)
     if not p.startswith('/'):
         p = '/' + p
     return p
+
 
 def _get_type(r, c):
     if path.isdir(path.join(r, c)):

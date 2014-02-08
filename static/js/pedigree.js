@@ -11,6 +11,7 @@ d3.json("/gedgo/" + gid + "/pedigree/" + pid + "/", function(treeData) {
     .attr("transform", "translate(40, -100)");
 
   // Create a tree "canvas"
+  var gid = treeData.gid;
   var tree = d3.layout.tree()
     .size([800,230]);
 
@@ -45,7 +46,7 @@ d3.json("/gedgo/" + gid + "/pedigree/" + pid + "/", function(treeData) {
 
   // place the name atribute left or right depending if children
   node.append("svg:a")
-    .attr("xlink:href", function(d) { return "/gedgo/{{ gedcom.id }}/" + d.id; })
+    .attr("xlink:href", function(d) { return "/gedgo/" + gid + "/" + d.id; })
     .append("text")
     .attr("dx", -10)
     .attr("dy", -10)

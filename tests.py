@@ -48,9 +48,7 @@ class TestViews(TestCase):
         pages = [
             '/gedgo/1/',
             '/gedgo/1/I1/'
-            '/gedgo/1/F1/'
         ]
         for page in pages:
-            print page
-            resp = self.client.get(page)
+            resp = self.client.get(page, follow=True)
             self.assertEqual(resp.status_code, 200, resp.content)

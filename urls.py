@@ -40,18 +40,16 @@ urlpatterns = patterns(
             'template_name': 'auth/login.html',
             'email_template_name': 'auth/password_reset_email.html',
             'post_reset_redirect': '/gedgo/password_reset/done/'
-        }
-    ),
+        }),
     url(r'^password_reset/done/$',
         'django.contrib.auth.views.password_reset_done',
         {
             'template_name': 'auth/password_reset_done.html'
-        }
-    ),
-    url(r'^password_reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', 
-        'django.contrib.auth.views.password_reset_confirm', 
+        }),
+    url(r'^password_reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        'django.contrib.auth.views.password_reset_confirm',
         {
-            'post_reset_redirect' : '/',
+            'post_reset_redirect': '/',
             'template_name': 'auth/password_reset_confirm.html'
         }),
 

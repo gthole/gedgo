@@ -47,3 +47,14 @@ class Document(models.Model):
     @property
     def file_base_name(self):
         return self.docfile.path.basename()
+
+    @property
+    def glyph(self):
+        return GLYPH_MAP[self.kind]
+
+
+GLYPH_MAP = {
+    'DOCUM': 'file',
+    'VIDEO': 'facetime-video',
+    'PHOTO': 'picture'
+}

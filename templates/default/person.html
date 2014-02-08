@@ -32,25 +32,31 @@
   <div class="row">
     <div class="col-sm-6">
       {% if person.birth.date %}
-        <strong>Born: </strong> {{ person.birth.date_string }} {% if person.birth.date_approxQ %}(approximate){% endif %}
+        <strong>Born:</strong> {{ person.birth.date_string }} {% if person.birth.date_approxQ %}(approximate){% endif %}
         <br />
       {% endif %}
       {% if person.birth.place %}
-        <strong>Birthplace: </strong> {{ person.birth.place }}
+        <strong>Birthplace:</strong> {{ person.birth.place }}
         <br />
       {% endif %}
       {% if person.death.date %}
-        <strong>Died: </strong> {{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}
+        <strong>Died:</strong> {{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}
         <br />
       {% endif %}
       {% if person.death.place %}
-        <strong>Deathplace: </strong> {{ person.death.place }}
+        <strong>Deathplace:</strong> {{ person.death.place }}
         <br />
       {% endif %}
     </div>
     <div class="col-sm-6">
-      {% if person.education %}<div class="subpod-title">Education: </div> {{ person.education_delimited|linebreaksbr }}{% endif %}
-      {% if person.religion %}<div class="subpod-title">Religion: </div> {{ person.religion }}{% endif %}
+      {% if person.education %}
+        <strong>Education:</strong> {{ person.education_delimited|linebreaksbr }}
+        <br />
+      {% endif %}
+      {% if person.religion %}
+        <strong>Religion:</strong> {{ person.religion }}
+        <br />
+      {% endif %}
     </div>
   </div>
   <hr />
@@ -101,7 +107,7 @@
   {% if family.joined.date or family.joined.place or family.separated.date %}
   <hr />
     {% if family.joined.date %}
-      <strong>{% if family.kind = "MARR" %}Married{% else %}Domestic Partners{% endif %}:</strong> {{ family.joined.date_string }}{% if family.joined.date_approxQ %} (approximate){% endif %}{% endif %}{% if family.joined.place %}, {{ family.joined.place }}{% endif %}
+      <strong>{% if family.kind = "MARR" %}Married{% else %}Domestic Partners{% endif %}:</strong> {{ family.joined.date_string }}{% if family.joined.date_approxQ %} (approximate){% endif %}{% endif %}{% if family.joined.place %}<br />{{ family.joined.place }}{% endif %}
     {% if family.separated.date %}
       <strong>{% if family.kind = "MARR" %}Divorced{% else %}Separated{% endif %}:</strong> {{ family.separated.date_string }} {% if family.separated.date_approxQ %}(approximate){% endif %}
       <br />
@@ -111,6 +117,19 @@
       <br /><br />
     {% endif %}
   <hr />
+  {% endif %}
+
+  {% if family.photos.exists %}
+    <h4>Family Photos:</h4>
+    <div class="row">
+    {% for photo in family.photos.iterator %}
+      <div class="col-xs-6 col-sm-4">
+        <a href="{{ photo.docfile.url }}">
+          <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
+        </a>
+      </div>
+    {% endfor %}
+    </div>
   {% endif %}
     
   <!-- Children -->
@@ -125,20 +144,9 @@
     </div>
   {% endif %}
 
-  {% if family.photos.exists %}
-    <h4>Family Photos:</h4>
-    {% for photo in family.photos.iterator %}
-      <a href="{{ photo.docfile.url }}">
-        <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
-      </a>
-    {% endfor %}
-  {% endif %}
-
 </div>
 {% endfor %}
 
-
-<!-- TODO: FIX -->
 {% if posts.exists %}
 <div class="section">
   <h3>Related blog posts:</h3>
@@ -148,7 +156,23 @@
 </div>
 {% endif %}
 
-<!-- TODO: FIX -->
+{% if person.photos.exists %}
+<div class="section visible-xs">
+  <h3>Photos:</h3>
+  <div class="row">
+  {% for photo in person.photos %}
+      {% if not photo == person.key_photo %}
+        <div class="col-xs-6">
+          <a href="{{ photo.docfile.url }}">
+            <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
+          </a>
+        </div>
+      {% endif %}
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+
 {% if person.documentaries %}
 <div class="section">
   <h3>Documentaries:</h3>
@@ -171,7 +195,9 @@
 <div class="section">
   <h3>Documents:</h3>
   {% for doc in person.documents %}
-      <a href="{{ doc.docfile.url }}">{{ doc.docfile.name }}</a><br>
+      <a href="{{ doc.docfile.url }}">
+        <span class="glyphicon glyphicon-{{ doc.glyph }}"></span> &nbsp; {{ doc.docfile.name }}
+      </a><br>
   {% endfor %}
 {% endif %}
 

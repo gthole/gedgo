@@ -25,16 +25,19 @@ def search(request):
         # Throw away non-word characters.
         terms = TERMS_RE.findall(q)
 
+        people = Person.objects.all()
+        posts = BlogPost.objects.all()
         for term in terms:
-            people = Person.objects.filter(
+            people &= Person.objects.filter(
                 Q(last_name__icontains=term) |
                 Q(first_name__icontains=term) |
                 Q(suffix__icontains=term)
             )
-            posts = BlogPost.objects.filter(
+            posts &= BlogPost.objects.filter(
                 Q(title__icontains=term) |
                 Q(body__icontains=term)
             )
+        people = people.order_by('-pointer')
 
         # If there's only a single person, just go directly to the details view
         if people.count() == 1 and not posts.exists():

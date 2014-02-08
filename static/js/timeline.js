@@ -13,8 +13,6 @@ d3.json("/gedgo/" + gid + "/timeline/" + pid + "/", function(data) {
                     .domain([0, 35])
                     .range([20, 400]);
 
-    console.log(events);
-
     //Width and height
     var w = 480,
         h = hscale(deathyear - birthyear);
@@ -46,7 +44,7 @@ d3.json("/gedgo/" + gid + "/timeline/" + pid + "/", function(data) {
         })
         .attr("r", 5)
         .attr("fill", function(d, i) {
-          return (d.type == 'personal') ? "teal" : "white";
+          return (d.year == birthyear || d.year == deathyear) ? "teal" : "white";
         })
         .attr("stroke-width", 3)
         .attr("stroke", function(d, i) {

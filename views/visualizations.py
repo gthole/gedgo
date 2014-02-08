@@ -7,13 +7,13 @@ from datetime import datetime
 from collections import defaultdict
 import random
 import json
-import logging
 
 
 @login_required
 def pedigree(request, gid, pid):
     person = get_object_or_404(Person, gedcom_id=gid, pointer=pid)
     n = _node(person, 0)
+    n['gid'] = gid
     return HttpResponse(
         json.dumps(n),
         content_type="application/json"
@@ -61,8 +61,8 @@ def timeline(request, gid, pid):
 
     # Don't show timelines for people without valid birth dates.
     if not valid_event_date(person.birth) or \
-            ((not valid_event_date(person.death)) and \
-                    (now - person.birth.date.year > 100)):
+            (not valid_event_date(person.death) and
+             (now - person.birth.date.year > 100)):
         return HttpResponse('{"events": []}', content_type="application/json")
 
     start_date = person.birth.date.year
@@ -134,7 +134,7 @@ def timeline(request, gid, pid):
         open_years -= set([year - 2, year - 1, year, year + 1, year + 2])
         historical_count += 1
 
-    response = {'start':start_date, 'end': end_date, 'events': events}
+    response = {'start': start_date, 'end': end_date, 'events': events}
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 

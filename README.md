@@ -5,7 +5,7 @@ A Gedcom viewer web app.
 
 About
 ---------------
-Ged-go is written in Django with d3.js visualizations, based on the idea that a genealogy website and gedcom viewer can be beautiful and intuitive.
+Ged-go is written in Django with d3.js visualizations and Bootstrap for mobile scaffolding, based on the idea that a genealogy website and gedcom viewer can be beautiful and intuitive.
 
 Most of the web-based genealogy software out there is pretty ugly and difficult to navigate in.  There are often silly little icons and information is presented in hard to read tables.  Instead, the philosophy of Ged-go is to have fewer features, but to present a gedcom in a clear and well designed way.
 
@@ -39,7 +39,8 @@ Features
 - Gedcom parser and update mechanism
 - Family view
 - Automatic thumbnail creation
- 
+- Responsive design for all levels of mobile browsing
+
  
 Installation
 ---------------

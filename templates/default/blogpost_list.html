@@ -37,15 +37,15 @@
     <div class="section">
       <div style="text-align: center;">
         {% if posts.has_previous %}
-            <a href= "?page={{ posts.previous_page_number }}">newer entries &lt;&lt; </a>
+            <a class="btn btn-default" href="?page={{ posts.previous_page_number }}"> &lt;&lt; newer entries </a>
         {% endif %}
 
         <span class="current">
-            &nbsp;Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+            &nbsp;Page {{ posts.number }} of {{ posts.paginator.num_pages }}&nbsp;
         </span> {# post list #}
 
         {% if posts.has_next %}
-            <a href="?page={{ posts.next_page_number }}"> &gt;&gt; older entries</a>
+            <a class="btn btn-default" href="?page={{ posts.next_page_number }}">older entries &gt;&gt; </a>
         {% endif %} 
       </div>
     </div>

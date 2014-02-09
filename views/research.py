@@ -32,7 +32,7 @@ def research(request, pathname):
     if '..' in pathname:
         raise Http404
 
-    # Serve the content directly.  TODO: Have a webserver do this.
+    # Serve the content through xsendfile or directly.
     if path.isfile(r):
         return serve_content(r)
 

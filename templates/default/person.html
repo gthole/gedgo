@@ -103,7 +103,6 @@
   </div>
 
   <!-- Marital Facts -->
-  <!-- TODO: FIX -->
   {% if family.joined.date or family.joined.place or family.separated.date %}
   <hr />
     {% if family.joined.date %}
@@ -130,8 +129,9 @@
       </div>
     {% endfor %}
     </div>
+    <hr />
   {% endif %}
-    
+
   <!-- Children -->
   {% if family.children.exists %}
     <h4>Children:</h4>

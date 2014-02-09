@@ -43,6 +43,10 @@ body {
 .card {
   margin-bottom: 5px;
 }
+.card-title {
+  margin-top: 5px;
+  margin-bottom: 2px;
+}
 .welcome {
   text-align: center;
 }

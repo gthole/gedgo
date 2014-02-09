@@ -87,7 +87,7 @@ def serve_content(filename):
     """
     if not path.exists(filename):
         raise Http404
-    if getattr(settings, 'GEDGO_MEDIA_SERVER') == 'Apache':
+    if getattr(settings, 'GEDGO_MEDIA_SERVER', None) == 'Apache':
         response = HttpResponse()
         response['X-Sendfile'] = filename
     else:

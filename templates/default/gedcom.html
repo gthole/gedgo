@@ -29,6 +29,7 @@
 {% endif %}
 
 {% for family in gedcom.key_families.all %}
+  <br />
   <h3>The {{ family.family_name }} Family</h3>
   <div class="row">
   {% for somebody in family.spouses %}

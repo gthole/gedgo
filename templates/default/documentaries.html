@@ -9,7 +9,7 @@
     <div class="bs-sidebar hidden-print" role="complementary">
         <ul class="nav bs-sidenav">
         {% for documentary in documentaries %}
-            <li><a href="#{{ documentary.pk }}">{{ documentary.title }}</a></li>
+            <li><a href="#{{ documentary.title|urlencode }}">{{ documentary.title }}</a></li>
         {% endfor %}
         </ul>
     </div>
@@ -25,7 +25,7 @@
             <img class="documentary-thumb media-object" src="{{ MEDIA_URL }}{{ documentary.thumb }}">
           </a>
           <div class="media-body">
-            <h4 class="media-heading">{{ documentary.title }}</h4>
+            <h4 class="media-heading" id="{{ documentary.title|urlencode }}">{{ documentary.title }}</h4>
             {{ documentary.description|linebreaks }}
             Last updated: {{ documentary.last_updated }}
           </div>

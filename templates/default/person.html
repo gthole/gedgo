@@ -124,7 +124,7 @@
     {% for photo in family.photos.iterator %}
       <div class="col-xs-6 col-sm-4">
         <a href="{{ photo.docfile.url }}">
-          <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
+          <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded center-block clearfix">
         </a>
       </div>
     {% endfor %}
@@ -164,7 +164,7 @@
       {% if not photo == person.key_photo %}
         <div class="col-xs-6">
           <a href="{{ photo.docfile.url }}">
-            <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
+            <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded center-block clearfix">
           </a>
         </div>
       {% endif %}

@@ -24,7 +24,7 @@ def media(request, file_base_name):
     it's much better to have a webserver handle this through
     an authenticated proxy
     """
-    filename = path.join(settings.MEDIA_ROOT, file_base_name)
+    filename = path.join(settings.MEDIA_ROOT, file_base_name.strip('/'))
     return serve_content(filename)
 
 
@@ -83,14 +83,20 @@ def site_context(request):
 def serve_content(filename):
     """
     http://djangosnippets.org/snippets/365/
+    http://www.chicagodjango.com/blog/permission-based-file-serving/
     """
     if not path.exists(filename):
         raise Http404
-    wrapper = FileWrapper(file(filename))
-    c_type = mimetypes.guess_type(filename)[0]
-    response = HttpResponse(wrapper, content_type=c_type)
+    if getattr(settings, 'GEDGO_MEDIA_SERVER') == 'Apache':
+        response = HttpResponse()
+        response['X-Sendfile'] = filename
+    else:
+        wrapper = FileWrapper(file(filename))
+        response = HttpResponse(wrapper)
+    file_type = mimetypes.guess_type(filename)[0]
+    response['Content-Type'] = file_type
     response['Content-Length'] = path.getsize(filename)
-    if c_type is None:
+    if file_type is None:
         response['Content-Disposition'] = "attachment; filename=%s;" % (
             path.basename(filename))
     return response

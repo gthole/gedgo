@@ -29,7 +29,7 @@ class Gedcom(models.Model):
     def __unicode__(self):
         if not self.title:
             return 'Gedcom #%d' % self.id
-        return '%s (%d)' % (self.title. self.id)
+        return '%s (%d)' % (self.title, self.id)
 
     @property
     def photo_sample(self):

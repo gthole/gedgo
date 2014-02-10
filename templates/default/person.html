@@ -220,6 +220,7 @@
 {%endblock %}
 
 {% block javascript %}
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.0/d3.min.js"></script>
   {% if person.child_family %}
     <script src="{{ STATIC_URL }}js/pedigree.js"></script>
   {% endif %}

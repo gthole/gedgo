@@ -120,11 +120,13 @@
 
   {% if family.photos.exists %}
     <h4>Family Photos:</h4>
-    <div class="row">
+    <div class="photo-subsection row">
     {% for photo in family.photos.iterator %}
-      <div class="col-xs-6 col-sm-4">
+      <div class="col-xs-4 col-sm-3">
         <a href="{{ photo.docfile.url }}">
-          <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded center-block clearfix">
+          <!-- TODO: Fix hacks -->
+          <img src="{{ photo.thumb.url }}" class="subsection-thumb img-rounded center-block clearfix visible-xs">
+          <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded center-block clearfix hidden-xs">
         </a>
       </div>
     {% endfor %}
@@ -162,9 +164,9 @@
   <div class="row">
   {% for photo in person.photos %}
       {% if not photo == person.key_photo %}
-        <div class="col-xs-6">
+        <div class="col-xs-4">
           <a href="{{ photo.docfile.url }}">
-            <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded center-block clearfix">
+            <img src="{{ photo.thumb.url }}" class="subsection-thumb img-rounded center-block clearfix">
           </a>
         </div>
       {% endif %}

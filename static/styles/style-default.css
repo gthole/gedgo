@@ -25,6 +25,13 @@ body {
   width: 105px;
   margin-bottom: 10px;
 }
+.subsection-thumb {
+  width: 90px;
+  margin-bottom: 10px;
+}
+.photo-subsection {
+  margin-right: 20px;
+}
 .sidebar-lead {
   width: 210px;
   margin-bottom: 10px;

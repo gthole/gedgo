@@ -1,14 +1,21 @@
+
+from __future__ import absolute_import
+
 from gedgo.gedcom_update import update
-
-from celery import task
-from datetime import datetime
-
+import os
+from celery import Celery
 from django.conf import settings
+from datetime import datetime
 from django.core.mail import send_mail
 import traceback
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
-@task(name='gedgo.tasks.async_update')
+app = Celery()
+app.config_from_object(settings)
+
+
+@app.task
 def async_update(gedcom, file_):
     start = datetime.now()
 

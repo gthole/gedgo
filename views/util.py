@@ -41,7 +41,7 @@ def process_comments(request, noun):
             file_names = []
             if getattr(settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True:
                 for file_ in request.FILES.getlist('uploads'):
-                    upload_path = 'uploads/%s/%s/%s' % (
+                    upload_path = 'uploaded/%s/%s/%s' % (
                         request.user.username,
                         request.path.strip('/').replace('gedgo/', ''),
                         file_.name

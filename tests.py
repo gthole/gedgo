@@ -118,9 +118,9 @@ class TestViews(TestCase):
             'Comment from Test User about John Doe (I1)'
         )
         self.assertTrue(
-            message.body.endswith('uploads/test/1/I1/generic_person.gif')
+            message.body.endswith('uploaded/test/1/I1/generic_person.gif')
         )
 
         self.assertTrue(FileStorageMock.called)
-        self.assertTrue('uploads/test/1/I1/generic_person.gif' in
+        self.assertTrue('uploaded/test/1/I1/generic_person.gif' in
                         str(FileStorageMock.call_args))

@@ -3,10 +3,18 @@
         Please correct the error{{ form.errors|pluralize }} below.
     </p>
 {% endif %}
-<p>Send us a comment about {{ comment_noun }}.</p>
-<form action="" method="post" class="form-horizontal" role="form">
+<form action="" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+  <p class="help-block">Send us a comment about {{ comment_noun }}.</p>
     {% csrf_token %}
     <textarea name="message" class="comment-area form-control" rows="10" required>{{ message }}</textarea>
+    <br />
+    {% if show_file_uploads %}
+      <input type="file" name="uploads" multiple>
+      <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+      <p class="help-block">Send us photos or files too if you have any to share.
+      <span class="help glyphicon glyphicon-question-sign" id="help-popover" data-container="body" data-toggle="popover" data-placement="right" data-content="Select multiple files at once (with the shift button).<br />Upload max size is 10 megabytes."><span>
+      </p>
+    {% endif %}
     <br>
     <input class="btn btn-primary" type="submit" value="Comment">
 </form>

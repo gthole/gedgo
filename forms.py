@@ -6,12 +6,13 @@ from django.core.mail import send_mail
 class CommentForm(forms.Form):
     message = forms.CharField()
 
-    def email_comment(self, user, noun):
+    def email_comment(self, user, noun, file_names):
         cd = self.cleaned_data
+        message_body = '%s\n\n%s' % (cd['message'], '\n'.join(file_names))
         send_mail(
             'Comment from %s %s about %s' % (
                 user.first_name, user.last_name, noun),
-            cd['message'],
+            message_body,
             user.email or 'noreply@gedgo.com',
             settings.SERVER_EMAIL
         )

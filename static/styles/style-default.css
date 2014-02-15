@@ -57,6 +57,9 @@ body {
 .welcome {
   text-align: center;
 }
+.help {
+  font-size: 18px;
+}
 
 rect {
   fill: white;

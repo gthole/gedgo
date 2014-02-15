@@ -6,3 +6,4 @@ PIL
 mysql-python
 redis
 flake8
+mock

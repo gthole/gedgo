@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.core.servers.basehttp import FileWrapper
+from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.conf import settings
@@ -36,7 +37,19 @@ def process_comments(request, noun):
     if request.POST:
         form = CommentForm(request.POST)
         if form.is_valid():
-            form.email_comment(request.user, noun)
+            # Store file uploads
+            file_names = []
+            if getattr(settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True:
+                for file_ in request.FILES.getlist('uploads'):
+                    upload_path = 'uploads/%s/%s/%s' % (
+                        request.user.username,
+                        request.path.strip('/').replace('gedgo/', ''),
+                        file_.name
+                    )
+                    default_storage.save(upload_path, file_)
+                    file_names.append(upload_path)
+            # Email the comment to the site owners.
+            form.email_comment(request.user, noun, file_names)
             messages.success(
                 request,
                 'Your comment has ben sent.  Thank you!'
@@ -62,12 +75,19 @@ def render(request, template, context):
 
 
 def site_context(request):
+    """
+    Update context with constants and settings applicable across multiple
+    templates without allowing `settings` directly in the template rendering.
+    This should probably live as a middleware layer instead.
+    """
     show_blog = BlogPost.objects.exists()
     show_documentaries = Documentary.objects.exists()
     show_researchfiles = isinstance(
         getattr(settings, 'RESEARCH_FILES_ROOT'),
         basestring
     )
+    show_file_uploads = getattr(
+        settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True
     site_title = get_current_site(request).name
     user = request.user
 
@@ -75,6 +95,7 @@ def site_context(request):
         'show_blog': show_blog,
         'show_documentaries': show_documentaries,
         'show_researchfiles': show_researchfiles,
+        'show_file_uploads': show_file_uploads,
         'site_title': site_title,
         'user': user
     }

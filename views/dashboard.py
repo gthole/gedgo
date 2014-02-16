@@ -44,7 +44,7 @@ def dashboard(request):
         {
             'form': form,
             'views': views,
-            'users': User.objects.exclude(email__isnull=True).iterator(),
+            'users': User.objects.filter(email__contains='@').iterator(),
             'user_views': user_views,
             'total': total,
             'gedcoms': Gedcom.objects.iterator()

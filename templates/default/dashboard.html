@@ -11,7 +11,20 @@
         {% endfor %}
       </select><br />
       <input type="file" name="gedcom_file">
-      <p class="help-block">Select a Gedcom file to update from.</p>
+      <p class="help-block">Select a Gedcom file to update from.</p><br />
+      <div class="email_users well">
+        <h5>Message to send to users:</h5>
+        <textarea name="message" class="comment-area form-control" rows="10"></textarea><br />
+        <h5>Users to notify:</h5>
+        <div class="row">
+          <div class="col-xs-6"><input type="checkbox" id="select-all"> Select All</div>
+        </div><br />
+        <div class="row">
+          {% for user in users %}
+            <div class="col-xs-6"><input type="checkbox" value="{{ user.id }}" name="email_users" class="email_users_checkbox"> {% if user.first_name and user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</div>
+          {% endfor %}
+        </div><br />
+      </div>
       <input class="btn btn-danger" type="submit" value="Upload" />
   </form>
   <p>
@@ -49,4 +62,12 @@
     </table>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  $('#select-all').on('click', function () {
+    $('.email_users_checkbox').prop('checked', this.checked);
+  });
+</script>
 {% endblock %}

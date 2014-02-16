@@ -50,10 +50,14 @@ class TestViews(TestCase):
         update(None, self.file_, verbose=False)
 
     def login_user(self, set_super=False):
-        u = User.objects.create_user('test', password='foobarbaz')
+        u = User.objects.create_user(
+            'test',
+            first_name='Test',
+            last_name='User',
+            email='test@example.com',
+            password='foobarbaz'
+        )
         self.client.login(username='test', password='foobarbaz')
-        u.first_name = 'Test'
-        u.last_name = 'User'
         u.is_superuser = set_super
         u.save()
 
@@ -140,4 +144,36 @@ class TestViews(TestCase):
             }
             with patch('settings.CELERY_ALWAYS_EAGER', True, create=True):
                 resp = self.client.post('/gedgo/dashboard/', data)
-            self.assertEqual(resp.status_code, 302, resp.content)
+        self.assertEqual(resp.status_code, 302, resp.content)
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(
+            message.subject,
+            'Update finished!'
+        )
+
+        mail.outbox = []
+
+        with open('gedgo/static/test/test.ged') as fp:
+            data = {
+                'gedcom_id': 1,
+                'gedcom_file': fp,
+                'email_users': '1',
+                'message': 'Hi Mom!'
+            }
+            with patch('settings.CELERY_ALWAYS_EAGER', True, create=True):
+                resp = self.client.post('/gedgo/dashboard/', data)
+        self.assertEqual(resp.status_code, 302, resp.content)
+
+        self.assertEqual(len(mail.outbox), 2)
+        message = mail.outbox[0]
+        self.assertEqual(
+            message.subject,
+            'Update finished!'
+        )
+        message = mail.outbox[1]
+        self.assertEqual(
+            [message.subject, message.body],
+            ['Update to Test Gedcom',
+             'Hi Mom!\n\nhttp://example.com/gedgo/1/']
+        )

@@ -2,6 +2,7 @@ from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 from gedgo.models import Gedcom
 
@@ -27,12 +28,21 @@ class UpdateForm(forms.Form):
         label='Select a file',
         help_text='Max file size: 42M.'
     )
+    email_users = forms.TypedMultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=[(a, str(a)) for a in range(100)]  # TODO: Unhack
+    )
+    message = forms.CharField(required=False)
 
     def is_valid(self):
         if not super(UpdateForm, self).is_valid():
             return False
-        self.gedcom = get_object_or_404(
-            Gedcom,
-            id=self.cleaned_data['gedcom_id']
-        )
+        data = self.cleaned_data
+        self.gedcom = get_object_or_404(Gedcom, id=data['gedcom_id'])
+        for id_ in data['email_users']:
+            get_object_or_404(User, pk=id_)
+        if data['email_users'] and not data['message']:
+            return False
+
         return True

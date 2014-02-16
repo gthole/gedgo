@@ -6,13 +6,17 @@ from gedgo import REDIS
 
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.contrib.sites.models import get_current_site
+from django.conf import settings
 
 import datetime
 import time
 import json
+import os
 from collections import defaultdict
 
 
@@ -40,6 +44,7 @@ def dashboard(request):
         {
             'form': form,
             'views': views,
+            'users': User.objects.iterator(),
             'user_views': user_views,
             'total': total,
             'gedcoms': Gedcom.objects.iterator()
@@ -73,7 +78,14 @@ def _handle_upload(request, form):
         file_name = 'uploaded/gedcoms/%d_%s' % (
             time.time(), form.cleaned_data['gedcom_file'].name)
         default_storage.save(file_name, form.cleaned_data['gedcom_file'])
-        async_update.delay(form.cleaned_data['gedcom_id'], file_name)
+        async_update.delay(
+            form.cleaned_data['gedcom_id'],
+            os.path.join(settings.MEDIA_ROOT, file_name),
+            form.cleaned_data['email_users'],
+            form.cleaned_data['message'],
+            get_current_site(request).domain,
+            request.user.id
+        )
         messages.success(
             request,
             'Your gedcom file has been uploaded and the database will '

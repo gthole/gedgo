@@ -46,8 +46,8 @@ class SimpleTrackerMiddleware(object):
         REDIS.lpush('gedgo_page_views', json.dumps(page_view))
         REDIS.ltrim('gedgo_page_views', 0, 100)
 
-        stored = REDIS.keys('gedgo_ip_%s' % page_view['ip'])
-        if stored is None:
-            geo_resolve_ip.delay(page_view['ip'])
+        #stored = REDIS.keys('gedgo_ip_%s' % page_view['ip'])
+        #if stored is None:
+        #    geo_resolve_ip.delay(page_view['ip'])
 
         return response

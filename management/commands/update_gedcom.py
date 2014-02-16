@@ -67,5 +67,5 @@ class Command(BaseCommand):
                     errstr
                 ),
                 'noreply@gedgo.com',
-                settings.SERVER_EMAIL,
+                [email for _, email in settings.ADMINS]
             )

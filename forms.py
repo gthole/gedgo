@@ -1,6 +1,9 @@
 from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+
+from gedgo.models import Gedcom
 
 
 class CommentForm(forms.Form):
@@ -14,12 +17,22 @@ class CommentForm(forms.Form):
                 user.first_name, user.last_name, noun),
             message_body,
             user.email or 'noreply@gedgo.com',
-            settings.SERVER_EMAIL
+            [email for _, email in settings.ADMINS]
         )
 
 
 class UpdateForm(forms.Form):
+    gedcom_id = forms.IntegerField()
     gedcom_file = forms.FileField(
         label='Select a file',
         help_text='Max file size: 42M.'
     )
+
+    def is_valid(self):
+        if not super(UpdateForm, self).is_valid():
+            return False
+        self.gedcom = get_object_or_404(
+            Gedcom,
+            id=self.cleaned_data['gedcom_id']
+        )
+        return True

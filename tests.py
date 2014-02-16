@@ -1,7 +1,9 @@
 from django.test import TestCase
-from gedgo.gedcom_update import update
 from django.core import mail
 from django.contrib.auth.models import User
+from django.test.utils import override_settings
+
+from gedgo.gedcom_update import update
 from gedgo.models import Person, Family, Gedcom
 from datetime import date
 from mock import patch
@@ -47,11 +49,12 @@ class TestViews(TestCase):
         self.file_ = 'gedgo/static/test/test.ged'
         update(None, self.file_, verbose=False)
 
-    def login_user(self):
+    def login_user(self, set_super=False):
         u = User.objects.create_user('test', password='foobarbaz')
         self.client.login(username='test', password='foobarbaz')
         u.first_name = 'Test'
         u.last_name = 'User'
+        u.is_superuser = set_super
         u.save()
 
     def test_requires_login(self):
@@ -70,9 +73,10 @@ class TestViews(TestCase):
     def test_pages_load(self):
         pages = [
             '/gedgo/1/',
-            '/gedgo/1/I1/'
+            '/gedgo/1/I1/',
+            '/gedgo/dashboard/'
         ]
-        self.login_user()
+        self.login_user(set_super=True)
         for page in pages:
             resp = self.client.get(page)
             self.assertEqual(resp.status_code, 200, resp.content)
@@ -124,3 +128,16 @@ class TestViews(TestCase):
         self.assertTrue(FileStorageMock.called)
         self.assertTrue('uploaded/test/1/I1/generic_person.gif' in
                         str(FileStorageMock.call_args))
+
+    @override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
+                       CELERY_ALWAYS_EAGER=True, BROKER_BACKEND='memory')
+    def test_dashboard_upload(self):
+        self.login_user(set_super=True)
+        with open('gedgo/static/test/test.ged') as fp:
+            data = {
+                'gedcom_id': 1,
+                'gedcom_file': fp
+            }
+            with patch('settings.CELERY_ALWAYS_EAGER', True, create=True):
+                resp = self.client.post('/gedgo/dashboard/', data)
+            self.assertEqual(resp.status_code, 302, resp.content)

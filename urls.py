@@ -18,7 +18,6 @@ urlpatterns = patterns(
         name='person'
     ),
     url(r'^(?P<gedcom_id>\d+)/$', views.gedcom, name='gedcom'),
-    url(r'^(?P<gedcom_id>\d+)/update/$', views.update_view),
 
     # XHR Data views
     url(r'^(?P<gid>\d+)/pedigree/(?P<pid>I\d+)/$', views.pedigree),
@@ -31,6 +30,7 @@ urlpatterns = patterns(
     url(r'^research/(?P<pathname>.*)$', views.research),
     url(r'^api/', include(v1_api.urls)),
     url(r'^search/$', views.search),
+    url(r'^dashboard/$', views.dashboard),
 
     # Auth
     url(r'^logout/$', views.logout_view),

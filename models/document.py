@@ -50,11 +50,12 @@ class Document(models.Model):
 
     @property
     def glyph(self):
-        return GLYPH_MAP[self.kind]
+        return GLYPH_MAP.get(self.kind) or 'file'
 
 
 GLYPH_MAP = {
     'DOCUM': 'file',
     'VIDEO': 'facetime-video',
-    'PHOTO': 'picture'
+    'PHOTO': 'picture',
+    'SOUND': 'volume-up'
 }

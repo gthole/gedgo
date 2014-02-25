@@ -1,5 +1,5 @@
 from gedgo import REDIS
-from gedgo.tasks import geo_resolve_ip
+# from gedgo.tasks import geo_resolve_ip
 import json
 import time
 import re

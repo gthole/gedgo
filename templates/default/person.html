@@ -16,7 +16,7 @@
 {% block content %}
 <div class="row">
     <div class="col-xs-5">
-      <a href="{% if person.photos %}{{ MEDIA_URL }}{{ person.key_photo }}{% else %}#{% endif %}">    
+      <a href="{% if person.photos %}{{ MEDIA_URL }}{{ person.key_photo }}{% else %}#{% endif %}">
           <img src="{% if person.photos %}{{ MEDIA_URL }}thumbs/{{ person.key_photo }}{% else %}{{ STATIC_URL }}img/generic_person.gif{% endif %}" class="thumb img-rounded">
       </a>
     </div>
@@ -72,12 +72,12 @@
       </div>
     {% endfor %}
     </div>
-    
+
     <!-- Siblings -->
-    {% if person.child_family.children.all and not person.child_family.single_child == person %}
+    {% if person.child_family.children.exists and not person.child_family.single_child == person %}
       <h4>Siblings</h4>
       <div class="row">
-        {% for somebody in person.child_family.children.iterator %}
+        {% for somebody in person.child_family.ordered_children.iterator %}
             {% if not somebody == person %}
               <div class="col-sm-6">
                 {% include "person-card.html" %}
@@ -138,7 +138,7 @@
   {% if family.children.exists %}
     <h4>Children:</h4>
     <div class="row">
-    {% for somebody in family.children.all %}
+    {% for somebody in family.ordered_children.iterator %}
       <div class="col-sm-6">
         {% include "person-card.html" %}
       </div>

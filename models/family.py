@@ -59,3 +59,7 @@ class Family(models.Model):
             yield husband
         for wife in self.wives.iterator():
             yield wife
+
+    @property
+    def ordered_children(self):
+        return self.children.order_by('birth__date')

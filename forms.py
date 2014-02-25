@@ -37,12 +37,14 @@ class UpdateForm(forms.Form):
 
     def is_valid(self):
         if not super(UpdateForm, self).is_valid():
+            self.error_message = 'Please upload a valid gedcom file.'
             return False
         data = self.cleaned_data
         self.gedcom = get_object_or_404(Gedcom, id=data['gedcom_id'])
         for id_ in data['email_users']:
             get_object_or_404(User, pk=id_)
         if data['email_users'] and not data['message']:
+            self.error_message = 'You must enter a message if emailing users.'
             return False
 
         return True

@@ -92,8 +92,8 @@ def _handle_upload(request, form):
             'be updated momentarily.'
         )
     else:
-        messages.error(
-            request,
-            'Something went wrong with your upload, '
-            'please try again later.'
-        )
+        error_message = ('Something went wrong with your upload, '
+                         'please try again later.')
+        if hasattr(form, 'error_message'):
+            error_message = form.error_message
+        messages.error(request, error_message)

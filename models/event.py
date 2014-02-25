@@ -28,4 +28,4 @@ class Event(models.Model):
             return new_date.strftime(self.date_format)
 
     def __unicode__(self):
-        return self.date_string + ' (' + self.id + ')'
+        return '%s (%s)' % (self.date_string. self.id)

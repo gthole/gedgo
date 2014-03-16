@@ -11,7 +11,7 @@
     </tr>
     {% for view in views %}
     <tr>
-      <td>{{ view.path }}</td>
+      <td><a href="{{ view.path }}">{{ view.path|truncatechars:28 }}</a></td>
       <td>{{ view.timestamp }}</td>
       <td><a href="http://ipinfo.io/{{ view.ip }}">{{ view.ip }}</a></td>
     </tr>

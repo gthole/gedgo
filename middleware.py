@@ -29,12 +29,12 @@ class SimpleTrackerMiddleware(object):
             if pattern.match(request.path_info):
                 return response
 
-        time_stamp = int(time.time())
+        # Increment counters and record pageview.
+        # This is pretty fast, but could be done in a celery task to reduce
+        # per-page overhead.
         id_ = request.user.id
-
         _increment_key('gedgo_page_view_count')
         _increment_key('gedgo_user_%d_page_view_count' % id_)
-        REDIS.set('gedgo_user_%d_last_view' % id_, time_stamp)
 
         page_view = {
             'ip': request.META['REMOTE_ADDR'],

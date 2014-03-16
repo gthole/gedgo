@@ -66,9 +66,7 @@ def user_tracking(request, user_id):
         raise Http404
 
     views = REDIS.lrange('gedgo_user_%d_page_views' % user.id, 0, -1)
-    views = [json.loads(v) for v in views]
-    for view in views:
-        view['timestamp'] = datetime.datetime.fromtimestamp(int(view['time']))
+    views = [_load_page_view(v) for v in views]
 
     return render(
         request,
@@ -129,11 +127,11 @@ def _page_view_stats():
 
     user_views = []
     for user in users:
-        last_view = _timestamp_from_redis('gedgo_user_%d_last_view' % user.id)
+        last = REDIS.lrange('gedgo_user_%d_page_views' % user.id, 0, 0)[0]
         pvc = REDIS.get('gedgo_user_%d_page_view_count' % user.id)
         user_views.append({
             'user': user,
-            'last_view': last_view,
+            'last_view': _load_page_view(last)['timestamp'],
             'count': pvc
         })
     user_views = sorted(user_views, key=lambda x: x['last_view'], reverse=True)
@@ -141,6 +139,12 @@ def _page_view_stats():
     tracking_start = _timestamp_from_redis('gedgo_tracking_start')
 
     return tracking_start, user_views, REDIS.get('gedgo_page_view_count')
+
+
+def _load_page_view(json_str):
+    view = json.loads(json_str)
+    view['timestamp'] = datetime.datetime.fromtimestamp(int(view['time']))
+    return view
 
 
 def _timestamp_from_redis(key):

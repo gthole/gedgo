@@ -2,8 +2,8 @@
   <div class="col-xs-5">
     <a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/"><img src="{% if somebody.photos %}{{ MEDIA_URL }}thumbs/{{ somebody.key_photo }}{% else %}{{ STATIC_URL }}img/generic_person.gif{% endif %}" class="thumb img-rounded"></a>
   </div>
-  <div class="col-xs-7">
+  <div class="card-content col-xs-7">
     <h4 class="card-title"><a href="/gedgo/{{ somebody.gedcom.id }}/{{ somebody.pointer }}/">{{ somebody.full_name }}</a></h4>
-    ({{ somebody.year_range }})    
+    ({{ somebody.year_range }})
   </div>
 </div>

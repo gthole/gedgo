@@ -31,6 +31,7 @@ urlpatterns = patterns(
     url(r'^api/', include(v1_api.urls)),
     url(r'^search/$', views.search),
     url(r'^dashboard/$', views.dashboard),
+    url(r'^dashboard/user/(?P<user_id>\d+)/$', views.user_tracking),
 
     # Auth
     url(r'^logout/$', views.logout_view),

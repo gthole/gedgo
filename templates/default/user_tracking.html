@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section">
+  <h2>{{ user.username }} Recent Activity</h2>
+  <table class="table">
+    <tr>
+      <th>Page</th>
+      <th>Time</th>
+      <th>Address</th>
+    </tr>
+    {% for view in views %}
+    <tr>
+      <td>{{ view.path }}</td>
+      <td>{{ view.timestamp }}</td>
+      <td><a href="http://ipinfo.io/{{ view.ip }}">{{ view.ip }}</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

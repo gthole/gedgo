@@ -32,35 +32,36 @@
     After finishing the update, the website will send an email to the site owner indicating that the update is complete.
   </p><br />
 </div>
+
 <div class="section">
   <h2>Traffic Stats</h2>
   {% if total %}
     <div class="well">
       <h2>{{ total }} total page views</h2>
+      since {{ tracking_start }}
     </div><br />
   {% endif %}
   {% if user_views %}
-    <h3>Recently Active Users</h3>
+    <h3>User Activity</h3>
     <table class="table">
-      <tr><td><b>Username</b></td><td><b>Page views</b></td></tr>
-      {% for user, views in user_views %}
-        <tr><td>{{ user }}</td><td>{{ views }}</td></tr>
+      <tr><th>Username</th><th>Page views</th><th>Last View</th></tr>
+      {% for user_view in user_views %}
+        <tr>
+          <td><a href="/gedgo/dashboard/user/{{ user_view.user.id }}/">{{ user_view.user.username }}</a></td>
+          <td>{{ user_view.count }}</td>
+          <td>{{ user_view.last_view }}</td>
+        </tr>
       {% endfor %}
     </table><br />
   {% endif %}
-  {% if views %}
-    <h3 class="hidden-xs">Recent Page Views</h3>
-    <table class="table hidden-xs">
-    {% for pg in views %}
-      <tr>
-        <td>{{ pg.username }}</td>
-        <td>{{ pg.ip }}</td>
-        <td>{{ pg.path }}</td>
-        <td>{{ pg.time }}</td>
-      </tr>
-    {% endfor %}
-    </table>
+  {% if not total and not user_views %}
+    <p>No activity recorded yet.</p>
   {% endif %}
+  <br />
+  <form action="/gedgo/dashboard/?reset_tracking=1" method="post" role="form">
+    {% csrf_token %}
+    <input class="btn btn-danger" type="submit" value="Reset Tracking" />
+  </form>
 </div>
 {% endblock %}
 

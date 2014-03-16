@@ -1,5 +1,4 @@
 from gedgo import REDIS
-# from gedgo.tasks import geo_resolve_ip
 import json
 import time
 import re
@@ -30,24 +29,27 @@ class SimpleTrackerMiddleware(object):
             if pattern.match(request.path_info):
                 return response
 
-        try:
-            pvc = int(REDIS.get('gedgo_page_view_count'))
-        except TypeError:
-            pvc = 0
-        REDIS.set('gedgo_page_view_count', pvc + 1)
+        time_stamp = int(time.time())
+        id_ = request.user.id
+
+        _increment_key('gedgo_page_view_count')
+        _increment_key('gedgo_user_%d_page_view_count' % id_)
+        REDIS.set('gedgo_user_%d_last_view' % id_, time_stamp)
 
         page_view = {
             'ip': request.META['REMOTE_ADDR'],
             'path': request.path_info,
-            'username': request.user.username,
             'time': int(time.time())
         }
-
-        REDIS.lpush('gedgo_page_views', json.dumps(page_view))
-        REDIS.ltrim('gedgo_page_views', 0, 100)
-
-        #stored = REDIS.keys('gedgo_ip_%s' % page_view['ip'])
-        #if stored is None:
-        #    geo_resolve_ip.delay(page_view['ip'])
+        REDIS.lpush('gedgo_user_%d_page_views' % id_, json.dumps(page_view))
+        REDIS.ltrim('gedgo_user_%d_page_views' % id_, 0, 100)
 
         return response
+
+
+def _increment_key(key_name):
+    try:
+        pvc = int(REDIS.get(key_name))
+    except TypeError:
+        pvc = 0
+    REDIS.set(key_name, pvc + 1)

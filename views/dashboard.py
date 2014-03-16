@@ -12,12 +12,12 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.sites.models import get_current_site
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
 import datetime
 import time
 import json
 import os
-from collections import defaultdict
 
 
 @login_required
@@ -26,7 +26,10 @@ def dashboard(request):
         raise Http404
 
     form = None
-    if request.POST:
+    if request.POST and request.GET.get('reset_tracking'):
+        _reset_tracking()
+        return redirect('/gedgo/dashboard/')
+    elif request.POST:
         form = UpdateForm(request.POST, request.FILES)
         _handle_upload(request, form)
         return redirect('/gedgo/dashboard/')
@@ -35,7 +38,7 @@ def dashboard(request):
         form = UpdateForm()
 
     # Collect tracking stats from Redis storage
-    views, user_views, total = _page_view_stats()
+    tracking_start, user_views, total = _page_view_stats()
 
     # Render list page with the documents and the form
     return render(
@@ -43,7 +46,7 @@ def dashboard(request):
         'dashboard.html',
         {
             'form': form,
-            'views': views,
+            'tracking_start': tracking_start,
             'users': User.objects.filter(email__contains='@').iterator(),
             'user_views': user_views,
             'total': total,
@@ -52,25 +55,30 @@ def dashboard(request):
     )
 
 
-def _page_view_stats():
-    if REDIS is None:
-        return {}
-    page_views = [
-        json.loads(m) for m in
-        REDIS.lrange('gedgo_page_views', 0, -1)
-    ]
+@login_required
+def user_tracking(request, user_id):
+    if not request.user.is_superuser:
+        raise Http404
 
-    # Take the 20 most recent page views, format the time.
-    view_sample = page_views[:20]
-    for vs in view_sample:
-        vs['time'] = datetime.datetime.fromtimestamp(int(vs['time']))
+    user = get_object_or_404(User, id=user_id)
+    count = REDIS.keys('gedgo_user_%d_page_view_count' % user.id)
+    if not count:
+        raise Http404
 
-    # Tally the usernames across all recently recorded views.
-    user_views = defaultdict(int)
-    for pv in page_views:
-        user_views[pv['username']] += 1
+    views = REDIS.lrange('gedgo_user_%d_page_views' % user.id, 0, -1)
+    views = [json.loads(v) for v in views]
+    for view in views:
+        view['timestamp'] = datetime.datetime.fromtimestamp(int(view['time']))
 
-    return view_sample, user_views.items(), REDIS.get('gedgo_page_view_count')
+    return render(
+        request,
+        'user_tracking.html',
+        {
+            'user': user,
+            'count': count,
+            'views': views
+        }
+    )
 
 
 def _handle_upload(request, form):
@@ -97,3 +105,47 @@ def _handle_upload(request, form):
         if hasattr(form, 'error_message'):
             error_message = form.error_message
         messages.error(request, error_message)
+
+
+def _reset_tracking():
+    if REDIS is None:
+        return {}
+
+    keys = REDIS.keys('gedgo_*')
+    for key in keys:
+        REDIS.delete(key)
+
+    REDIS.set('gedgo_tracking_start', int(time.time()))
+
+
+def _page_view_stats():
+    if REDIS is None:
+        return {}
+
+    user_keys = REDIS.keys('gedgo_user_*_page_view_count')
+    users = User.objects.filter(
+        id__in=[int(k.split('_')[2]) for k in user_keys]
+    )
+
+    user_views = []
+    for user in users:
+        last_view = _timestamp_from_redis('gedgo_user_%d_last_view' % user.id)
+        pvc = REDIS.get('gedgo_user_%d_page_view_count' % user.id)
+        user_views.append({
+            'user': user,
+            'last_view': last_view,
+            'count': pvc
+        })
+    user_views = sorted(user_views, key=lambda x: x['last_view'], reverse=True)
+
+    tracking_start = _timestamp_from_redis('gedgo_tracking_start')
+
+    return tracking_start, user_views, REDIS.get('gedgo_page_view_count')
+
+
+def _timestamp_from_redis(key):
+    try:
+        timestamp = REDIS.get(key)
+        return datetime.datetime.fromtimestamp(int(timestamp))
+    except:
+        pass

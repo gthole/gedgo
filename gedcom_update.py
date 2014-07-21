@@ -9,7 +9,7 @@ from datetime import datetime
 from re import findall
 from os import path, mkdir
 
-import Image
+from PIL import Image
 
 
 @transaction.atomic

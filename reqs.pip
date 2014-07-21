@@ -2,7 +2,7 @@ django
 django-celery
 South
 django-tastypie
-PIL
+pillow
 mysql-python
 redis
 flake8

@@ -103,14 +103,19 @@ def site_context(request):
 
 def serve_content(filename):
     """
+    Generate a response to server protected content.
     http://djangosnippets.org/snippets/365/
     http://www.chicagodjango.com/blog/permission-based-file-serving/
     """
     if not path.exists(filename):
         raise Http404
-    if getattr(settings, 'GEDGO_MEDIA_SERVER', None) == 'Apache':
+    media_server = getattr(settings, 'GEDGO_MEDIA_SERVER', '').lower()
+    if media_server == 'apache':
         response = HttpResponse()
         response['X-Sendfile'] = filename
+    elif media_server == 'nginx':
+        response = HttpResponse()
+        response['X-Accel-Redirect'] = filename
     else:
         wrapper = FileWrapper(file(filename))
         response = HttpResponse(wrapper)

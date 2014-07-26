@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="section" id="worker-section">
+  <h2>Worker Status</h2>
+  <div id="worker-status">
+    <span></span>
+  </div>
+</div>
+
 <div class="section">
   <h2>Update a Gedcom</h2>
   <form action="/gedgo/dashboard/" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
@@ -25,7 +32,7 @@
           {% endfor %}
         </div><br />
       </div>
-      <input class="btn btn-danger" type="submit" value="Upload" />
+      <input id="submit-gedcom" class="btn btn-danger disabled" type="submit" value="Upload" />
   </form>
   <p>
     <br />
@@ -52,12 +59,12 @@
           <td>{{ user_view.last_view }}</td>
         </tr>
       {% endfor %}
-    </table><br />
+    </table>
   {% endif %}
   {% if not total and not user_views %}
     <p>No activity recorded yet.</p>
+    <br />
   {% endif %}
-  <br />
   <form action="/gedgo/dashboard/?reset_tracking=1" method="post" role="form">
     {% csrf_token %}
     <input class="btn btn-danger" type="submit" value="Reset Tracking" />
@@ -69,6 +76,20 @@
 <script>
   $('#select-all').on('click', function () {
     $('.email_users_checkbox').prop('checked', this.checked);
+  });
+  $.getJSON('worker/status', function(res) {
+    var el = $('#worker-status');
+    var st = $('#worker-status span');
+    if (res.length) {
+      el.addClass('bg-success');
+      st.addClass('glyphicon glyphicon-ok');
+      $('#submit-gedcom').removeClass("disabled");
+      $('#worker-section').append("<p>Worker is currently availabe to process gedcoms!</p>");
+    } else {
+      el.addClass('bg-danger');
+      st.addClass('glyphicon glyphicon-remove');
+      $('#worker-section').append("<p>Worker is currently offline, so gedcom uploads cannot be processed.</p>");
+    }
   });
 </script>
 {% endblock %}

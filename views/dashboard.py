@@ -1,10 +1,10 @@
 from gedgo.forms import UpdateForm
-from gedgo.tasks import async_update
+from gedgo.tasks import app, async_update
 from gedgo.views.util import render
 from gedgo.models import Gedcom
 from gedgo import REDIS
 
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
@@ -52,6 +52,22 @@ def dashboard(request):
             'total': total,
             'gedcoms': Gedcom.objects.iterator()
         }
+    )
+
+
+@login_required
+def worker_status(request):
+    """
+    XHR view for whether the celery worker is up
+    """
+    try:
+        status = app.control.ping() or []
+    except:
+        # TODO: What celery exceptions are we catching here?
+        status = []
+    return HttpResponse(
+        json.dumps(status),
+        content_type="application/json"
     )
 
 

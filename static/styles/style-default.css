@@ -19,7 +19,7 @@ body {
   border-width: 1px;
 }
 .section {
-  margin-top: 40px;
+  margin-top: 35px;
 }
 .sidebar-thumb {
   width: 105px;
@@ -73,4 +73,27 @@ path {
   fill: none;
   stroke: gray;
   stroke-width: 2;
+}
+
+#worker-section {
+  min-height: 75px;
+
+}
+
+#worker-section p {
+  margin-top: 5px;
+}
+
+#worker-status {
+  width: 80px;
+  font-size: 40px;
+  color: #fff;
+  text-align: center;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+}
+
+#worker-status span {
+  margin-top: 10px;
 }

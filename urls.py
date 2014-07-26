@@ -22,6 +22,7 @@ urlpatterns = patterns(
     # XHR Data views
     url(r'^(?P<gid>\d+)/pedigree/(?P<pid>I\d+)/$', views.pedigree),
     url(r'^(?P<gid>\d+)/timeline/(?P<pid>I\d+)/$', views.timeline),
+    url(r'^dashboard/worker/status$', views.worker_status),
 
     url(r'^blog/$', views.blog_list),
     url(r'^blog/(?P<year>\d+)/(?P<month>\d+)/$', views.blog),

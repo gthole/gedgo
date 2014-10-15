@@ -83,7 +83,7 @@ def site_context(request):
     show_blog = BlogPost.objects.exists()
     show_documentaries = Documentary.objects.exists()
     show_researchfiles = isinstance(
-        getattr(settings, 'RESEARCH_FILES_ROOT'),
+        getattr(settings, 'RESEARCH_FILES_ROOT', None),
         basestring
     )
     show_file_uploads = getattr(

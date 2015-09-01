@@ -15,10 +15,13 @@ class CommentForm(forms.Form):
         message_body = '%s\n\n%s' % (cd['message'], '\n'.join(file_names))
         send_mail(
             'Comment from %s %s about %s' % (
-                user.first_name, user.last_name, noun),
+                user.first_name,
+                user.last_name,
+                noun
+            ),
             message_body,
-            user.email or 'noreply@gedgo.com',
-            [email for _, email in settings.ADMINS]
+            'noreply@gedgo.com',
+            settings.SERVER_EMAIL
         )
 
 

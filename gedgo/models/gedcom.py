@@ -16,13 +16,11 @@ class Gedcom(models.Model):
     key_people = models.ManyToManyField(
         'Person',
         related_name='gedcom_key_people',
-        null=True,
         blank=True
     )
     key_families = models.ManyToManyField(
         'Family',
         related_name='gedcom_key_families',
-        null=True,
         blank=True
     )
 

@@ -30,3 +30,7 @@ pip-log.txt
 *bootstrap*.js
 *bootstrap*.css
 *d3.*.js
+
+.files/
+*.ged
+settings_local.py

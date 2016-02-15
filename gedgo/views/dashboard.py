@@ -2,7 +2,7 @@ from gedgo.forms import UpdateForm
 from gedgo.tasks import app, async_update
 from gedgo.views.util import render
 from gedgo.models import Gedcom
-from gedgo import REDIS
+from gedgo import redis
 
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.contrib.sites.models import get_current_site
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
@@ -37,7 +36,7 @@ def dashboard(request):
     if form is None:
         form = UpdateForm()
 
-    # Collect tracking stats from Redis storage
+    # Collect tracking stats from redis storage
     tracking_start, user_views, total = _page_view_stats()
 
     # Render list page with the documents and the form
@@ -77,11 +76,11 @@ def user_tracking(request, user_id):
         raise Http404
 
     user = get_object_or_404(User, id=user_id)
-    count = REDIS.keys('gedgo_user_%d_page_view_count' % user.id)
+    count = redis.keys('gedgo_user_%d_page_view_count' % user.id)
     if not count:
         raise Http404
 
-    views = REDIS.lrange('gedgo_user_%d_page_views' % user.id, 0, -1)
+    views = redis.lrange('gedgo_user_%d_page_views' % user.id, 0, -1)
     views = [_load_page_view(v) for v in views]
 
     return render(
@@ -105,7 +104,7 @@ def _handle_upload(request, form):
             os.path.join(settings.MEDIA_ROOT, file_name),
             form.cleaned_data['email_users'],
             form.cleaned_data['message'],
-            get_current_site(request).domain,
+            request.get_host(),
             request.user.id
         )
         messages.success(
@@ -122,29 +121,29 @@ def _handle_upload(request, form):
 
 
 def _reset_tracking():
-    if REDIS is None:
+    if redis is None:
         return {}
 
-    keys = REDIS.keys('gedgo_*')
+    keys = redis.keys('gedgo_*')
     for key in keys:
-        REDIS.delete(key)
+        redis.delete(key)
 
-    REDIS.set('gedgo_tracking_start', int(time.time()))
+    redis.set('gedgo_tracking_start', int(time.time()))
 
 
 def _page_view_stats():
-    if REDIS is None:
-        return {}
+    if redis is None:
+        return datetime.datetime.utcnow(), {}, 0
 
-    user_keys = REDIS.keys('gedgo_user_*_page_view_count')
+    user_keys = redis.keys('gedgo_user_*_page_view_count')
     users = User.objects.filter(
         id__in=[int(k.split('_')[2]) for k in user_keys]
     )
 
     user_views = []
     for user in users:
-        last = REDIS.lrange('gedgo_user_%d_page_views' % user.id, 0, 0)[0]
-        pvc = REDIS.get('gedgo_user_%d_page_view_count' % user.id)
+        last = redis.lrange('gedgo_user_%d_page_views' % user.id, 0, 0)[0]
+        pvc = redis.get('gedgo_user_%d_page_view_count' % user.id)
         user_views.append({
             'user': user,
             'last_view': _load_page_view(last)['timestamp'],
@@ -154,7 +153,7 @@ def _page_view_stats():
 
     tracking_start = _timestamp_from_redis('gedgo_tracking_start')
 
-    return tracking_start, user_views, REDIS.get('gedgo_page_view_count')
+    return tracking_start, user_views, redis.get('gedgo_page_view_count')
 
 
 def _load_page_view(json_str):
@@ -165,7 +164,7 @@ def _load_page_view(json_str):
 
 def _timestamp_from_redis(key):
     try:
-        timestamp = REDIS.get(key)
+        timestamp = redis.get(key)
         return datetime.datetime.fromtimestamp(int(timestamp))
     except:
         pass

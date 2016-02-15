@@ -23,12 +23,23 @@
 {% endif %}
 <h3>{{ current_level }}</h3>
 <ul class="list-group">
-    {% for type, name, path in contents %}
+    {% for dir in directories %}
         <li class="list-group-item">
-            <a href="/gedgo/research{{ path }}">
-                <span class="glyphicon glyphicon-{{ type }}"></span> &nbsp; {{ name|truncatechars:45 }}
+            <a href="/gedgo/research/{{ dir.path }}">
+                <span class="glyphicon glyphicon-folder-open"></span> &nbsp; {{ dir.name|truncatechars:45 }}
             </a>
         </li>
     {% endfor %}
 </ul>
+<hr />
+<ul class="list-group">
+    {% for f in files %}
+        <li class="list-group-item">
+            <a href="/gedgo/research/{{ f.path }}">
+                <span class="glyphicon glyphicon-{{ f.type }}"></span> &nbsp; {{ f.name|truncatechars:45 }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
 {% endblock %}

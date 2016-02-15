@@ -1,8 +1,7 @@
-django
-django-celery
-South
-django-tastypie
-pillow
+django==1.9.2
+django-celery==3.1.17
+pillow==3.1.1
+dropbox
 mysql-python
 redis
 flake8

@@ -1,0 +1,42 @@
+# Dev services
+avahi:
+  image: 'enernoclabs/avahi:latest'
+  net: 'host'
+  log_driver: 'none'
+  restart: 'on-failure'
+db:
+  image: 'mysql'
+  ports:
+    - '3306:3306'
+  environment:
+    MYSQL_ROOT_PASSWORD: 'docker'
+    MYSQL_DATABASE: 'gedgo'
+    MYSQL_USER: 'gedgo'
+    MYSQL_PASSWORD: 'gedgo'
+  log_driver: 'none'
+redis:
+  image: 'redis'
+  ports:
+    - '6379'
+  log_driver: 'none'
+# Application
+app:
+  build: '.'
+  container_name: 'gedgo_app'
+  command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+  volumes:
+    - './:/src'
+  ports:
+    - '8000:8000'
+  links:
+    - 'db'
+    - 'redis'
+worker:
+  image: 'gedgo_app'
+  command: ['python', 'manage.py', 'celeryd', '-c', '1', '--loglevel=info']
+  volumes:
+    - './:/src'
+  links:
+    - 'app'
+    - 'db'
+    - 'redis'

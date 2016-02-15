@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 from gedgo.gedcom_update import update
-from gedgo import REDIS
+from gedgo import redis
 from gedgo.models import Gedcom
 import os
 from celery import Celery
@@ -63,12 +63,12 @@ def async_update(gedcom_id, file_name, recipient_ids,
 
 @app.task
 def geo_resolve_ip(ip_address):
-    if REDIS is None:
+    if redis is None:
         return
     try:
         response = requests.get('ipinfo.io/%s/json' % ip_address)
         j = response.json()
         j['requested'] = datetime.utcnow().isoformat()
-        REDIS.set('gedgo_ip_%s', json.dumps(j))
+        redis.set('gedgo_ip_%s', json.dumps(j))
     except (requests.exceptions.RequestsException, ValueError):
         return

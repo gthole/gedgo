@@ -24,11 +24,11 @@ class Document(models.Model):
     )
     tagged_people = models.ManyToManyField(
         'Person',
-        related_name='media_tagged_people', null=True, blank=True
+        related_name='media_tagged_people', blank=True
     )
     tagged_families = models.ManyToManyField(
         'Family',
-        related_name='media_tagged_families', null=True, blank=True
+        related_name='media_tagged_families', blank=True
     )
 
     def __unicode__(self):

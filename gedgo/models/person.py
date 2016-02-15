@@ -49,10 +49,10 @@ class Person(models.Model):
     )
 
     # Notes
-    notes = models.ManyToManyField('Note', null=True)
+    notes = models.ManyToManyField('Note', blank=True)
 
     # Profile
-    profile = models.ManyToManyField('Document', null=True, blank=True)
+    profile = models.ManyToManyField('Document', blank=True)
 
     def __unicode__(self):
         return '%s, %s (%s)' % (self.last_name, self.first_name, self.pointer)

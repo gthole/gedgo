@@ -13,7 +13,7 @@ class Family(models.Model):
     wives = models.ManyToManyField('Person', related_name='family_wives')
     children = models.ManyToManyField('Person', related_name='family_children')
 
-    notes = models.ManyToManyField('Note', null=True)
+    notes = models.ManyToManyField('Note', blank=True)
     kind = models.CharField('Event', max_length=10, blank=True, null=True)
 
     joined = models.ForeignKey(

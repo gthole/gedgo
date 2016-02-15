@@ -1,10 +1,9 @@
-from django.http import HttpResponse
-from django.core.servers.basehttp import FileWrapper
+from wsgiref.util import FileWrapper
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.conf import settings
-from django.contrib.sites.models import get_current_site
 from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib import messages
@@ -25,8 +24,8 @@ def media(request, file_base_name):
     it's much better to have a webserver handle this through
     an authenticated proxy
     """
-    filename = path.join(settings.MEDIA_ROOT, file_base_name.strip('/'))
-    return serve_content(filename)
+    filename = file_base_name.strip('/')
+    return serve_content(request, filename)
 
 
 def process_comments(request, noun):
@@ -83,12 +82,12 @@ def site_context(request):
     show_blog = BlogPost.objects.exists()
     show_documentaries = Documentary.objects.exists()
     show_researchfiles = isinstance(
-        getattr(settings, 'RESEARCH_FILES_ROOT', None),
+        getattr(settings, 'GEDGO_RESEARCH_FILE_ROOT', None),
         basestring
     )
     show_file_uploads = getattr(
         settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True
-    site_title = get_current_site(request).name
+    site_title = settings.GEDGO_SITE_TITLE
     user = request.user
 
     return {
@@ -101,31 +100,40 @@ def site_context(request):
     }
 
 
-def serve_content(filename):
+def serve_content(request, filename):
     """
     Generate a response to server protected content.
     http://djangosnippets.org/snippets/365/
     http://www.chicagodjango.com/blog/permission-based-file-serving/
     """
-    if not path.exists(filename):
-        raise Http404
-    media_server = getattr(settings, 'GEDGO_MEDIA_SERVER', '').lower()
-    if media_server == 'apache':
-        response = HttpResponse()
-        response['X-Sendfile'] = filename
-    elif media_server == 'nginx':
-        response = HttpResponse()
-        response['X-Accel-Redirect'] = filename
+    storage_class = default_storage.__class__.__name__
+    if storage_class == 'FileSystemStorage':
+        file_path = default_storage.path(filename)
+        if not default_storage.exists(filename):
+            raise Http404
+        if settings.DEBUG:
+            # Serve it ourselves in debug mode only
+            wrapper = FileWrapper(file(file_path))
+            response = HttpResponse(wrapper)
+        else:
+            # Set sendfile headers
+            response['X-Sendfile'] = file_path  # apache
+            response['X-Accel-Redirect'] = file_path  # nginx
+            response = HttpResponse()
+        file_type = mimetypes.guess_type(filename)[0]
+        response['Content-Type'] = file_type
+        response['Content-Length'] = path.getsize(file_path)
+        if file_type is None:
+            response['Content-Disposition'] = "attachment; filename=%s;" % (
+                path.basename(filename))
+        return response
     else:
-        wrapper = FileWrapper(file(filename))
-        response = HttpResponse(wrapper)
-    file_type = mimetypes.guess_type(filename)[0]
-    response['Content-Type'] = file_type
-    response['Content-Length'] = path.getsize(filename)
-    if file_type is None:
-        response['Content-Disposition'] = "attachment; filename=%s;" % (
-            path.basename(filename))
-    return response
+        # Other storages we'll use the url attribute
+        try:
+            url = default_storage.url(filename)
+            return HttpResponseRedirect(url)
+        except Exception as e:
+            raise e  # Http404
 
 
 def logout_view(request):

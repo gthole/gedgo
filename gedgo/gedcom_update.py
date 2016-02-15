@@ -6,6 +6,7 @@ from django.utils.datetime_safe import date
 from django.utils import timezone
 from django.conf import settings
 from datetime import datetime
+from dropbox.dropbox import Dropbox
 from re import findall
 from os import path, mkdir
 
@@ -54,7 +55,7 @@ def update(g, file_name, verbose=True):
     g.save()
 
 
-#--- Second Level script functions
+# --- Second Level script functions
 def __process_all_relations(gedcom, parsed, verbose=True):
     if verbose:
         print '  Starting Person objects.'
@@ -254,7 +255,7 @@ def __process_Document(entry, obj, g):
     else:
         thumb = None
 
-    known = Document.objects.filter(docfile=unicode(file_name))
+    known = Document.objects.filter(docfile=file_name.decode('utf-8').strip())
 
     if len(known) > 0:
         m = known[0]
@@ -353,17 +354,38 @@ def __child_by_tag(entry, tag):
             return child
 
 
+# TODO: Proper Storage class approach to this code
 def __valid_document_entry(e):
-    file_name = __child_value_by_tags(e, 'FILE')
-    img_presence = path.join(settings.MEDIA_ROOT, path.basename(file_name))
+    file_name = __strip_files_directories(e)
+    media_file = path.join(settings.MEDIA_ROOT, file_name)
 
-    return isinstance(file_name, basestring) and file_name and \
-        path.exists(img_presence)
+    # The file exists already
+    if isinstance(file_name, basestring) and file_name and \
+            path.exists(media_file):
+        return True
+
+    if __get_from_dropbox(file_name, media_file, ):
+        return True
+
+    return False
 
 
 def __strip_files_directories(e):
     file_name = __child_value_by_tags(e, 'FILE')
     return path.basename(file_name)
+
+
+def __get_from_dropbox(file_name, media_file_name):
+    if not getattr(settings, 'DROPBOX_ACCESS_TOKEN', None):
+        return False
+    d = Dropbox(settings.DROPBOX_ACCESS_TOKEN)
+    resource_path = path.join(settings.DROPBOX_BASE_PATH, file_name)
+    print '  .. %s' % resource_path
+    try:
+        d.files_download_to_file(media_file_name, resource_path)
+        return True
+    except:
+        return False
 
 
 def make_thumbnail(file_name):

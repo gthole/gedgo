@@ -21,13 +21,11 @@ class Documentary(models.Model):
     tagged_people = models.ManyToManyField(
         'Person',
         related_name='documentaries_tagged_people',
-        null=True,
         blank=True
     )
     tagged_families = models.ManyToManyField(
         'Family',
         related_name='documentaries_tagged_families',
-        null=True,
         blank=True
     )
 

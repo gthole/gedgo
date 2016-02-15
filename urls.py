@@ -1,62 +1,21 @@
-from django.conf.urls import patterns, url
-from django.conf.urls import include
+from django.conf.urls import include, url
 from django.shortcuts import redirect
-from tastypie.api import Api
-from gedgo.api import PersonResource, FamilyResource
+from django.http import HttpResponse
+from django.contrib import admin
+from django.contrib.auth.views import login
 
-from gedgo import views
+admin.autodiscover()
 
-v1_api = Api(api_name='v1')
-v1_api.register(PersonResource())
-v1_api.register(FamilyResource())
-
-urlpatterns = patterns(
-    '',
-    url(
-        r'^(?P<gedcom_id>\d+)/(?P<person_id>I\d+)/$',
-        views.person,
-        name='person'
-    ),
-    url(r'^(?P<gedcom_id>\d+)/$', views.gedcom, name='gedcom'),
-
-    # XHR Data views
-    url(r'^(?P<gid>\d+)/pedigree/(?P<pid>I\d+)/$', views.pedigree),
-    url(r'^(?P<gid>\d+)/timeline/(?P<pid>I\d+)/$', views.timeline),
-    url(r'^dashboard/worker/status$', views.worker_status),
-
-    url(r'^blog/$', views.blog_list),
-    url(r'^blog/(?P<year>\d+)/(?P<month>\d+)/$', views.blog),
-    url(r'^blog/post/(?P<post_id>\d+)/$', views.blogpost),
-    url(r'^documentaries/$', views.documentaries),
-    url(r'^research/(?P<pathname>.*)$', views.research),
-    url(r'^api/', include(v1_api.urls)),
-    url(r'^search/$', views.search),
-    url(r'^dashboard/$', views.dashboard),
-    url(r'^dashboard/user/(?P<user_id>\d+)/$', views.user_tracking),
-
-    # Auth
-    url(r'^logout/$', views.logout_view),
-    url(r'^password_reset/$',
-        'django.contrib.auth.views.password_reset',
-        {
-            'template_name': 'auth/login.html',
-            'email_template_name': 'auth/password_reset_email.html',
-            'post_reset_redirect': '/gedgo/password_reset/done/'
-        }),
-    url(r'^password_reset/done/$',
-        'django.contrib.auth.views.password_reset_done',
-        {
-            'template_name': 'auth/password_reset_done.html'
-        }),
-    url(r'^password_reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        'django.contrib.auth.views.password_reset_confirm',
-        {
-            'post_reset_redirect': '/',
-            'template_name': 'auth/password_reset_confirm.html'
-        }),
-
-    # Backup media fileserve view
-    url(r'^media/(?P<file_base_name>.*)$', views.media),
-
-    url(r'^$', lambda r: redirect('/gedgo/1/')),
-)
+urlpatterns = [
+    url(r'^$', lambda r: redirect('/gedgo/')),
+    url(r'^gedgo/', include('gedgo.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/login/$', login,
+        {'template_name': 'auth/login.html'}),
+    url(r'^login/$', login,
+        {'template_name': 'auth/login.html'}),
+    url(r'^robots\.txt$',
+        lambda r: HttpResponse(
+            "User-agent: *\nDisallow: /",
+            mimetype="text/plain"))
+]

@@ -1,4 +1,4 @@
-from gedgo import REDIS
+from gedgo import redis
 import json
 import time
 import re
@@ -16,8 +16,8 @@ class SimpleTrackerMiddleware(object):
     """
 
     def process_response(self, request, response):
-        # Don't process if REDIS isn't configured or non-200 response
-        if REDIS is None or response.status_code != 200:
+        # Don't process if redis isn't configured or non-200 response
+        if redis is None or response.status_code != 200:
             return response
 
         # Only track non-superuser visitors
@@ -41,15 +41,15 @@ class SimpleTrackerMiddleware(object):
             'path': request.path_info,
             'time': int(time.time())
         }
-        REDIS.lpush('gedgo_user_%d_page_views' % id_, json.dumps(page_view))
-        REDIS.ltrim('gedgo_user_%d_page_views' % id_, 0, 100)
+        redis.lpush('gedgo_user_%d_page_views' % id_, json.dumps(page_view))
+        redis.ltrim('gedgo_user_%d_page_views' % id_, 0, 100)
 
         return response
 
 
 def _increment_key(key_name):
     try:
-        pvc = int(REDIS.get(key_name))
+        pvc = int(redis.get(key_name))
     except TypeError:
         pvc = 0
-    REDIS.set(key_name, pvc + 1)
+    redis.set(key_name, pvc + 1)

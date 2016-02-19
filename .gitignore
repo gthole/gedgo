@@ -31,6 +31,6 @@ pip-log.txt
 *bootstrap*.css
 *d3.*.js
 
-.files/
+/files/
 *.ged
 settings_local.py

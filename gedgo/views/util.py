@@ -9,6 +9,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.module_loading import import_string
 
 from gedgo.models import BlogPost, Documentary
 from gedgo.forms import CommentForm
@@ -16,16 +17,31 @@ from gedgo.forms import CommentForm
 from os import path
 import mimetypes
 
+research_storage = None
+if getattr(settings, 'GEDGO_RESEARCH_FILE_STORAGE', None):
+    research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(
+        location=settings.GEDGO_RESEARCH_FILE_ROOT)
+
+gedcom_storage = None
+if getattr(settings, 'GEDGO_GEDCOM_FILE_STORAGE', None):
+    gedcom_storage = import_string(settings.GEDGO_GEDCOM_FILE_STORAGE)(
+        location=settings.GEDGO_GEDCOM_FILE_ROOT)
+
+
+STORAGES = {
+    'research': research_storage,
+    'gedcom': gedcom_storage
+}
+
 
 @login_required
-def media(request, file_base_name):
+def media(request, storage_name, file_base_name):
     """
-    Authenticated view to serve media content if necessary,
-    it's much better to have a webserver handle this through
-    an authenticated proxy
+    Authenticated view to serve media content and toggle storage classes
     """
     filename = file_base_name.strip('/')
-    return serve_content(request, filename)
+    storage = STORAGES.get(storage_name, default_storage)
+    return serve_content(storage, filename)
 
 
 def process_comments(request, noun):
@@ -100,40 +116,33 @@ def site_context(request):
     }
 
 
-def serve_content(request, filename):
+def serve_content(storage, name):
     """
     Generate a response to server protected content.
-    http://djangosnippets.org/snippets/365/
-    http://www.chicagodjango.com/blog/permission-based-file-serving/
     """
-    storage_class = default_storage.__class__.__name__
-    if storage_class == 'FileSystemStorage':
-        file_path = default_storage.path(filename)
-        if not default_storage.exists(filename):
-            raise Http404
-        if settings.DEBUG:
-            # Serve it ourselves in debug mode only
-            wrapper = FileWrapper(file(file_path))
-            response = HttpResponse(wrapper)
-        else:
-            # Set sendfile headers
-            response['X-Sendfile'] = file_path  # apache
-            response['X-Accel-Redirect'] = file_path  # nginx
-            response = HttpResponse()
-        file_type = mimetypes.guess_type(filename)[0]
-        response['Content-Type'] = file_type
-        response['Content-Length'] = path.getsize(file_path)
-        if file_type is None:
-            response['Content-Disposition'] = "attachment; filename=%s;" % (
-                path.basename(filename))
-        return response
+    if not storage.exists(name):
+        raise Http404
+
+    # Non-filesystem storages should re-direct to a temporary URL
+    if not storage.__class__.__name__ == 'FileSystemStorage':
+        return HttpResponseRedirect(storage.url(name))
+
+    # If behind a real server, use send-file
+    if settings.GEDGO_SENDFILE_HEADER:
+        response = HttpResponse()
+        response[settings.GEDGO_SENDFILE_HEADER] = default_storage.path(name)
+    # Otherwise, serve it ourselves, which should only happen in DEBUG mode
     else:
-        # Other storages we'll use the url attribute
-        try:
-            url = default_storage.url(filename)
-            return HttpResponseRedirect(url)
-        except Exception as e:
-            raise e  # Http404
+        wrapper = FileWrapper(storage.open(name))
+        response = HttpResponse(wrapper)
+
+    # Set various file headers and return
+    base = path.basename(name)
+    response['Content-Type'] = mimetypes.guess_type(base)[0]
+    response['Content-Length'] = storage.size(name)
+    if response['Content-Type'] is None:
+        response['Content-Disposition'] = "attachment; filename=%s;" % (base)
+    return response
 
 
 def logout_view(request):

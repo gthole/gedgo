@@ -8,11 +8,10 @@ class Document(models.Model):
 
     title = models.CharField(max_length=40, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    docfile = models.FileField(upload_to='uploaded')
+    docfile = models.FileField(upload_to='gedcom')
     last_updated = models.DateTimeField(auto_now_add=True)
     gedcom = models.ForeignKey('Gedcom', null=True, blank=True)
-    thumb = models.FileField(upload_to='uploaded/thumbs',
-                             null=True, blank=True)
+    thumb = models.FileField(upload_to='thumbs', null=True, blank=True)
 
     kind = models.CharField(
         max_length=5,

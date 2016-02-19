@@ -28,7 +28,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-MEDIA_ROOT = '/src/.files/'
+MEDIA_ROOT = '/src/files/'
 MEDIA_URL = '/gedgo/media/'
 
 STATIC_ROOT = ''
@@ -98,6 +98,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SERVER_EMAIL = ['noreply@example.com']
 
+GEDGO_SENDFILE_HEADER = None
 GEDGO_SITE_TITLE = 'My Genealogy Site'
 GEDGO_REDIS_SERVER = 'redis'
 

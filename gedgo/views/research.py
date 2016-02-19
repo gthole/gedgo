@@ -1,18 +1,10 @@
-from django.conf import settings
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
 from django.contrib.auth.decorators import login_required
-from django.utils.module_loading import import_string
 
 from os import path
 import mimetypes
 
-from gedgo.views.util import render
-
-
-storage = None
-if getattr(settings, 'GEDGO_RESEARCH_FILE_STORAGE', None):
-    storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(
-        location=settings.GEDGO_RESEARCH_FILE_ROOT)
+from gedgo.views.util import serve_content, render, research_storage as storage
 
 
 @login_required
@@ -25,7 +17,7 @@ def research(request, pathname):
     # Serve the content through xsendfile or directly.
     try:
         if '.' in name:
-            return HttpResponseRedirect(storage.url(name))
+            return serve_content(storage, name)
         else:
             directories, files = storage.listdir(name)
             directories = [__process(name, d, True) for d in directories]

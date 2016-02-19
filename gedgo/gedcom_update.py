@@ -1,20 +1,26 @@
 from gedcom_parser import GedcomParser
 from models import Gedcom, Person, Family, Note, Document, Event
 
+from django.core.files.storage import default_storage
 from django.db import transaction
 from django.utils.datetime_safe import date
 from django.utils import timezone
-from django.conf import settings
 from datetime import datetime
-from dropbox.dropbox import Dropbox
 from re import findall
-from os import path, mkdir
+from os import path
+from cStringIO import StringIO
 
 from PIL import Image
+
+gedcom_storage = None
 
 
 @transaction.atomic
 def update(g, file_name, verbose=True):
+    # Prevent circular dependencies
+    global gedcom_storage
+    from gedgo.views.util import gedcom_storage as gs
+    gedcom_storage = gs
     if verbose:
         print 'Parsing content'
     parsed = GedcomParser(file_name)
@@ -238,30 +244,28 @@ def __process_Note(entry, g):
 
 
 def __process_Document(entry, obj, g):
-    if not __valid_document_entry(entry):
+    name = __valid_document_entry(entry)
+    if not name:
         return None
 
-    file_name = __strip_files_directories(entry)
-    kind = __child_value_by_tags(entry, 'TYPE')
-
-    if kind == 'PHOTO':
-        try:
-            make_thumbnail(path.join(settings.MEDIA_ROOT, file_name))
-            thumb = path.join('thumbs', file_name)
-        except:
-            print '  Warning: failed to make or find thumbnail: ' + file_name
-            return None  # Bail on document creation if thumb fails
-
-    else:
-        thumb = None
-
-    known = Document.objects.filter(docfile=file_name.decode('utf-8').strip())
+    file_name = 'gedcom/%s' % name
+    known = Document.objects.filter(docfile=file_name)
 
     if len(known) > 0:
         m = known[0]
     else:
+        kind = __child_value_by_tags(entry, 'TYPE')
         m = Document(gedcom=g, kind=kind)
         m.docfile.name = file_name
+        if kind == 'PHOTO':
+            try:
+                make_thumbnail(name)
+                thumb = path.join('default/thumbs', name)
+            except:
+                print '  Warning: failed to make or find thumbnail: %s' % name
+                return None  # Bail on document creation if thumb fails
+        else:
+            thumb = None
         if thumb is not None:
             m.thumb.name = thumb
         m.save()
@@ -354,67 +358,37 @@ def __child_by_tag(entry, tag):
             return child
 
 
-# TODO: Proper Storage class approach to this code
 def __valid_document_entry(e):
-    file_name = __strip_files_directories(e)
-    media_file = path.join(settings.MEDIA_ROOT, file_name)
-
-    # The file exists already
-    if isinstance(file_name, basestring) and file_name and \
-            path.exists(media_file):
-        return True
-
-    if __get_from_dropbox(file_name, media_file, ):
-        return True
-
-    return False
+    full_name = __child_value_by_tags(e, 'FILE')
+    name = path.basename(full_name).decode('utf-8').strip()
+    if gedcom_storage.exists(name):
+        return name
 
 
-def __strip_files_directories(e):
-    file_name = __child_value_by_tags(e, 'FILE')
-    return path.basename(file_name)
+def make_thumbnail(name):
+    """
+    Copies an image from gedcom_storage, converts it to a thumbnail, and saves
+    it to default_storage for fast access
+    """
+    thumb_name = path.join('thumbs', name)
 
+    if default_storage.exists(thumb_name):
+        return thumb_name
 
-def __get_from_dropbox(file_name, media_file_name):
-    if not getattr(settings, 'DROPBOX_ACCESS_TOKEN', None):
-        return False
-    d = Dropbox(settings.DROPBOX_ACCESS_TOKEN)
-    resource_path = path.join(settings.DROPBOX_BASE_PATH, file_name)
-    print '  .. %s' % resource_path
-    try:
-        d.files_download_to_file(media_file_name, resource_path)
-        return True
-    except:
-        return False
-
-
-def make_thumbnail(file_name):
-    base_name = path.basename(file_name)
-    dir_name = path.dirname(file_name)
-
-    thumb_path = path.join(dir_name, 'thumbs')
-    thumb_file = path.join(thumb_path, base_name)
-
-    if not path.exists(thumb_path):
-        mkdir(thumb_path)  # Worry about permissions?
-
-    size = 150, 150
-
-    if path.exists(thumb_file):
-        return thumb_file
-
-    im = Image.open(file_name)
+    im = Image.open(gedcom_storage.open(name))
     width, height = im.size
 
+    # TODO: Use gedcom _CROP attribute to set the box
     if width > height:
         offset = (width - height) / 2
         box = (offset, 0, offset + height, height)
     else:
         offset = ((height - width) * 3) / 10
         box = (0, offset, width, offset + width)
-
     cropped = im.crop(box)
-    cropped.thumbnail(size, Image.ANTIALIAS)
-    cropped.save(thumb_file)
 
-    return thumb_file
+    size = 150, 150
+    cropped.thumbnail(size, Image.ANTIALIAS)
+    output = StringIO()
+    cropped.save(output, 'JPEG')
+    return default_storage.save(thumb_name, output)

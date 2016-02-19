@@ -18,7 +18,10 @@ class DropboxStorage(Storage):
         raise NotImplementedError
 
     def exists(self, name):
-        raise NotImplementedError
+        try:
+            return isinstance(self.client.metadata(self.path(name)), dict)
+        except:
+            return False
 
     def get_available_name(self, name):
         raise NotImplementedError
@@ -37,20 +40,17 @@ class DropboxStorage(Storage):
                 files.append(name)
         return (directories, files)
 
-    def preview(self, name):
-        return self.client.thumbnail(self.path(name)).read()
-
     def modified_time(self, name):
         raise NotImplementedError
 
     def open(self, name, mode='rb'):
-        raise NotImplementedError
+        return self.client.get_file(self.path(name))
 
     def save(self, name, content, max_length=None):
         raise NotImplementedError
 
     def size(self, name):
-        raise NotImplementedError
+        return self.client.metadata(self.path(name)).bytes
 
     def url(self, name):
         return self.client.media(self.path(name))['url']

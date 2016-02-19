@@ -48,8 +48,8 @@ urlpatterns = [
             'template_name': 'auth/password_reset_confirm.html'
         }),
 
-    # Backup media fileserve view
-    url(r'^media/(?P<file_base_name>.*)$', views.media),
+    # Authenticated media fileserve view
+    url(r'^media/(?P<storage_name>\w+)/(?P<file_base_name>.*)$', views.media),
 
     url(r'^$', lambda r: redirect('/gedgo/1/')),
 ]

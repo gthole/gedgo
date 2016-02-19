@@ -1,10 +1,12 @@
 # Dev services
 avahi:
+  container_name: 'avahi'
   image: 'enernoclabs/avahi:latest'
   net: 'host'
   log_driver: 'none'
   restart: 'on-failure'
 db:
+  container_name: 'db'
   image: 'mysql'
   ports:
     - '3306:3306'
@@ -15,6 +17,7 @@ db:
     MYSQL_PASSWORD: 'gedgo'
   log_driver: 'none'
 redis:
+  container_name: 'redis'
   image: 'redis'
   ports:
     - '6379'
@@ -32,6 +35,7 @@ app:
     - 'db'
     - 'redis'
 worker:
+  container_name: 'gedgo_worker'
   image: 'gedgo_app'
   command: ['python', 'manage.py', 'celeryd', '-c', '1', '--loglevel=info']
   volumes:

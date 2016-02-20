@@ -29,7 +29,7 @@ def async_update(gedcom_id, file_name, recipient_ids,
 
     errstr = ''
     try:
-        update(gedcom, file_name)
+        update(gedcom, file_name, verbose=False)
     except:
         errstr = traceback.format_exc()
 

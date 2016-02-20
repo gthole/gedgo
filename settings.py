@@ -1,4 +1,5 @@
 import os
+import sys
 project_root = os.path.dirname(__file__)
 # Django settings for gedgo project.
 
@@ -131,10 +132,14 @@ LOGGING = {
     }
 }
 
-try:
-    from settings_local import *  # noqa
-except ImportError:
-    pass
+if 'test' in sys.argv:
+    DATABASES['default']['USER'] = 'root'
+    DATABASES['default']['PASSWORD'] = 'docker'
+else:
+    try:
+        from settings_local import *  # noqa
+    except ImportError:
+        pass
 
-import djcelery
+import djcelery  # noqa
 djcelery.setup_loader()

@@ -1,29 +1,20 @@
-Ged-go
-=====
-
+# Ged-go
 A Gedcom viewer web app.
 
-About
----------------
-Ged-go is written in Django with d3.js visualizations and Bootstrap for mobile scaffolding, based on the idea that a genealogy website and gedcom viewer can be beautiful and intuitive.
+## About
 
-Most of the web-based genealogy software out there is pretty ugly and difficult to navigate in.  There are often silly little icons and information is presented in hard to read tables.  Instead, the philosophy of Ged-go is to have fewer features, but to present a gedcom in a clear and well designed way.
+Ged-go is a Gedcom file viewer web app written in Django with d3.js
+visualizations and Bootstrap for mobile scaffolding, with the idea that a
+genealogy website and gedcom viewer can be beautiful and intuitive.
 
-<table align=center>
-  <tr><td>
-    <a href="https://raw.github.com/gthole/gedgo/master/static/screenshots/individualview.png">
-      <img src="https://raw.github.com/gthole/gedgo/master/static/screenshots/individualview.png" height=250 width=300>
-    </a>
-  </td><td>
-    <a href="https://raw.github.com/gthole/gedgo/master/static/screenshots/timeline.png">
-      <img src="https://raw.github.com/gthole/gedgo/master/static/screenshots/timeline.png" height=250 width=250>
-    </a>
-  </td></tr>
-</table>
+Most of the web-based genealogy software out there is pretty ugly and
+difficult to navigate in.  There are often silly little icons and
+information is presented in hard to read tables.  Instead, the philosophy of
+Ged-go is to have fewer features, but to present a gedcom in a clear and well
+designed way.
 
 
-Features
----------------
+## Features
 
 - Individual view
   - Easy to read podded display
@@ -32,92 +23,95 @@ Features
 - Gedcom view
 - Basic search
 - Blog
-  - Tag people in a blog post, and those posts automatically appear in that person's individual view.
+  - Tag people in a blog post, and those posts automatically appear in that
+    person's individual view.
 - Page for displaying documentary videos
 - Email contact form
 - Secure login and Admin pages
 - Gedcom parser and update mechanism
-- Family view
 - Automatic thumbnail creation
 - Responsive design for all levels of mobile browsing
 
- 
-Installation
----------------
 
-Development installation is fairly straight-forward.  We use Vagrant and 
-Virtualbox to abstract away most of the dependencies and make it easy to
-get started.
+## Development Environment Setup
 
-Install system dependencies:
-- Download and install [VirtualBox]().
-- Download and install [vagrant]().
-- Install [fabric]() `pip install fabric` (You may need to install [pip](), and use `sudo`.)
+Development installation is fairly straight-forward.  We use the Docker toolbox
+to abstract away dependencies on the development environment so you don't have
+to install packages or a have a database running in order to get started.
 
-Now checkout the Gedgo development environment, and then Gedgo itself.
+#### Dependencies
+
+Download and install [Docker Toolbox](http://www.docker.com/toolbox).
+
+Clone this repo and `cd` into it.
 
 ```bash
-$ git clone git@github.com:gthole/gedgo_env.git
-$ cd gedgo_env
-$ git clone git@github.com:gthole/gedgo.git
+# Create a docker machine for gedgo to run in
+$ docker-machine create -d virtualbox gedgo
+
+# Point docker environment variables at it
+$ eval $(docker-machine env gedgo)
+
+# Build the docker images
+$ docker-compose build
 ```
 
-Alright, let's get a virtual CentOS server running!
+#### Importing Data
+
+With the images built locally, you can import data from your gedcom file into
+the application.
+
+Copy any documents (like photos or PDFs) that your gedcom file references into
+`./files/gedcom/` (you may need to create that directory), and copy your
+gedcom to the base gedgo directory.
+
+Then run the import:
 
 ```bash
-# Create and provision the virtual machine
-$ vagrant up
+# Create the database tables
+$ docker-compose run app python manage.py migrate
 
-# Install python dependencies, set up the MySQL db, and load with fixtures
-$ fab setup_dev_env
+# Create a user for yourself
+$ docker-compose run app python manage.py createsuperuser
 
-# Start the development server
-$ fab server
+# Import your gedcom file
+$ docker-compose run app python manage.py add_gedcom your-gedcom-file.ged
 ```
 
-You should see two processes running, a web server and a celery worker.
+The initial import may take a while, since it creates thumbnails for any
+images.
 
-Go to [localhost:8000](http://localhost:8000/), and log in with
-username `devel` and password `devel`.
+#### Running the application
 
-You can run the unit tests with a fabric command, or shell into the
-machine to interact with it directly:
+Start up the web server and worker with
 
 ```bash
-$ fab test
-$ vagrant ssh
+$ docker-compose up
 ```
 
-When you're done with the virtual machine and want to move on to other things,
-you can shut it down with:
+If you're running a Mac you can go to [http://gedgo.local:8000](http://gedgo.local:8000).  Otherwise find out the local ip address of the gedgo docker machine and visit it.  For example:
 
 ```bash
-$ vagrant halt
+$ docker-machine ip gedgo
+192.168.99.101
 ```
 
+And you would go to [http://192.168.99.101:8000](http://192.168.99.101:8000).
 
-Adding and Updating Gedcoms
----------------
+#### Updating Gedcoms
+To update your gedcom, you can either use the manage.py command, passing it
+the integer ID of the gedcom object you'd like to update, for example:
 
 ```bash
-$ python manage.py add_gedcom /path/to/your/file.ged
+$ docker-compose run app python manage.py update_gedcom 1 your-gedcom-file.ged
 ```
 
-To update your gedcom, you can either use the manage.py command, passing it the integer ID of the gedcom object you'd like to update, for example:
+Or, with the Celery worker running, you can use the web interface.
+
+
+#### Running the tests
+You can run the unit tests with:
 
 ```bash
-$ python manage.py update_gedcom 1 /path/to/your/file.ged
+$ docker-compose run app ./test.sh
 ```
-
-Or, with the Celery worker running, you can use the [web interface](http://localhost:8000/gedgo/1/update).
-
-
-License
----------------
-Copyright (c) 2012 Gregory Thole
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -2,13 +2,21 @@
 
 
 {% block leftsidebar %}
+<div class="row">
 {% for photo in person.photos %}
     {% if not photo == person.key_photo %}
+      <div class="col-lg-4 col-md-6">
       <a href="{{ photo.docfile.url }}">
         <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
       </a>
+    </div>
     {% endif %}
+{% empty %}
+  <div class="col-lg-12">
+  <span class="text-center text-muted">(no photos)</span>
+</div>
 {% endfor %}
+</div>
 {% endblock %}
 
 

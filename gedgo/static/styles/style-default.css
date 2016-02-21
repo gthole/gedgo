@@ -1,39 +1,63 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  background-color: #7EB5D6;
+  background-color: #F5F8FA;
+}
+
+.navbar {
+  background-color: #3097D1 !important;
+}
+.navbar-nav li a {
+  color: #fcfcfc !important;
+}
+.navbar-nav .dropdown .footlist a {
+  color: #666 !important;
+}
+.navbar-nav .active a {
+  background-color: #3097D1 !important;
+}
+.navbar-nav .open .dropdown-toggle {
+  background-color: #3097D1 !important;
 }
 
 .navbar-brand {
   color: #fff !important;
 }
-.container {
-  max-width: 780px;
+
+.main-container {
+  margin-top: 65px;
 }
 
 .main {
-  max-width: 750px;
-  padding-top: 65px;
-  background-color: #FFFBFF;
+  color: #666;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
   border-style: solid;
-  border-color: #6E6E6E;
+  border-color: #d3d3d3;
   border-width: 1px;
 }
 .section {
   margin-top: 35px;
 }
 .sidebar-thumb {
-  width: 105px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
   margin-bottom: 10px;
 }
 .subsection-thumb {
-  width: 90px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
   margin-bottom: 10px;
 }
 .photo-subsection {
   margin-right: 20px;
 }
 .sidebar-lead {
-  width: 210px;
+  min-width: 100%;
   margin-bottom: 10px;
 }
 .documentary-thumb {
@@ -41,7 +65,8 @@ body {
   margin-bottom: 10px;
 }
 .thumb {
-  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
   margin-bottom: 10px;
 }
 .comment-area {

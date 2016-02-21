@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <div class="main container">
+    <div class="main-container container">
       {% if messages %}
         {% for message in messages %}
         <br />
@@ -65,10 +65,11 @@
         {% endfor %}
       {% endif %}
       <div class="row">
-        <div class="col-sm-4 hidden-xs">
+        <div class="main col-sm-4 hidden-xs">
           {% block leftsidebar %}{% endblock %}
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-1 hidden-xs"></div>
+        <div class="main col-sm-7">
           {% block content %}{% endblock %}<br>&nbsp;
         </div>
       </div>

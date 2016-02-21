@@ -2,11 +2,15 @@
 
 
 {% block leftsidebar %}
+<div class="row">
 {% for photo in gedcom.photo_sample %}
+  <div class="col-lg-4 col-md-6">
   <a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% else %}{{ photo.docfile.url }}{% endif %}">
     <img src="{{ MEDIA_URL }}{{ photo.thumb }}" class="sidebar-thumb img-rounded">
   </a>
+</div>
 {% endfor %}
+</div>
 {% endblock %}
 
 

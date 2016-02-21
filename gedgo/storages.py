@@ -1,6 +1,7 @@
 from django.core.files.storage import Storage
 from django.utils._os import safe_join
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 import os
 from dropbox.client import DropboxClient
@@ -54,3 +55,10 @@ class DropboxStorage(Storage):
 
     def url(self, name):
         return self.client.media(self.path(name))['url']
+
+
+research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(
+    location=settings.GEDGO_RESEARCH_FILE_ROOT)
+
+gedcom_storage = import_string(settings.GEDGO_GEDCOM_FILE_STORAGE)(
+    location=settings.GEDGO_GEDCOM_FILE_ROOT)

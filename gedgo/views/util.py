@@ -9,23 +9,13 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.utils.module_loading import import_string
 
 from gedgo.models import BlogPost, Documentary
 from gedgo.forms import CommentForm
+from gedgo.storages import gedcom_storage, research_storage
 
 from os import path
 import mimetypes
-
-research_storage = None
-if getattr(settings, 'GEDGO_RESEARCH_FILE_STORAGE', None):
-    research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(
-        location=settings.GEDGO_RESEARCH_FILE_ROOT)
-
-gedcom_storage = None
-if getattr(settings, 'GEDGO_GEDCOM_FILE_STORAGE', None):
-    gedcom_storage = import_string(settings.GEDGO_GEDCOM_FILE_STORAGE)(
-        location=settings.GEDGO_GEDCOM_FILE_ROOT)
 
 
 STORAGES = {

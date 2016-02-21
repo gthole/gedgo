@@ -29,7 +29,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-MEDIA_ROOT = '/src/files/'
+MEDIA_ROOT = '/src/files/default/'
 MEDIA_URL = '/gedgo/media/'
 
 STATIC_ROOT = ''
@@ -102,6 +102,11 @@ SERVER_EMAIL = ['noreply@example.com']
 GEDGO_SENDFILE_HEADER = None
 GEDGO_SITE_TITLE = 'My Genealogy Site'
 GEDGO_REDIS_SERVER = 'redis'
+GEDGO_RESEARCH_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+GEDGO_RESEARCH_FILE_ROOT = '/src/files/gedcom/'
+GEDGO_GEDCOM_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+GEDGO_GEDCOM_FILE_ROOT = '/src/files/research/'
+GEDGO_SHOW_RESEARCH_FILES = True
 
 BROKER_BACKEND = 'redis'
 BROKER_URL = 'redis://redis:6379/0'

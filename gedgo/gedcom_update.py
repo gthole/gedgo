@@ -12,15 +12,12 @@ from cStringIO import StringIO
 
 from PIL import Image
 
-gedcom_storage = None
+from gedgo.storages import gedcom_storage
 
 
 @transaction.atomic
 def update(g, file_name, verbose=True):
     # Prevent circular dependencies
-    global gedcom_storage
-    from gedgo.views.util import gedcom_storage as gs
-    gedcom_storage = gs
     if verbose:
         print 'Parsing content'
     parsed = GedcomParser(file_name)

@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from os import path
 import mimetypes
 
-from gedgo.views.util import serve_content, render, research_storage as storage
+from gedgo.views.util import serve_content, render
+from gedgo.storages import research_storage as storage
 
 
 @login_required

@@ -1,4 +1,4 @@
-from django.core.files.storage import Storage
+from django.core.files.storage import Storage, FileSystemStorage
 from django.utils._os import safe_join
 from django.conf import settings
 from django.utils.module_loading import import_string
@@ -15,25 +15,19 @@ class DropboxStorage(Storage):
     def path(self, name):
         return safe_join(self.location, name)
 
-    def created_time(self, name):
-        raise NotImplementedError
-
     def exists(self, name):
         try:
             return isinstance(self.client.metadata(self.path(name)), dict)
         except:
             return False
 
-    def get_available_name(self, name):
-        raise NotImplementedError
-
-    def get_valid_name(self, name):
-        raise NotImplementedError
-
     def listdir(self, path):
         meta = self.client.metadata(self.path(path))
+        return self._list_from_contents(meta['contents'])
+
+    def _list_from_contents(self, contents):
         directories, files = [], []
-        for entry in meta['contents']:
+        for entry in contents:
             name = os.path.basename(entry['path'])
             if entry['is_dir']:
                 directories.append(name)
@@ -41,20 +35,36 @@ class DropboxStorage(Storage):
                 files.append(name)
         return (directories, files)
 
-    def modified_time(self, name):
-        raise NotImplementedError
-
     def open(self, name, mode='rb'):
         return self.client.get_file(self.path(name))
-
-    def save(self, name, content, max_length=None):
-        raise NotImplementedError
 
     def size(self, name):
         return self.client.metadata(self.path(name)).bytes
 
     def url(self, name):
         return self.client.media(self.path(name))['url']
+
+    def search(self, query):
+        contents = self.client.search(self.path(''), query)
+        return self._list_from_contents(contents)
+
+    def preview(self, name):
+        return self.client.preview(self.path(name))
+
+
+class ResearchFileSystemStorage(FileSystemStorage):
+    def search(self, query):
+        terms = [term for term in query.lower().split()]
+        directories, files = [], []
+        for root, ds, fs in os.walk(self.location):
+            r = root[len(self.location) + 1:]
+            for f in fs:
+                if all([(t in f.lower()) for t in terms]):
+                    files.append(os.path.join(r, f))
+        return directories, files
+
+    def preview(self, path):
+        raise NotImplementedError
 
 
 research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(

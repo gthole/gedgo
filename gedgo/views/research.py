@@ -21,8 +21,8 @@ def research(request, pathname):
             return serve_content(storage, name)
         else:
             directories, files = storage.listdir(name)
-            directories = [__process(name, d, True) for d in directories]
-            files = [__process(name, f, False) for f in files]
+            directories = [process_file(name, d, True) for d in directories]
+            files = [process_file(name, f, False) for f in files]
 
             # Build a depth tree of the directories above this one for
             # navigation
@@ -47,7 +47,7 @@ def research(request, pathname):
         raise Http404
 
 
-def __process(name, p, is_dir=False):
+def process_file(name, p, is_dir=False):
     type_ = 'folder_open' if is_dir else _get_type(p)
     return {
         'type': type_,

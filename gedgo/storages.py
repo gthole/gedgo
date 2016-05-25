@@ -21,14 +21,14 @@ class DropboxStorage(Storage):
         except:
             return False
 
-    def listdir(self, path):
-        meta = self.client.metadata(self.path(path))
-        return self._list_from_contents(meta['contents'])
+    def listdir(self, name):
+        meta = self.client.metadata(self.path(name))
+        return self._list_from_contents(self.path(name), meta['contents'])
 
-    def _list_from_contents(self, contents):
+    def _list_from_contents(self, path, contents):
         directories, files = [], []
         for entry in contents:
-            name = os.path.basename(entry['path'])
+            name = entry['path'][len(path) + 1:]
             if entry['is_dir']:
                 directories.append(name)
             else:
@@ -44,9 +44,9 @@ class DropboxStorage(Storage):
     def url(self, name):
         return self.client.media(self.path(name))['url']
 
-    def search(self, query):
-        contents = self.client.search(self.path(''), query)
-        return self._list_from_contents(contents)
+    def search(self, query, name=''):
+        contents = self.client.search(self.path(name), query)
+        return self._list_from_contents(self.path(name), contents)
 
     def preview(self, name):
         return self.client.thumbnail(self.path(name), 's')

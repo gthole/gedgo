@@ -42,7 +42,10 @@ def research(request, pathname):
         if '.' in name:
             return serve_content(storage, name)
         else:
-            directories, files = storage.listdir(name)
+            if request.GET.get('rq') and hasattr(storage, 'search'):
+                directories, files = storage.search(request.GET['rq'], name)
+            else:
+                directories, files = storage.listdir(name)
             directories = [process_file(name, d, True) for d in directories]
             files = [process_file(name, f, False) for f in files]
 
@@ -59,6 +62,9 @@ def research(request, pathname):
                 request,
                 'research.html',
                 {
+                    'pathname': name,
+                    'can_search': hasattr(storage, 'search'),
+                    'rquery': request.GET.get('rq', ''),
                     'directories': directories,
                     'files': files,
                     'levels': levels
@@ -81,7 +87,7 @@ def process_file(name, p, is_dir=False):
     return {
         'type': type_,
         'path': path.join(name, p),
-        'name': p,
+        'name': path.basename(p),
         'preview': can_preview(p)
     }
 

@@ -46,7 +46,7 @@
             </li>
           </ul>
           <form class="navbar-form navbar-right" action="/gedgo/search/" method="get">
-            <input type="text"  class="form-control" name="q" value="{% if query %}{{ query }}{% else %}search{% endif %}" onfocus="if (this.value=='search') this.value='';" >
+            <input type="text"  class="form-control" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="search" >
           </form>
         </div>
         <div class="navbar-collapse">

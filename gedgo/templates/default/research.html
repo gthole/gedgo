@@ -14,6 +14,16 @@
         {% endfor %}
         </ul>
     </div>
+    {% if can_search %}
+    <hr>
+    <form>
+        <form class="navbar-form navbar-right" action="/gedgo/search/" method="get">
+            <input type="text" class="form-control" name="rq" value="{% if rquery %}{{ rquery }}{% endif %}" placeholder="search this folder">
+        </form>
+        {% if rquery %}<a href="/gedgo/research/{{ pathname }}"><i class="fa fa-times"></i> clear</a>{% endif %}
+
+    </form>
+    {% endif %}
     <br />
 {% endblock %}
 

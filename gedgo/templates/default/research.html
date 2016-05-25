@@ -22,24 +22,46 @@
   <a class="btn btn-info visible-xs" href=".">Up a level</a>
 {% endif %}
 <h3>{{ current_level }}</h3>
+{% if directories %}
 <ul class="list-group">
     {% for dir in directories %}
         <li class="list-group-item">
             <a href="/gedgo/research/{{ dir.path }}">
-                <span class="glyphicon glyphicon-folder-open"></span> &nbsp; {{ dir.name|truncatechars:45 }}
+                <div class="row">
+                    <div class="col-xs-2 text-center">
+                        <i class="fa fa-folder-open fa-2x"></i>
+                    </div>
+                    <div class="col-xs-10">
+                        {{ dir.name|truncatechars:45 }}
+                    </div>
+                </div>
             </a>
         </li>
     {% endfor %}
 </ul>
+{% endif %}
+{% if directories and files %}
 <hr />
+{% endif %}
+{% if files %}
 <ul class="list-group">
     {% for f in files %}
         <li class="list-group-item">
             <a href="/gedgo/research/{{ f.path }}">
-                <span class="glyphicon glyphicon-{{ f.type }}"></span> &nbsp; {{ f.name|truncatechars:45 }}
+                <div class="row">
+                    <div class="col-xs-2 text-center">
+                {% if f.preview %}<img class="center-block" src="/gedgo/research-preview/{{ f.path }}">
+                {% else %}<i class="fa fa-{{ f.type }} fa-2x"></i>
+                {% endif %}
+                    </div>
+                    <div class="col-xs-10">
+                        {{ f.name|truncatechars:45 }}
+                    </div>
+                </div>
             </a>
         </li>
     {% endfor %}
 </ul>
+{% endif %}
 
 {% endblock %}

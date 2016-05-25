@@ -49,7 +49,7 @@ class DropboxStorage(Storage):
         return self._list_from_contents(contents)
 
     def preview(self, name):
-        return self.client.preview(self.path(name))
+        return self.client.thumbnail(self.path(name), 's')
 
 
 class ResearchFileSystemStorage(FileSystemStorage):

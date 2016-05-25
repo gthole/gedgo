@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^blog/post/(?P<post_id>\d+)/$', views.blogpost),
     url(r'^documentaries/$', views.documentaries),
     url(r'^research/(?P<pathname>.*)$', views.research),
+    url(r'^research-preview/(?P<pathname>.*)$', views.research_preview),
     url(r'^search/$', views.search),
     url(r'^dashboard/$', views.dashboard),
     url(r'^dashboard/user/(?P<user_id>\d+)/$', views.user_tracking),

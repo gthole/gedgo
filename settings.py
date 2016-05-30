@@ -99,7 +99,8 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SERVER_EMAIL = ['noreply@example.com']
 
-GEDGO_SENDFILE_HEADER = None
+GEDGO_SENDFILE_HEADER = 'X-Accel-Redirect'
+GEDGO_SENDFILE_PREFIX = '/protected/'
 GEDGO_SITE_TITLE = 'My Genealogy Site'
 GEDGO_REDIS_SERVER = 'redis'
 GEDGO_RESEARCH_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'

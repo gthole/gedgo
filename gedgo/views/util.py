@@ -1,4 +1,3 @@
-from wsgiref.util import FileWrapper
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
@@ -39,36 +38,35 @@ def process_comments(request, noun):
     Returns a tuple of (form, redirect_response) depending on whether a
     new comment has been posted or not.
     """
-    if request.POST:
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            # Store file uploads
-            file_names = []
-            if getattr(settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True:
-                for file_ in request.FILES.getlist('uploads'):
-                    upload_path = 'uploaded/%s/%s/%s' % (
-                        request.user.username,
-                        request.path.strip('/').replace('gedgo/', ''),
-                        file_.name
-                    )
-                    default_storage.save(upload_path, file_)
-                    file_names.append(upload_path)
-            # Email the comment to the site owners.
-            form.email_comment(request.user, noun, file_names)
-            messages.success(
-                request,
-                'Your comment has ben sent.  Thank you!'
-            )
-        else:
-            # Shouldn't happen, since there's almost no server-side validation
-            messages.error(
-                request,
-                "We're sorry, your comment was not sent."
-            )
-        return None, redirect(request.path)
+    if not request.POST:
+        return CommentForm(), None
+
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        # Store file uploads
+        file_names = []
+        if getattr(settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True:
+            for file_ in request.FILES.getlist('uploads'):
+                upload_path = 'uploaded/%s/%s/%s' % (
+                    request.user.username,
+                    request.path.strip('/').replace('gedgo/', ''),
+                    file_.name
+                )
+                default_storage.save(upload_path, file_)
+                file_names.append(upload_path)
+        # Email the comment to the site owners.
+        form.email_comment(request.user, noun, file_names)
+        messages.success(
+            request,
+            'Your comment has ben sent.  Thank you!'
+        )
     else:
-        form = CommentForm()
-    return form, None
+        # Shouldn't happen, since there's almost no server-side validation
+        messages.error(
+            request,
+            "We're sorry, your comment was not sent."
+        )
+    return None, redirect(request.path)
 
 
 def render(request, template, context):
@@ -117,14 +115,12 @@ def serve_content(storage, name):
     if not storage.__class__.__name__ == 'FileSystemStorage':
         return HttpResponseRedirect(storage.url(name))
 
-    # If behind a real server, use send-file
-    if settings.GEDGO_SENDFILE_HEADER:
-        response = HttpResponse()
-        response[settings.GEDGO_SENDFILE_HEADER] = default_storage.path(name)
-    # Otherwise, serve it ourselves, which should only happen in DEBUG mode
-    else:
-        wrapper = FileWrapper(storage.open(name))
-        response = HttpResponse(wrapper)
+    # Otherwise we use sendfile
+    response = HttpResponse()
+    response[settings.GEDGO_SENDFILE_HEADER] = '%s%s' % (
+        settings.GEDGO_SENDFILE_PREFIX,
+        name
+    )
 
     # Set various file headers and return
     base = path.basename(name)

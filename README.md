@@ -89,14 +89,14 @@ Start up the web server and worker with
 $ docker-compose up
 ```
 
-If you're running a Mac you can go to [http://gedgo.local:8000](http://gedgo.local:8000).  Otherwise find out the local ip address of the gedgo docker machine and visit it.  For example:
+If you're running a Mac you can go to [http://gedgo.local](http://gedgo.local).  Otherwise find out the local ip address of the gedgo docker machine and visit it.  For example:
 
 ```bash
 $ docker-machine ip gedgo
 192.168.99.101
 ```
 
-And you would go to [http://192.168.99.101:8000](http://192.168.99.101:8000).
+And you would go to [http://192.168.99.101](http://192.168.99.101).
 
 #### Updating Gedcoms
 To update your gedcom, you can either use the manage.py command, passing it

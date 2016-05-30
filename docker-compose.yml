@@ -4,7 +4,6 @@ avahi:
   image: 'enernoclabs/avahi:latest'
   net: 'host'
   log_driver: 'none'
-  restart: 'on-failure'
 db:
   container_name: 'db'
   image: 'mysql'
@@ -34,6 +33,16 @@ app:
   links:
     - 'db'
     - 'redis'
+web:
+  image: 'nginx'
+  command: 'nginx -g "daemon off;"'
+  volumes:
+    - './gedgo-web.conf:/etc/nginx/conf.d/gedgo-web.conf:ro'
+    - './files:/src/files:ro'
+  ports:
+    - '80:80'
+  links:
+    - 'app'
 worker:
   container_name: 'gedgo_worker'
   image: 'gedgo_app'

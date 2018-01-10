@@ -3,13 +3,16 @@ from django.utils._os import safe_join
 from django.conf import settings
 from django.utils.module_loading import import_string
 
+from cStringIO import StringIO
 import os
-from dropbox.client import DropboxClient
+from dropbox.dropbox import Dropbox
+from dropbox.files import FileMetadata, FolderMetadata, ThumbnailFormat, \
+    ThumbnailSize
 
 
 class DropboxStorage(Storage):
     def __init__(self, *args, **kwargs):
-        self.client = DropboxClient(settings.DROPBOX_ACCESS_TOKEN)
+        self.client = Dropbox(settings.DROPBOX_ACCESS_TOKEN)
         self.location = kwargs.get('location', settings.MEDIA_ROOT)
 
     def path(self, name):
@@ -17,39 +20,53 @@ class DropboxStorage(Storage):
 
     def exists(self, name):
         try:
-            return isinstance(self.client.metadata(self.path(name)), dict)
+            return isinstance(
+                self.client.files_get_metadata(self.path(name)),
+                (FileMetadata, FolderMetadata)
+            )
         except:
             return False
 
     def listdir(self, name):
-        meta = self.client.metadata(self.path(name))
-        return self._list_from_contents(self.path(name), meta['contents'])
+        result = self.client.files_list_folder(self.path(name))
+        return self._list_from_contents(self.path(name), result.entries)
 
     def _list_from_contents(self, path, contents):
         directories, files = [], []
         for entry in contents:
-            name = entry['path'][len(path) + 1:]
-            if entry['is_dir']:
-                directories.append(name)
-            else:
-                files.append(name)
+            if isinstance(entry, FileMetadata):
+                files.append(entry.name)
+            if isinstance(entry, FolderMetadata):
+                directories.append(entry.name)
         return (directories, files)
 
     def open(self, name, mode='rb'):
-        return self.client.get_file(self.path(name))
+        meta, resp= self.client.files_download(self.path(name))
+        return resp.raw
 
     def size(self, name):
-        return self.client.metadata(self.path(name)).bytes
+        return self.client.files_get_metadata(self.path(name)).size
 
     def url(self, name):
-        return self.client.media(self.path(name))['url']
+        url = self.client.files_get_temporary_link(self.path(name)).link
+        return url
 
-    def search(self, query, name=''):
-        contents = self.client.search(self.path(name), query)
-        return self._list_from_contents(self.path(name), contents)
+    def search(self, query, name='', start=0):
+        result = self.client.files_search(self.path(name), query, start)
+        directories, files = [], []
+        for entry in result.matches:
+            if isinstance(entry.metadata, FileMetadata):
+                p = entry.metadata.path_display[len(self.location):]
+                files.append(p)
+            # Ignore directories for now
+        return (directories, files)
 
-    def preview(self, name):
-        return self.client.thumbnail(self.path(name), 's')
+    def preview(self, name, size='w64h64'):
+        return StringIO(self.client.files_get_thumbnail(
+            self.path(name),
+            format=ThumbnailFormat('jpeg', None),
+            size=ThumbnailSize(size, None)
+        )[1].content)
 
 
 class ResearchFileSystemStorage(FileSystemStorage):
@@ -62,9 +79,6 @@ class ResearchFileSystemStorage(FileSystemStorage):
                 if all([(t in f.lower()) for t in terms]):
                     files.append(os.path.join(r, f))
         return directories, files
-
-    def preview(self, path):
-        raise NotImplementedError
 
 
 research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(

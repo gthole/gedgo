@@ -34,3 +34,4 @@ pip-log.txt
 /files/
 *.ged
 settings_local.py
+/tmp

@@ -1,55 +1,60 @@
-# Dev services
-avahi:
-  container_name: 'avahi'
-  image: 'enernoclabs/avahi:latest'
-  net: 'host'
-  log_driver: 'none'
-db:
-  container_name: 'db'
-  image: 'mysql'
-  ports:
-    - '3306:3306'
-  environment:
-    MYSQL_ROOT_PASSWORD: 'docker'
-    MYSQL_DATABASE: 'gedgo'
-    MYSQL_USER: 'gedgo'
-    MYSQL_PASSWORD: 'gedgo'
-  log_driver: 'none'
-redis:
-  container_name: 'redis'
-  image: 'redis'
-  ports:
-    - '6379'
-  log_driver: 'none'
-# Application
-app:
-  build: '.'
-  container_name: 'gedgo_app'
-  command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
-  volumes:
-    - './:/src'
-  ports:
-    - '8000:8000'
-  links:
-    - 'db'
-    - 'redis'
-web:
-  image: 'nginx'
-  command: 'nginx -g "daemon off;"'
-  volumes:
-    - './gedgo-web.conf:/etc/nginx/conf.d/gedgo-web.conf:ro'
-    - './files:/src/files:ro'
-  ports:
-    - '80:80'
-  links:
-    - 'app'
-worker:
-  container_name: 'gedgo_worker'
-  image: 'gedgo_app'
-  command: ['python', 'manage.py', 'celeryd', '-c', '1', '--loglevel=info']
-  volumes:
-    - './:/src'
-  links:
-    - 'app'
-    - 'db'
-    - 'redis'
+version: '2.2'
+services:
+    # Dev services
+    avahi:
+        container_name: 'avahi'
+        image: 'enernoclabs/avahi:latest'
+        network_mode: 'host'
+        logging:
+            driver: 'none'
+    db:
+        container_name: 'db'
+        image: 'mysql'
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: 'docker'
+            MYSQL_DATABASE: 'gedgo'
+            MYSQL_USER: 'gedgo'
+            MYSQL_PASSWORD: 'gedgo'
+        logging:
+            driver: 'none'
+    redis:
+        container_name: 'redis'
+        image: 'redis'
+        ports:
+            - '6379'
+        logging:
+            driver: 'none'
+    # Application
+    app:
+        build: '.'
+        container_name: 'gedgo_app'
+        command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+        volumes:
+            - './:/app'
+        links:
+            - 'db'
+            - 'redis'
+    web:
+        image: 'nginx'
+        command: 'nginx -g "daemon off;"'
+        volumes:
+            - './gedgo-web.conf:/etc/nginx/conf.d/gedgo-web.conf:ro'
+            - './files:/src/files:ro'
+        ports:
+            - '80:80'
+        links:
+            - 'app'
+    worker:
+        container_name: 'gedgo_worker'
+        image: 'gedgo_app'
+        command: ['python', 'manage.py', 'celeryd', '-c', '1', '--loglevel=info']
+        volumes:
+            - './:/app'
+        links:
+            - 'app'
+            - 'db'
+            - 'redis'
+        depends_on:
+            - 'app'

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block filesactive %}
+    class = "active"
+{% endblock %}
+
+{% block leftsidebar %}
+    <div class="bs-sidebar hidden-print" role="complementary">
+        <ul class="nav bs-sidenav">
+        {% for name, path in levels %}
+            <li>
+                <a href="/gedgo/research{{ path | urlencode }}">{{ name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% if can_search %}
+    <hr>
+    <form>
+        <form class="navbar-form navbar-right" action="/gedgo/search/" method="get">
+            <input type="text" class="form-control" name="rq" value="{% if rq %}{{ rq }}{% endif %}" placeholder="search this folder">
+        </form>
+        {% if rq %}<a href="/gedgo/research/{{ dirname | urlencode }}"><i class="fa fa-times"></i> clear</a>{% endif %}
+
+    </form>
+    {% endif %}
+    <br />
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center">
+    <h3>{{ file.name }}</h3>
+    <div class="btn-group">
+        <a class="btn btn-default" href="/gedgo/research/{{ dirname | urlencode }}?fn={{ prev_file.path | urlencode }}{% if rq %}&rq={{ rq }}{% endif %}">prev</a>
+        <a class="btn btn-default" href="/gedgo/research/{{ dirname | urlencode }}?fn={{ file.path | urlencode }}&download=true">download</a>
+        <a class="btn btn-default" href="/gedgo/research/{{ dirname | urlencode }}?fn={{ next_file.path | urlencode }}{% if rq %}&rq={{ rq }}{% endif %}">next</a>
+    </div>
+</div>
+<br /><br />
+
+{% if file.preview %}
+<img style="max-width: 100%" class="center-block" src="/gedgo/research-preview/{{ dirname | urlencode }}/{{ file.path | urlencode }}?size=w640h480">
+{% else %}
+    <br/>
+    <div class="center-block text-center"><i class="fa fa-{{ file.type }} fa-2x"></i></div>
+{% endif %}
+
+
+{% endblock %}

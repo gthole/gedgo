@@ -1,10 +1,6 @@
 FROM python:2.7
 
-COPY ./ /src/
+COPY ./ /app/
 
-WORKDIR /src/
+WORKDIR /app/
 RUN pip install -r reqs.pip
-
-RUN adduser --disabled-password --gecos '' gedgo
-RUN chown -R gedgo:gedgo /src
-USER gedgo

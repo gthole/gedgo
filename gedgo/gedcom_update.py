@@ -27,11 +27,13 @@ def update(g, file_name, verbose=True):
             title=__child_value_by_tags(parsed.header, 'TITL', default=''),
             last_updated=datetime(1920, 1, 1)  # TODO: Fix.
         )
+    print g.id
 
     if verbose:
         print 'Importing entries to models'
     person_counter = family_counter = note_counter = 0
-    for entry in parsed.entries.values():
+    entries = parsed.entries.values()
+    for index, entry in enumerate(entries):
         tag = entry['tag']
 
         if tag == 'INDI':
@@ -43,6 +45,9 @@ def update(g, file_name, verbose=True):
         elif tag == 'NOTE':
             __process_Note(entry, g)
             note_counter += 1
+
+        if (index + 1) % 100 == 0:
+            print ' ... %d / %d' % (index + 1, len(entries))
 
     if verbose:
         print 'Found %d people, %d families, %d notes, and %d documents' % (
@@ -64,8 +69,9 @@ def __process_all_relations(gedcom, parsed, verbose=True):
         print '  Starting Person objects.'
 
     # Process Person objects
-    for person in gedcom.person_set.iterator():
+    for index, person in enumerate(gedcom.person_set.iterator()):
         entry = parsed.entries.get(person.pointer)
+        print index
         if entry is not None:
             __process_person_relations(gedcom, person, entry)
         else:
@@ -256,7 +262,7 @@ def __process_Document(entry, obj, g):
         m.docfile.name = file_name
         if kind == 'PHOTO':
             try:
-                make_thumbnail(name)
+                make_thumbnail(name, __child_value_by_tags(entry, 'CROP'))
                 thumb = path.join('default/thumbs', name)
             except:
                 print '  Warning: failed to make or find thumbnail: %s' % name
@@ -362,7 +368,7 @@ def __valid_document_entry(e):
         return name
 
 
-def make_thumbnail(name):
+def make_thumbnail(name, crop):
     """
     Copies an image from gedcom_storage, converts it to a thumbnail, and saves
     it to default_storage for fast access
@@ -375,7 +381,7 @@ def make_thumbnail(name):
     im = Image.open(gedcom_storage.open(name))
     width, height = im.size
 
-    # TODO: Use gedcom _CROP attribute to set the box
+    # TODO: Use crop argument
     if width > height:
         offset = (width - height) / 2
         box = (offset, 0, offset + height, height)

@@ -1,0 +1,5 @@
+*.py[co]
+settings_local.py
+*.ged
+/tmp
+/files

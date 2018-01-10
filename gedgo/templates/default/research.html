@@ -9,7 +9,7 @@
         <ul class="nav bs-sidenav">
         {% for name, path in levels %}
             <li>
-                <a {% if forloop.last %}style="color: #000"{% else %}href="/gedgo/research{{ path }}"{% endif %}>{{ name|truncatechars:20 }}/</a>
+                <a {% if forloop.last %}style="color: #000"{% else %}href="/gedgo/research{{ path | urlencode }}"{% endif %}>{{ name }}</a>
             </li>
         {% endfor %}
         </ul>
@@ -18,9 +18,9 @@
     <hr>
     <form>
         <form class="navbar-form navbar-right" action="/gedgo/search/" method="get">
-            <input type="text" class="form-control" name="rq" value="{% if rquery %}{{ rquery }}{% endif %}" placeholder="search this folder">
+            <input type="text" class="form-control" name="rq" value="{% if rq %}{{ rq }}{% endif %}" placeholder="search this folder">
         </form>
-        {% if rquery %}<a href="/gedgo/research/{{ pathname }}"><i class="fa fa-times"></i> clear</a>{% endif %}
+        {% if rq %}<a href="/gedgo/research/{{ dirname | urlencode }}"><i class="fa fa-times"></i> clear</a>{% endif %}
 
     </form>
     {% endif %}
@@ -28,15 +28,16 @@
 {% endblock %}
 
 {% block content %}
-{% if levels|length > 1 %}
-  <a class="btn btn-info visible-xs" href=".">Up a level</a>
+
+{% if not directories and not files %}
+    <span class="text-muted">No files here.</span>
 {% endif %}
-<h3>{{ current_level }}</h3>
+
 {% if directories %}
 <ul class="list-group">
     {% for dir in directories %}
         <li class="list-group-item">
-            <a href="/gedgo/research/{{ dir.path }}">
+            <a href="/gedgo/research/{{ dir.full_path | urlencode }}/">
                 <div class="row">
                     <div class="col-xs-2 text-center">
                         <i class="fa fa-folder-open fa-2x"></i>
@@ -50,17 +51,19 @@
     {% endfor %}
 </ul>
 {% endif %}
+
 {% if directories and files %}
 <hr />
 {% endif %}
+
 {% if files %}
 <ul class="list-group">
     {% for f in files %}
-        <li class="list-group-item">
-            <a href="/gedgo/research/{{ f.path }}">
+        <li class="list-group-item" style="min-height: 64px">
+            <a href="/gedgo/research/{{ dirname | urlencode }}?fn={{ f.path | urlencode }}{% if rq %}&rq={{ rq }}{% endif %}">
                 <div class="row">
                     <div class="col-xs-2 text-center">
-                {% if f.preview %}<img class="center-block" src="/gedgo/research-preview/{{ f.path }}">
+                        {% if f.preview %}<img style="max-width: 64px" class="center-block" src="/gedgo/research-preview/{{ dirname | urlencode }}/{{ f.path | urlencode }}">
                 {% else %}<i class="fa fa-{{ f.type }} fa-2x"></i>
                 {% endif %}
                     </div>

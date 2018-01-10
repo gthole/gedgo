@@ -1,5 +1,6 @@
 django==1.9.2
 django-celery==3.1.17
+celery==3.1
 pillow==3.1.1
 dropbox
 mysql-python

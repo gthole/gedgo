@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block headappend %}
+  <link href="http://vjs.zencdn.net/6.6.0/video-js.css" rel="stylesheet">
+{% endblock %}
+
 {% block filesactive %}
     class = "active"
 {% endblock %}
@@ -39,12 +43,23 @@
 </div>
 <br /><br />
 
-{% if file.preview %}
+
+{% if file.can_video %}
+    <video class="video-js" data-setup="{}" style="width: 100%; max-width: 100%" controls>
+    	<source type="video/mp4" src="/gedgo/research/{{ dirname | urlencode }}?fn={{ file.path | urlencode }}&download=true">
+        Sorry, your browser doesn't support embedded videos,
+        but don't worry, you can download it
+        and watch it with your favorite video player!
+    </video>
+{% elif file.preview %}
 <img style="max-width: 100%" class="center-block" src="/gedgo/research-preview/{{ dirname | urlencode }}/{{ file.path | urlencode }}?size=w640h480">
 {% else %}
     <br/>
     <div class="center-block text-center"><i class="fa fa-{{ file.type }} fa-2x"></i></div>
 {% endif %}
 
+{% endblock %}
 
+{% block javascript %}
+<script src="http://vjs.zencdn.net/6.6.0/video.js"></script>
 {% endblock %}

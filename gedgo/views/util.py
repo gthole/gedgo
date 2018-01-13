@@ -16,6 +16,9 @@ from gedgo.storages import gedcom_storage, research_storage
 from os import path
 import mimetypes
 
+import sys
+sys.stdout = sys.stderr
+
 
 STORAGES = {
     'research': research_storage,
@@ -24,13 +27,12 @@ STORAGES = {
 
 
 @login_required
-def media(request, storage_name, file_base_name):
+def media(request, file_base_name):
     """
     Authenticated view to serve media content and toggle storage classes
     """
     filename = file_base_name.strip('/')
-    storage = STORAGES.get(storage_name, default_storage)
-    return serve_content(storage, filename)
+    return serve_content(default_storage, filename)
 
 
 def process_comments(request, noun):

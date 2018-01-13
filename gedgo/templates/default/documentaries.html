@@ -23,7 +23,7 @@
     {% for documentary in documentaries.iterator %}
         <div class="media">
           <a class="pull-left" href="{{ documentary.location }}">
-            <img class="documentary-thumb media-object" src="{{ MEDIA_URL }}{{ documentary.thumb }}">
+            <img class="documentary-thumb media-object" src="{{ MEDIA_URL }}{{ documentary.thumb.thumb }}">
           </a>
           <div class="media-body">
             <h4 class="media-heading" id="{{ documentary.title|urlencode }}">{{ documentary.title }}</h4>

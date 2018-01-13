@@ -2,13 +2,13 @@ from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 
-import sys
 from os import path
 import mimetypes
 
 from gedgo.views.util import serve_content, render
 from gedgo.storages import research_storage as storage
 
+import sys
 sys.stdout = sys.stderr
 
 FOLDER_CACHE = ('', ([], []))
@@ -124,8 +124,8 @@ def can_preview(name):
         (
             '.' in name and
             name.rsplit('.', 1)[1].lower() in (
-                'jpeg', 'jpg', 'gif', 'png', 'pdf', 'pages',
-                'mov', 'avi', 'doc', 'mpg'
+                'jpeg', 'jpg', 'gif', 'png', 'pdf',
+                'mov', 'avi', 'doc', 'mpg', 'bmp'
             )
         )
     )
@@ -143,6 +143,7 @@ def process_file(name, p, is_dir=False):
         'full_path': path.join(name, path.basename(p)),
         'name': path.basename(p),
         'path': fn,
+        'can_video': not is_dir and p.rsplit('.')[1].lower() in ('mp4', 'avi'),
         'preview': can_preview(p)
     }
 

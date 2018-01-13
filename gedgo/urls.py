@@ -50,7 +50,7 @@ urlpatterns = [
         }),
 
     # Authenticated media fileserve view
-    url(r'^media/(?P<storage_name>\w+)/(?P<file_base_name>.*)$', views.media),
+    url(r'^media/(?P<file_base_name>.*)$', views.media),
 
     url(r'^$', lambda r: redirect('/gedgo/1/')),
 ]

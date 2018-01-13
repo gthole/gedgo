@@ -57,20 +57,20 @@
 {% endif %}
 
 {% if files %}
-<ul class="list-group">
+<ul class="media-list">
     {% for f in files %}
-        <li class="list-group-item" style="min-height: 64px">
-            <a href="/gedgo/research/{{ dirname | urlencode }}?fn={{ f.path | urlencode }}{% if rq %}&rq={{ rq }}{% endif %}">
-                <div class="row">
-                    <div class="col-xs-2 text-center">
-                        {% if f.preview %}<img style="max-width: 64px" class="center-block" src="/gedgo/research-preview/{{ dirname | urlencode }}/{{ f.path | urlencode }}">
+        <li class="media research-file-item">
+            <a class="pull-left" href="/gedgo/research/{{ dirname | urlencode }}?fn={{ f.path | urlencode }}{% if rq %}&rq={{ rq }}{% endif %}">
+                <div style="width: 64px; min-width: 64px">
+                {% if f.preview %}<img style="width: 100%" class="media-object" src="/gedgo/research-preview/{{ dirname | urlencode }}/{{ f.path | urlencode }}">
                 {% else %}<i class="fa fa-{{ f.type }} fa-2x"></i>
                 {% endif %}
-                    </div>
-                    <div class="col-xs-10">
-                        {{ f.name|truncatechars:45 }}
-                    </div>
                 </div>
+            </a>
+            <a class="pull-left" href="/gedgo/research/{{ dirname | urlencode }}?fn={{ f.path | urlencode }}{% if rq %}&rq={{ rq }}{% endif %}">
+            <div class="media-body">
+                <p class="media-heading">{{ f.name|truncatechars:45 }}</p>
+            </div>
             </a>
         </li>
     {% endfor %}

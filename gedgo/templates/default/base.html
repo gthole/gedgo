@@ -6,6 +6,7 @@
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="//opensource.keycdn.com/fontawesome/4.6.3/font-awesome.min.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}styles/style-default.css" rel="stylesheet" type="text/css" >
+    {% block headappend %}{% endblock %}
   </head>
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -66,12 +67,11 @@
         {% endfor %}
       {% endif %}
       <div class="row">
-        <div class="main col-sm-4 hidden-xs">
-          {% block leftsidebar %}{% endblock %}
+        <div class="col-sm-4 hidden-xs">
+          <div class="main">{% block leftsidebar %}{% endblock %}</div>
         </div>
-        <div class="col-sm-1 hidden-xs"></div>
-        <div class="main col-sm-7">
-          {% block content %}{% endblock %}<br>&nbsp;
+        <div class="col-sm-8">
+          <div class="main">{% block content %}{% endblock %}</div>
         </div>
       </div>
     </div>

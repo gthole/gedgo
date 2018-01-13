@@ -8,7 +8,7 @@
 {% if post.tagged_photos.all %}
     {% for photo in post.tagged_photos.all %}
       <a href="{{ photo.docfile.url }}">
-        <img src="{{ photo.thumb.url }}" class="sidebar-lead img-rounded">
+        <img src="{{ photo.thumb.thumb }}" class="thumb sidebar-lead img-rounded">
       </a>
     {% endfor %}
 {% endif %}

@@ -88,7 +88,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djcelery',
     'django.contrib.admin',
     'gedgo'
 )
@@ -115,9 +114,9 @@ GEDGO_SENDFILE_HEADER = 'X-Accel-Redirect'
 GEDGO_SENDFILE_PREFIX = '/protected/'
 GEDGO_SITE_TITLE = 'My Genealogy Site'
 GEDGO_REDIS_SERVER = 'redis'
-GEDGO_RESEARCH_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+GEDGO_RESEARCH_FILE_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
 GEDGO_RESEARCH_FILE_ROOT = '/app/files/gedcom/'
-GEDGO_GEDCOM_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+GEDGO_GEDCOM_FILE_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
 GEDGO_GEDCOM_FILE_ROOT = '/app/files/research/'
 GEDGO_SHOW_RESEARCH_FILES = True
 
@@ -158,6 +157,3 @@ else:
         from settings_local import *  # noqa
     except ImportError:
         pass
-
-import djcelery  # noqa
-djcelery.setup_loader()

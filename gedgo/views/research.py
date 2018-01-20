@@ -5,39 +5,13 @@ from django.core.files.storage import default_storage
 from os import path
 import mimetypes
 
-from gedgo.views.util import serve_content, render
+from gedgo.views.util import render
 from gedgo.storages import research_storage as storage
 
 import sys
 sys.stdout = sys.stderr
 
 FOLDER_CACHE = ('', ([], []))
-
-@login_required
-def research_preview(request, pathname):
-    """
-    Cached preview thumbnails for jpegs (supported by Dropbox)
-    """
-    name = pathname.strip('/')
-    if not can_preview(name):
-        raise Http404
-
-    size = request.GET.get('size', 'w64h64')
-
-    if size not in ('w64h64', 'w128h128', 'w640h480', 'w1024h768'):
-        raise Http404
-
-    cache_name = path.join('research', 'preview-cache', size, name)
-    if default_storage.exists(cache_name):
-        return serve_content(default_storage, cache_name)
-
-    try:
-        content = storage.preview(name, size)
-        assert content
-        default_storage.save(cache_name, content)
-        return serve_content(default_storage, cache_name)
-    except Exception as e:
-        raise Http404
 
 
 def build_levels(name):
@@ -81,10 +55,6 @@ def research(request, pathname):
     dirname = pathname.strip('/')
     basename = request.GET.get('fn')
 
-    # Serve the content through xsendfile or directly.
-    if basename and request.GET.get('download') == 'true':
-        return serve_content(storage, path.join(dirname, basename.strip('/')))
-
     directories, files = get_dir_contents(dirname, request.GET.get('rq'))
     levels = build_levels(dirname)
 
@@ -117,7 +87,44 @@ def research(request, pathname):
         return render(request, 'research.html', context)
 
 
-def can_preview(name):
+def process_file(name, p, is_dir=False):
+    type_ = 'folder_open' if is_dir else _get_type(p)
+    fn = p[len(name):] if p.lower().startswith(name.lower()) else p
+    return {
+        'type': type_,
+        'full_path': path.join(name, path.basename(p)),
+        'name': path.basename(p),
+        'path': fn,
+        'can_video': not is_dir and p.rsplit('.')[1].lower() in ('m4v',),
+        'preview': can_preview(storage, p)
+    }
+
+# glyphicon name mappings
+MIMETYPE_MAPPING = {
+    'video': 'video-camera',
+    'audio': 'volume-up',
+    'image': 'image'
+}
+
+
+
+def _get_type(c):
+    guess, _ = mimetypes.guess_type(c)
+    if guess and guess.split('/')[0] in MIMETYPE_MAPPING:
+        return MIMETYPE_MAPPING[guess.split('/')[0]]
+    return 'file'
+
+
+def is_ascii(s):
+        return all(ord(c) < 128 for c in s)
+
+
+def can_preview(storage, name):
+    """
+    Check if the file in question can generate a preview
+    """
+    # TODO: Move suffix check onto storage child classes, since filesystem
+    # won't support previewing lots of these other types
     return (
         hasattr(storage, 'preview') and
         is_ascii(name) and
@@ -129,34 +136,3 @@ def can_preview(name):
             )
         )
     )
-
-
-def is_ascii(s):
-        return all(ord(c) < 128 for c in s)
-
-
-def process_file(name, p, is_dir=False):
-    type_ = 'folder_open' if is_dir else _get_type(p)
-    fn = p[len(name):] if p.lower().startswith(name.lower()) else p
-    return {
-        'type': type_,
-        'full_path': path.join(name, path.basename(p)),
-        'name': path.basename(p),
-        'path': fn,
-        'can_video': not is_dir and p.rsplit('.')[1].lower() in ('mp4', 'avi'),
-        'preview': can_preview(p)
-    }
-
-# glyphicon name mappings
-MIMETYPE_MAPPING = {
-    'video': 'video-camera',
-    'audio': 'volume-up',
-    'image': 'image'
-}
-
-
-def _get_type(c):
-    guess, _ = mimetypes.guess_type(c)
-    if guess and guess.split('/')[0] in MIMETYPE_MAPPING:
-        return MIMETYPE_MAPPING[guess.split('/')[0]]
-    return 'file'

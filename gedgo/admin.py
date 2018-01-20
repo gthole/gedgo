@@ -1,9 +1,6 @@
 from gedgo.models import Gedcom, BlogPost, Document, Documentary
 from django.contrib import admin
 
-from djcelery.models import TaskState, WorkerState, \
-    PeriodicTask, IntervalSchedule, CrontabSchedule
-
 
 class GedcomAdmin(admin.ModelAdmin):
     exclude = ('key_people',)
@@ -31,9 +28,3 @@ admin.site.register(Gedcom, GedcomAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Documentary, DocumentaryAdmin)
-
-admin.site.unregister(TaskState)
-admin.site.unregister(WorkerState)
-admin.site.unregister(IntervalSchedule)
-admin.site.unregister(CrontabSchedule)
-admin.site.unregister(PeriodicTask)

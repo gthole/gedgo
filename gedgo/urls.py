@@ -22,8 +22,9 @@ urlpatterns = [
     url(r'^blog/(?P<year>\d+)/(?P<month>\d+)/$', views.blog),
     url(r'^blog/post/(?P<post_id>\d+)/$', views.blogpost),
     url(r'^documentaries/$', views.documentaries),
+    url(r'^documentaries/(?P<title>.+)/$', views.documentary_by_id),
+    url(r'^document/(?P<doc_id>\w+)/$', views.document),
     url(r'^research/(?P<pathname>.*)$', views.research),
-    url(r'^research-preview/(?P<pathname>.*)$', views.research_preview),
     url(r'^search/$', views.search),
     url(r'^dashboard/$', views.dashboard),
     url(r'^dashboard/user/(?P<user_id>\d+)/$', views.user_tracking),
@@ -50,7 +51,7 @@ urlpatterns = [
         }),
 
     # Authenticated media fileserve view
-    url(r'^media/(?P<file_base_name>.*)$', views.media),
+    url(r'^media/(?P<storage_name>\w+)/(?P<pathname>.*)$', views.media),
 
     url(r'^$', lambda r: redirect('/gedgo/1/')),
 ]

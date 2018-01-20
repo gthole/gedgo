@@ -5,8 +5,8 @@
 <div class="row">
 {% for photo in photos %}
     <div class="col-lg-4 col-md-6">
-      <a href="{{ photo.docfile.url }}">
-        <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded">
+      <a href="/gedgo/document/{{ photo.id }}">
+        <img src="/gedgo/media/gedcom/{{ photo.docfile.name }}?size=w128h128" class="sidebar-thumb img-rounded" onerror="this.onerror=null;this.src='{{ STATIC_URL }}/question.jpg';">
       </a>
     </div>
 {% empty %}
@@ -22,52 +22,18 @@
 {% block content %}
 <div class="row">
     <div class="col-xs-5">
-      <a href="{% if person.photos %}{{ MEDIA_URL }}{{ person.key_photo.name }}{% else %}#{% endif %}">
-          <img src="{% if person.photos %}{{ MEDIA_URL }}{{ person.key_photo.thumb }}{% else %}{{ STATIC_URL }}img/generic_person.gif{% endif %}" class="thumb img-rounded">
+      <a href="{% if person.photos %}/gedgo/document/{{ person.key_photo.id }}{% else %}#{% endif %}">
+          <img src="{% if person.photos %}/gedgo/media/gedcom/{{ person.key_photo.docfile.name }}?size=w640h480{% else %}{{ STATIC_URL }}img/generic_person.gif{% endif %}" class="thumb img-rounded" onerror="this.onerror=null;this.src='{{ STATIC_URL }}/question.jpg';">
       </a>
     </div>
     <div class="col-xs-7">
-      <h2>{{ person.full_name }}</h2><h3>({{ person.year_range }})</h3></td>
+      <h2>{{ person.full_name }}</h2>
     </div>
+    <div class="col-xs-12 col-md-7">{% include "basic-information.html" %}</div>
 </div>
 
 <!-- Basic information pod -->
 <div class="section">
-<h3>Biographical Information:</h3>
-  {% if person.birth or person.death or person.education or person.religion %}
-  <div class="row">
-    <div class="col-sm-6">
-      {% if person.birth.date %}
-        <strong>Born:</strong> {{ person.birth.date_string }} {% if person.birth.date_approxQ %}(approximate){% endif %}
-        <br />
-      {% endif %}
-      {% if person.birth.place %}
-        <strong>Birthplace:</strong> {{ person.birth.place }}
-        <br />
-      {% endif %}
-      {% if person.death.date %}
-        <strong>Died:</strong> {{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}
-        <br />
-      {% endif %}
-      {% if person.death.place %}
-        <strong>Deathplace:</strong> {{ person.death.place }}
-        <br />
-      {% endif %}
-    </div>
-    <div class="col-sm-6">
-      {% if person.education %}
-        <strong>Education:</strong> {{ person.education_delimited|linebreaksbr }}
-        <br />
-      {% endif %}
-      {% if person.religion %}
-        <strong>Religion:</strong> {{ person.religion }}
-        <br />
-      {% endif %}
-    </div>
-  </div>
-  <hr />
-  {% endif %}
-
   <!-- Born-to -->
   {% if person.child_family %}
     <h4>Parents</h4>
@@ -129,10 +95,10 @@
     <div class="photo-subsection row">
     {% for photo in family.photos.iterator %}
       <div class="col-xs-4 col-sm-3">
-        <a href="{{ photo.docfile.url }}">
+        <a href="/gedgo/document/{{ photo.id }}">
           <!-- TODO: Fix hacks -->
-          <img src="{{ photo.thumb.url }}" class="subsection-thumb img-rounded center-block clearfix visible-xs">
-          <img src="{{ photo.thumb.url }}" class="sidebar-thumb img-rounded center-block clearfix hidden-xs">
+          <img src="/gedgo/media/gedcom/{{ photo.docfile.name }}?size=w128h128" class="subsection-thumb img-rounded center-block clearfix visible-xs" onerror="this.onerror=null;this.src='{{ STATIC_URL }}/question.jpg';">
+          <img src="/gedgo/media/gedcom/{{ photo.docfile.name }}?size=w128h128" class="sidebar-thumb img-rounded center-block clearfix hidden-xs" onerror="this.onerror=null;this.src='{{ STATIC_URL }}/question.jpg';">
         </a>
       </div>
     {% endfor %}
@@ -164,18 +130,16 @@
 </div>
 {% endif %}
 
-{% if person.photos.exists %}
+{% if photos %}
 <div class="section visible-xs">
   <h3>Photos:</h3>
   <div class="row">
-  {% for photo in person.photos %}
-      {% if not photo == person.key_photo %}
+  {% for photo in photos %}
         <div class="col-xs-4">
-          <a href="{{ photo.docfile.url }}">
-            <img src="{{ photo.thumb.url }}" class="subsection-thumb img-rounded center-block clearfix">
+          <a href="/gedgo/document/{{ photo.id }}">
+            <img src="/gedgo/media/gedcom/{{ photo.docfile.name }}?size=w128h128" class="subsection-thumb img-rounded center-block clearfix" onerror="this.onerror=null;this.src='{{ STATIC_URL }}/question.jpg';">
           </a>
         </div>
-      {% endif %}
   {% endfor %}
   </div>
 </div>
@@ -203,7 +167,7 @@
 <div class="section">
   <h3>Documents:</h3>
   {% for doc in person.documents %}
-      <a href="{{ doc.docfile.url }}">
+      <a href="/gedgo/document/{{ doc.id }}">
         <span class="glyphicon glyphicon-{{ doc.glyph }}"></span> &nbsp; {{ doc.docfile.name }}
       </a><br>
   {% endfor %}

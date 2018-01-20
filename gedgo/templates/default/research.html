@@ -62,8 +62,8 @@
         <li class="media research-file-item">
             <a class="pull-left" href="/gedgo/research/{{ dirname | urlencode }}?fn={{ f.path | urlencode }}{% if rq %}&rq={{ rq }}{% endif %}">
                 <div style="width: 64px; min-width: 64px">
-                {% if f.preview %}<img style="width: 100%" class="media-object" src="/gedgo/research-preview/{{ dirname | urlencode }}/{{ f.path | urlencode }}">
-                {% else %}<i class="fa fa-{{ f.type }} fa-2x"></i>
+                {% if f.preview %}<img style="width: 100%" class="media-object" src="/gedgo/media/research/{{ dirname | urlencode }}/{{ f.path | urlencode }}?size=w64h64">
+                {% else %}<div class="text-center"><i class="fa fa-{{ f.type }} fa-2x"></i></div>
                 {% endif %}
                 </div>
             </a>

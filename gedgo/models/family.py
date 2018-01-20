@@ -9,6 +9,8 @@ class Family(models.Model):
         app_label = 'gedgo'
     pointer = models.CharField(max_length=10, primary_key=True)
     gedcom = models.ForeignKey('Gedcom')
+    last_changed = models.DateField(null=True, blank=True)
+
     husbands = models.ManyToManyField('Person', related_name='family_husbands')
     wives = models.ManyToManyField('Person', related_name='family_wives')
     children = models.ManyToManyField('Person', related_name='family_children')

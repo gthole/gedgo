@@ -1,7 +1,7 @@
 from django.db import models
 import random
 
-from document import Document
+from person import Person
 
 
 class Gedcom(models.Model):
@@ -31,5 +31,12 @@ class Gedcom(models.Model):
 
     @property
     def photo_sample(self):
-        photos = Document.objects.filter(gedcom=self, kind='PHOTO')
-        return random.sample(photos, min(24, len(photos)))
+        people = Person.objects.filter(gedcom=self).order_by('?')
+
+        sample = []
+        for person in people.iterator():
+            if person.key_photo:
+                sample.append(person.key_photo)
+            if len(sample) == 24:
+                break
+        return sample

@@ -11,7 +11,6 @@ class Document(models.Model):
     docfile = models.FileField(upload_to='gedcom')
     last_updated = models.DateTimeField(auto_now_add=True)
     gedcom = models.ForeignKey('Gedcom', null=True, blank=True)
-    thumb = models.FileField(upload_to='thumbs', null=True, blank=True)
 
     kind = models.CharField(
         max_length=5,

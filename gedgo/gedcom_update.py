@@ -5,14 +5,11 @@ from django.core.files.storage import default_storage
 from django.db import transaction
 from django.utils.datetime_safe import date
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, date
 from re import findall
 from os import path
-from cStringIO import StringIO
 
-from PIL import Image
-
-from gedgo.storages import gedcom_storage
+from gedgo.storages import gedcom_storage, resize_thumb
 
 
 @transaction.atomic
@@ -27,7 +24,7 @@ def update(g, file_name, verbose=True):
             title=__child_value_by_tags(parsed.header, 'TITL', default=''),
             last_updated=datetime(1920, 1, 1)  # TODO: Fix.
         )
-    print g.id
+    print 'Gedcom id=%s' % g.id
 
     if verbose:
         print 'Importing entries to models'
@@ -71,7 +68,7 @@ def __process_all_relations(gedcom, parsed, verbose=True):
     # Process Person objects
     for index, person in enumerate(gedcom.person_set.iterator()):
         entry = parsed.entries.get(person.pointer)
-        print index
+
         if entry is not None:
             __process_person_relations(gedcom, person, entry)
         else:
@@ -139,12 +136,17 @@ def __process_family_relations(gedcom, family, entry):
 
 # --- Import Constructors
 def __process_Person(entry, g):
-    if __check_unchanged(entry, g):
-        return
-
     p, _ = Person.objects.get_or_create(
         pointer=entry['pointer'],
         gedcom=g)
+
+    # No changes recorded in the gedcom, skip it
+    if __check_unchanged(entry, p):
+        return None
+
+    p.last_changed = __parse_gen_date(
+        __child_value_by_tags(entry, ['CHAN', 'DATE'])
+    )[0]
 
     # Name
     name_value = __child_value_by_tags(entry, 'NAME', default='')
@@ -162,6 +164,8 @@ def __process_Person(entry, g):
     p.education = __child_value_by_tags(entry, 'EDUC')
     p.religion = __child_value_by_tags(entry, 'RELI')
 
+    p.save()
+
     # Media
     document_entries = [
         c for c in entry.get('children', [])
@@ -172,16 +176,19 @@ def __process_Person(entry, g):
         if (d is not None) and (__child_value_by_tags(m, 'PRIM') == 'Y'):
             p.profile.add(d)
 
-    p.save()
 
 
 def __process_Family(entry, g):
-    if __check_unchanged(entry, g):
-        return
-
     f, _ = Family.objects.get_or_create(
         pointer=entry['pointer'],
         gedcom=g)
+
+    if __check_unchanged(entry, f):
+        return None
+
+    f.last_changed = __parse_gen_date(
+        __child_value_by_tags(entry, ['CHAN', 'DATE'])
+    )[0]
 
     for k in ['MARR', 'DPAR']:
         f.joined = __create_Event(__child_by_tag(entry, k), g, f.joined)
@@ -225,6 +232,7 @@ def __create_Event(entry, g, e):
     e.date_approxQ = date_approxQ
 
     e.save()
+
     return e
 
 
@@ -243,35 +251,35 @@ def __process_Note(entry, g):
     n.text = n.text.strip('\n')
 
     n.save()
+
     return n
 
 
 def __process_Document(entry, obj, g):
-    name = __valid_document_entry(entry)
-    if not name:
+    full_name = __child_value_by_tags(entry, 'FILE')
+    name = path.basename(full_name).decode('utf-8').strip()
+    known = Document.objects.filter(docfile=name).exists()
+
+    if not known and not gedcom_storage.exists(name):
         return None
 
-    file_name = 'gedcom/%s' % name
-    known = Document.objects.filter(docfile=file_name)
-
-    if len(known) > 0:
-        m = known[0]
+    kind = __child_value_by_tags(entry, 'TYPE')
+    if known:
+        m = Document.objects.filter(docfile=name).first()
     else:
-        kind = __child_value_by_tags(entry, 'TYPE')
         m = Document(gedcom=g, kind=kind)
-        m.docfile.name = file_name
-        if kind == 'PHOTO':
-            try:
-                make_thumbnail(name, __child_value_by_tags(entry, 'CROP'))
-                thumb = path.join('default/thumbs', name)
-            except:
-                print '  Warning: failed to make or find thumbnail: %s' % name
-                return None  # Bail on document creation if thumb fails
-        else:
-            thumb = None
-        if thumb is not None:
-            m.thumb.name = thumb
-        m.save()
+        m.docfile.name = name
+
+    if kind == 'PHOTO':
+        try:
+            make_thumbnail(name, 'w128h128')
+            make_thumbnail(name, 'w640h480')
+        except Exception as e:
+            print e
+            print '  Warning: failed to make or find thumbnail: %s' % name
+            return None  # Bail on document creation if thumb fails
+
+    m.save()
 
     if isinstance(obj, Person) and \
             not m.tagged_people.filter(pointer=obj.pointer).exists():
@@ -284,11 +292,12 @@ def __process_Document(entry, obj, g):
 
 
 # --- Helper Functions
-def __check_unchanged(entry, g):
+def __check_unchanged(entry, existing):
     changed = __parse_gen_date(
         __child_value_by_tags(entry, ['CHAN', 'DATE'])
     )[0]
-    return changed and g.last_updated and (changed <= g.last_updated)
+    return isinstance(existing.last_changed, date) and \
+           changed == existing.last_changed
 
 
 DATE_FORMATS = [
@@ -361,37 +370,16 @@ def __child_by_tag(entry, tag):
             return child
 
 
-def __valid_document_entry(e):
-    full_name = __child_value_by_tags(e, 'FILE')
-    name = path.basename(full_name).decode('utf-8').strip()
-    if gedcom_storage.exists(name):
-        return name
-
-
-def make_thumbnail(name, crop):
+def make_thumbnail(name, size):
     """
     Copies an image from gedcom_storage, converts it to a thumbnail, and saves
-    it to default_storage for fast access
+    it to default_storage for fast access.  This also gets done on the fly,
+    but it's better to pre-build
     """
-    thumb_name = path.join('thumbs', name)
+    thumb_name = path.join('preview-cache', 'gedcom', size, name)
 
     if default_storage.exists(thumb_name):
         return thumb_name
 
-    im = Image.open(gedcom_storage.open(name))
-    width, height = im.size
-
-    # TODO: Use crop argument
-    if width > height:
-        offset = (width - height) / 2
-        box = (offset, 0, offset + height, height)
-    else:
-        offset = ((height - width) * 3) / 10
-        box = (0, offset, width, offset + width)
-    cropped = im.crop(box)
-
-    size = 150, 150
-    cropped.thumbnail(size, Image.ANTIALIAS)
-    output = StringIO()
-    cropped.save(output, 'JPEG')
-    return default_storage.save(thumb_name, output)
+    resized = resize_thumb(gedcom_storage.open(name), size=size)
+    return default_storage.save(thumb_name, resized)

@@ -61,7 +61,7 @@ def worker_status(request):
     """
     try:
         status = app.control.ping() or []
-    except:
+    except Exception as e:
         # TODO: What celery exceptions are we catching here?
         status = []
     return HttpResponse(

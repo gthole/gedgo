@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block leftsidebar %}
+<div class="text-center hidden-xs word-break">
+    <h3>{{ doc.docfile.name }}</h3>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if file.preview %}
+<div style="min-height: 480px">
+    <img style="max-width: 100%" class="center-block" src="/gedgo/media/gedcom/{{ doc.docfile.name | urlencode }}?size=w640h480">
+</div>
+{% else %}
+    <br/>
+    <div class="center-block text-center"><i class="fa fa-{{ file.type }} fa-2x"></i></div>
+{% endif %}
+<br/>
+
+{% endblock %}

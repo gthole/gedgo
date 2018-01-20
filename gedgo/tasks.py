@@ -1,10 +1,12 @@
-
 from __future__ import absolute_import
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
+import django
+django.setup()
 
 from gedgo.gedcom_update import update
 from gedgo import redis
 from gedgo.models import Gedcom
-import os
 from celery import Celery
 from django.conf import settings
 from datetime import datetime
@@ -14,10 +16,7 @@ import traceback
 import requests
 import json
 
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
-
-app = Celery()
+app = Celery('gedgo')
 app.config_from_object(settings)
 
 

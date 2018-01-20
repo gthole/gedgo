@@ -45,7 +45,7 @@ class Command(BaseCommand):
         # Check file time against gedcom last_update time.
         file_time = datetime.fromtimestamp(path.getmtime(file_name))
         last_update_time = g.last_updated.replace(tzinfo=None)
-        if (options['force'] or (file_time > last_update_time)):
+        if (options['force'] or True or (file_time > last_update_time)):
             start = datetime.now()
 
             errstr = ''
@@ -55,6 +55,7 @@ class Command(BaseCommand):
                 e = exc_info()[0]
                 errstr = 'There was an error: %s\n%s' % (
                     e, traceback.format_exc())
+                print errstr
 
             end = datetime.now()
 

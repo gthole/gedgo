@@ -5,6 +5,8 @@ from django.utils.datetime_safe import date
 class Event(models.Model):
     class Meta:
         app_label = 'gedgo'
+    gedcom = models.ForeignKey('Gedcom')
+
     # Can't use DateFields because sometimes only a Year is known, and
     # we don't want to show those as January 01, <year>, and datetime
     # doesn't allow missing values.
@@ -12,7 +14,6 @@ class Event(models.Model):
     year_range_end = models.IntegerField(null=True)
     date_format = models.CharField(null=True, max_length=10)
     date_approxQ = models.BooleanField('Date is approximate')
-    gedcom = models.ForeignKey('Gedcom')
     place = models.CharField(max_length=50)
 
     # Breaks strict MVC conventions.

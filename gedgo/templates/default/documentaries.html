@@ -21,16 +21,23 @@
 {% block content %}
 {% if documentaries.exists %}
     {% for documentary in documentaries.iterator %}
-        <div class="media">
-          <a class="pull-left" href="{{ documentary.location }}">
-            <img class="documentary-thumb media-object" src="{{ MEDIA_URL }}{{ documentary.thumb.thumb }}">
+      <div class="row">
+        <div class="col-xs-6 col-sm-3">
+          <a class="pull-left" href="/gedgo/documentaries/{{ documentary.title | urlencode }}/">
+            <img style="width: 100%" class="documentary-thumb media-object" src="/gedgo/media/gedcom/{{ documentary.thumb.docfile.name }}?size=w640h480">
           </a>
-          <div class="media-body">
+        </div>
+        <div class="col-xs-6 col-sm-9">
+            <a href="/gedgo/documentaries/{{ documentary.title | urlencode }}/">
             <h4 class="media-heading" id="{{ documentary.title|urlencode }}">{{ documentary.title }}</h4>
+            </a>
+        </div>
+        <div class="col-xs-12 col-sm-9">
             {{ documentary.description|linebreaks }}
             Last updated: {{ documentary.last_updated }}
-          </div>
         </div>
+      </div>
+      <br/>
     {% endfor %}
 {% else %}
     <div class="pod">

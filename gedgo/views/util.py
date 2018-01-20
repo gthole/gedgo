@@ -1,7 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
 from django.core.files.storage import default_storage
-from django.contrib.auth.decorators import login_required
-from django.http import Http404
 from django.conf import settings
 from django.shortcuts import redirect
 from django.contrib.auth import logout
@@ -11,29 +8,6 @@ from django.template import RequestContext
 
 from gedgo.models import BlogPost, Documentary
 from gedgo.forms import CommentForm
-from gedgo.storages import gedcom_storage, research_storage
-
-from os import path
-import mimetypes
-
-import sys
-sys.stdout = sys.stderr
-
-
-STORAGES = {
-    'research': research_storage,
-    'gedcom': gedcom_storage
-}
-
-
-@login_required
-def media(request, file_base_name):
-    """
-    Authenticated view to serve media content and toggle storage classes
-    """
-    filename = file_base_name.strip('/')
-    return serve_content(default_storage, filename)
-
 
 def process_comments(request, noun):
     """
@@ -104,33 +78,6 @@ def site_context(request):
         'site_title': site_title,
         'user': user
     }
-
-
-def serve_content(storage, name):
-    """
-    Generate a response to server protected content.
-    """
-    if not storage.exists(name):
-        raise Http404
-
-    # Non-filesystem storages should re-direct to a temporary URL
-    if not storage.__class__.__name__ == 'FileSystemStorage':
-        return HttpResponseRedirect(storage.url(name))
-
-    # Otherwise we use sendfile
-    response = HttpResponse()
-    response[settings.GEDGO_SENDFILE_HEADER] = '%s%s' % (
-        settings.GEDGO_SENDFILE_PREFIX,
-        name
-    )
-
-    # Set various file headers and return
-    base = path.basename(name)
-    response['Content-Type'] = mimetypes.guess_type(base)[0]
-    response['Content-Length'] = storage.size(name)
-    if response['Content-Type'] is None:
-        response['Content-Disposition'] = "attachment; filename=%s;" % (base)
-    return response
 
 
 def logout_view(request):

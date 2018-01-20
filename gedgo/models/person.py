@@ -11,6 +11,7 @@ class Person(models.Model):
         verbose_name_plural = 'People'
     pointer = models.CharField(max_length=10, primary_key=True)
     gedcom = models.ForeignKey('Gedcom')
+    last_changed = models.DateField(null=True, blank=True)
 
     # Name
     first_name = models.CharField(max_length=255)

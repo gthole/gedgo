@@ -3,14 +3,16 @@ from django.utils._os import safe_join
 from django.conf import settings
 from django.utils.module_loading import import_string
 
-from cStringIO import StringIO
+import re
 import os
+from PIL import Image
+from cStringIO import StringIO
 from dropbox.dropbox import Dropbox
 from dropbox.files import FileMetadata, FolderMetadata, ThumbnailFormat, \
     ThumbnailSize
 
 
-class DropboxStorage(Storage):
+class DropBoxSearchableStorage(Storage):
     def __init__(self, *args, **kwargs):
         self.client = Dropbox(settings.DROPBOX_ACCESS_TOKEN)
         self.location = kwargs.get('location', settings.MEDIA_ROOT)
@@ -61,15 +63,16 @@ class DropboxStorage(Storage):
             # Ignore directories for now
         return (directories, files)
 
-    def preview(self, name, size='w64h64'):
-        return StringIO(self.client.files_get_thumbnail(
+    def preview(self, name, size='w128h128'):
+        file_ = StringIO(self.client.files_get_thumbnail(
             self.path(name),
             format=ThumbnailFormat('jpeg', None),
             size=ThumbnailSize(size, None)
         )[1].content)
+        return resize_thumb(file_, size)
 
 
-class ResearchFileSystemStorage(FileSystemStorage):
+class FileSystemSearchableStorage(FileSystemStorage):
     def search(self, query):
         terms = [term for term in query.lower().split()]
         directories, files = [], []
@@ -79,6 +82,31 @@ class ResearchFileSystemStorage(FileSystemStorage):
                 if all([(t in f.lower()) for t in terms]):
                     files.append(os.path.join(r, f))
         return directories, files
+
+    def preview(self, name, size='w128h128'):
+        return resize_thumb(self.open(name), size)
+
+
+def resize_thumb(file_, size='w128h128', crop=None):
+    im = Image.open(file_)
+    width, height = im.size
+
+    if size in ('w64h64', 'w128h128'):
+        if width > height:
+            offset = (width - height) / 2
+            box = (offset, 0, offset + height, height)
+        else:
+            offset = ((height - width) * 3) / 10
+            box = (0, offset, width, offset + width)
+        im = im.crop(box)
+
+    m = re.match('w(\d+)h(\d+)', size)
+    new_size = [int(d) for d in m.groups()]
+
+    im.thumbnail(new_size, Image.ANTIALIAS)
+    output = StringIO()
+    im.save(output, 'JPEG')
+    return output
 
 
 research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(

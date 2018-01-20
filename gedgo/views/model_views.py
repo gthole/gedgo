@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
-from gedgo.models import Gedcom, Person, BlogPost, Documentary
+from gedgo.views.research import process_file
+from gedgo.models import Gedcom, Person, BlogPost, Documentary, Document
 from gedgo.views.util import render, process_comments
 
 
@@ -40,7 +41,7 @@ def person(request, gedcom_id, person_id):
     context = {
         'person': p,
         'posts': BlogPost.objects.filter(tagged_people=p),
-        'photos': [photo for photo in p.photos if not photo.id != p.key_photo],
+        'photos': [photo for photo in p.photos if not photo.id == p.key_photo.id],
         'gedcom': g,
         'form': form,
         'comment_noun': noun
@@ -58,3 +59,28 @@ def documentaries(request):
         "documentaries.html",
         {'documentaries': documentaries}
     )
+
+
+@login_required
+def documentary_by_id(request, title):
+    documentary = get_object_or_404(Documentary, title=title)
+
+    return render(
+        request,
+        "documentary_by_id.html",
+        {
+            'documentary': documentary,
+            'can_video': documentary.location.lower().endswith('m4v')
+        }
+    )
+
+
+@login_required
+def document(request, doc_id):
+    doc = get_object_or_404(Document, id=doc_id)
+    context = {
+        'doc': doc,
+        'file': process_file('', doc.docfile.name, False)
+    }
+
+    return render(request, 'document_preview.html', context)

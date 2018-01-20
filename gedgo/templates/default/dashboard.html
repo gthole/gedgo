@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="section" id="worker-section">
+{% block leftsidebar %}
+<div id="worker-section">
   <h2>Worker Status</h2>
   <div id="worker-status">
     <span></span>
   </div>
 </div>
+{% endblock %}
 
+{% block content %}
+<h2>Update a Gedcom</h2>
 <div class="section">
-  <h2>Update a Gedcom</h2>
   <form action="/gedgo/dashboard/" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
       {% csrf_token %}
       <select class="form-control" name="gedcom_id">

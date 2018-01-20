@@ -1,0 +1,37 @@
+{% block basic_information %}
+  <h3>({{ person.year_range }})</h3>
+  {% if person.birth or person.death or person.education or person.religion %}
+  <table class="table">
+      {% if person.birth.date %}
+        <tr>
+        <th>Born:</th><td>{{ person.birth.date_string }} {% if person.birth.date_approxQ %}(approximate){% endif %}</td>
+        </tr>
+      {% endif %}
+      {% if person.birth.place %}
+        <tr>
+        <th>Birthplace:</th><td>{{ person.birth.place }}</td>
+        </tr>
+      {% endif %}
+      {% if person.death.date %}
+        <tr>
+        <th>Died:</th><td>{{ person.death.date_string }} {% if person.death.date_approxQ %}(approximate){% endif %}</td>
+        </tr>
+      {% endif %}
+      {% if person.death.place %}
+        <tr>
+        <th>Deathplace:</th><td>{{ person.death.place }}</td>
+        </tr>
+      {% endif %}
+      {% if person.education %}
+        <tr>
+        <th>Education:</th><td>{{ person.education_delimited|linebreaksbr }}</td>
+        </tr>
+      {% endif %}
+      {% if person.religion %}
+        <tr>
+        <th>Religion:</th><td>{{ person.religion }}</td>
+        </tr>
+      {% endif %}
+    </table>
+  {% endif %}
+{% endblock %}

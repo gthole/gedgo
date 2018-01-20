@@ -17,6 +17,8 @@ services:
             MYSQL_DATABASE: 'gedgo'
             MYSQL_USER: 'gedgo'
             MYSQL_PASSWORD: 'gedgo'
+        volumes:
+            - './tmp:/gedgo_tmp'
         logging:
             driver: 'none'
     redis:
@@ -49,7 +51,7 @@ services:
     worker:
         container_name: 'gedgo_worker'
         image: 'gedgo_app'
-        command: ['python', 'manage.py', 'celeryd', '-c', '1', '--loglevel=info']
+        command: ['celery', '-A', 'gedgo.tasks', 'worker', '--loglevel=debug']
         volumes:
             - './:/app'
         links:

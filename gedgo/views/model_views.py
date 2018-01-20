@@ -11,8 +11,7 @@ def gedcom(request, gedcom_id):
     g = get_object_or_404(Gedcom, id=gedcom_id)
     post = BlogPost.objects.all().order_by("-created").first()
 
-    noun = g.title or ("Gedcom #%d" % g.id)
-    form, redirect = process_comments(request, noun)
+    form, redirect = process_comments(request)
     if redirect is not None:
         return redirect
 
@@ -23,7 +22,7 @@ def gedcom(request, gedcom_id):
             'gedcom': g,
             'post': post,
             'form': form,
-            'comment_noun': noun
+            'comment_noun': str(g)
         }
     )
 
@@ -33,8 +32,7 @@ def person(request, gedcom_id, person_id):
     g = get_object_or_404(Gedcom, id=gedcom_id)
     p = get_object_or_404(Person, gedcom=g, pointer=person_id)
 
-    noun = "%s (%s)" % (p.full_name, p.pointer)
-    form, redirect = process_comments(request, noun)
+    form, redirect = process_comments(request)
     if redirect is not None:
         return redirect
 
@@ -44,7 +42,7 @@ def person(request, gedcom_id, person_id):
         'photos': [photo for photo in p.photos if not photo.id == p.key_photo.id],
         'gedcom': g,
         'form': form,
-        'comment_noun': noun
+        'comment_noun': str(p)
     }
 
     return render(request, 'person.html', context)

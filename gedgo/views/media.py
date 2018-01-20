@@ -16,6 +16,7 @@ sys.stdout = sys.stderr
 
 
 STORAGES = {
+    'default': default_storage,
     'research': research_storage,
     'gedcom': gedcom_storage
 }

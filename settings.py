@@ -30,7 +30,7 @@ USE_L10N = True
 USE_TZ = True
 
 MEDIA_ROOT = '/app/files/default/'
-MEDIA_URL = '/gedgo/media/'
+MEDIA_URL = '/gedgo/media/default/'
 
 STATIC_ROOT = ''
 STATIC_URL = '/static/'

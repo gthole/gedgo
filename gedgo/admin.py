@@ -1,10 +1,16 @@
-from gedgo.models import Gedcom, BlogPost, Document, Documentary
+from gedgo.models import Gedcom, BlogPost, Comment, Document, Documentary
 from django.contrib import admin
 
 
 class GedcomAdmin(admin.ModelAdmin):
     exclude = ('key_people',)
     filter_horizontal = ('key_families',)
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('noun', 'user', 'posted')
+    date_hierarchy = 'posted'
+    search_fields = ('text', )
 
 
 class BlogPostAdmin(admin.ModelAdmin):
@@ -25,6 +31,7 @@ class DocumentaryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Gedcom, GedcomAdmin)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Documentary, DocumentaryAdmin)

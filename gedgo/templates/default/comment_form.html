@@ -6,13 +6,15 @@
 <form action="" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
   <p class="help-block">Send us a comment about {{ comment_noun }}.</p>
     {% csrf_token %}
-    <textarea name="message" class="comment-area form-control" rows="10" required>{{ message }}</textarea>
+    <textarea name="text" class="comment-area form-control" rows="10" required>{{ message }}</textarea>
     <br />
+    <input type="hidden" name="gedcom" value="{{ gedcom.id }}" />
+    <input type="hidden" name="person" value="{{ person.pointer }}" />
+    <input type="hidden" name="blogpost" value="{{ post.id }}" />
     {% if show_file_uploads %}
-      <input type="file" name="uploads" multiple>
-      <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+      <input type="file" name="upload">
       <p class="help-block">Send us photos or files too if you have any to share.
-      <span class="help glyphicon glyphicon-question-sign" id="help-popover" data-container="body" data-toggle="popover" data-placement="right" data-content="Select multiple files at once (with the shift button).<br />Upload max size is 10 megabytes."><span>
+      <span class="help glyphicon glyphicon-question-sign" id="help-popover" data-container="body" data-toggle="popover" data-placement="right" data-content="Upload max size is 10 megabytes."><span>
       </p>
     {% endif %}
     <br>

@@ -4,22 +4,31 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
-from gedgo.models import Gedcom
+from gedgo.models import Gedcom, Comment
 
 
-class CommentForm(forms.Form):
-    message = forms.CharField()
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('text', 'upload', 'gedcom', 'person', 'blogpost')
 
-    def email_comment(self, user, noun, file_names):
+    def email_comment(self, request):
         cd = self.cleaned_data
-        message_body = '%s\n\n%s' % (cd['message'], '\n'.join(file_names))
+        content = '%s\n\n---------------\n\n%s' % (
+            '%s://%s/admin/gedgo/comment/%s' % (
+                'https' if request.is_secure() else 'http',
+                request.get_host(),
+                self.instance.id,
+            ),
+            cd['text']
+        )
         send_mail(
             'Comment from %s %s about %s' % (
-                user.first_name,
-                user.last_name,
-                noun
+                request.user.first_name,
+                request.user.last_name,
+                self.instance.noun
             ),
-            message_body,
+            content,
             'noreply@gedgo.com',
             settings.SERVER_EMAIL
         )

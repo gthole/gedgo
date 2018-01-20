@@ -21,4 +21,4 @@ class BlogPost(models.Model):
     )
 
     def __unicode__(self):
-        return self.title
+        return 'Blogpost "%s"' % self.title

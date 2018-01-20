@@ -9,7 +9,8 @@ from django.template import RequestContext
 from gedgo.models import BlogPost, Documentary
 from gedgo.forms import CommentForm
 
-def process_comments(request, noun):
+
+def process_comments(request):
     """
     Returns a tuple of (form, redirect_response) depending on whether a
     new comment has been posted or not.
@@ -17,30 +18,23 @@ def process_comments(request, noun):
     if not request.POST:
         return CommentForm(), None
 
-    form = CommentForm(request.POST)
-    if form.is_valid():
-        # Store file uploads
-        file_names = []
-        if getattr(settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True:
-            for file_ in request.FILES.getlist('uploads'):
-                upload_path = 'uploaded/%s/%s/%s' % (
-                    request.user.username,
-                    request.path.strip('/').replace('gedgo/', ''),
-                    file_.name
-                )
-                default_storage.save(upload_path, file_)
-                file_names.append(upload_path)
+    form = CommentForm(request.POST, request.FILES)
+    try:
+        assert form.is_valid()
+        form.instance.user = request.user
+        form.save()
+
         # Email the comment to the site owners.
-        form.email_comment(request.user, noun, file_names)
+        form.email_comment(request)
         messages.success(
             request,
-            'Your comment has ben sent.  Thank you!'
+            'Your comment has been sent. Thank you!'
         )
-    else:
-        # Shouldn't happen, since there's almost no server-side validation
+    except Exception as e:
+        print e
         messages.error(
             request,
-            "We're sorry, your comment was not sent."
+            "We're sorry, we couldn't process your comment."
         )
     return None, redirect(request.path)
 

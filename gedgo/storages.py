@@ -108,9 +108,11 @@ def resize_thumb(file_, size='w128h128', crop=None):
     im.save(output, 'JPEG')
     return output
 
-
 research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(
     location=settings.GEDGO_RESEARCH_FILE_ROOT)
 
 gedcom_storage = import_string(settings.GEDGO_GEDCOM_FILE_STORAGE)(
     location=settings.GEDGO_GEDCOM_FILE_ROOT)
+
+documentary_storage = import_string(settings.GEDGO_DOCUMENTARY_STORAGE)(
+    location=settings.GEDGO_DOCUMENTARY_ROOT)

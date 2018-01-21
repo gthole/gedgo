@@ -43,7 +43,7 @@ def update(g, file_name, verbose=True):
             __process_Note(entry, g)
             note_counter += 1
 
-        if (index + 1) % 100 == 0:
+        if verbose and (index + 1) % 100 == 0:
             print ' ... %d / %d' % (index + 1, len(entries))
 
     if verbose:

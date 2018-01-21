@@ -1,6 +1,8 @@
 django==1.9.2
 celery==4.1.0
 pillow==3.1.1
+dj-static==0.0.6
+gunicorn
 anyjson
 dropbox
 mysql-python

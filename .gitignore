@@ -32,6 +32,8 @@ pip-log.txt
 *d3.*.js
 
 /files/
+/data/
 *.ged
+docker-compose-prd.yml
 settings_local.py
 /tmp

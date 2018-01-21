@@ -29,6 +29,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='document',
             name='docfile',
-            field=models.FileField(upload_to=b'gedcom'),
+            field=models.FileField(upload_to=b'uploads'),
         ),
     ]

@@ -3,7 +3,8 @@
 {% block leftsidebar %}
 <div id="worker-section">
   <h2>Worker Status</h2>
-  <div id="worker-status">
+  <div id="worker-status"></div>
+  <div id="worker-status-icon" class="text-centered center-text">
     <span></span>
   </div>
 </div>
@@ -80,17 +81,17 @@
     $('.email_users_checkbox').prop('checked', this.checked);
   });
   $.getJSON('worker/status', function(res) {
-    var el = $('#worker-status');
-    var st = $('#worker-status span');
+    var el = $('#worker-status-icon');
+    var st = $('#worker-status-icon span');
     if (res.length) {
       el.addClass('bg-success');
       st.addClass('glyphicon glyphicon-ok');
       $('#submit-gedcom').removeClass("disabled");
-      $('#worker-section').append("<p>Worker is currently availabe to process gedcoms!</p>");
+      $('#worker-status').html("<p>Worker is currently availabe to process gedcoms!</p>");
     } else {
       el.addClass('bg-danger');
       st.addClass('glyphicon glyphicon-remove');
-      $('#worker-section').append("<p>Worker is currently offline, so gedcom uploads cannot be processed.</p>");
+      $('#worker-status').html("<p>Worker is currently offline, so gedcom uploads cannot be processed.</p>");
     }
   });
 </script>

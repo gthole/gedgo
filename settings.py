@@ -32,7 +32,7 @@ USE_TZ = True
 MEDIA_ROOT = '/app/files/default/'
 MEDIA_URL = '/gedgo/media/default/'
 
-STATIC_ROOT = ''
+STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = (
@@ -78,8 +78,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'urls'
-# WSGI_APPLICATION = 'wsgi.application'
-
+WSGI_APPLICATION = 'wsgi.application'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -116,6 +115,8 @@ GEDGO_SITE_TITLE = 'My Genealogy Site'
 GEDGO_REDIS_SERVER = 'redis'
 GEDGO_RESEARCH_FILE_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
 GEDGO_RESEARCH_FILE_ROOT = '/app/files/gedcom/'
+GEDGO_DOCUMENTARY_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
+GEDGO_DOCUMENTARY_ROOT = '/app/files/documentaries/'
 GEDGO_GEDCOM_FILE_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
 GEDGO_GEDCOM_FILE_ROOT = '/app/files/research/'
 GEDGO_SHOW_RESEARCH_FILES = True

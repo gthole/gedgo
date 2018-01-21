@@ -96,7 +96,7 @@ def user_tracking(request, user_id):
 
 def _handle_upload(request, form):
     if form.is_valid():
-        file_name = 'uploaded/gedcoms/%d_%s' % (
+        file_name = 'uploads/gedcoms/%d_%s' % (
             time.time(), form.cleaned_data['gedcom_file'].name)
         default_storage.save(file_name, form.cleaned_data['gedcom_file'])
         async_update.delay(

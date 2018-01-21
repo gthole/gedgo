@@ -120,15 +120,17 @@ path {
 }
 
 #worker-section {
-  min-height: 75px;
-
+  min-height: 150px;
 }
 
 #worker-section p {
   margin-top: 5px;
 }
 
-#worker-status {
+#worker-status-icon {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   width: 80px;
   font-size: 40px;
   color: #fff;
@@ -138,6 +140,6 @@ path {
   border-radius: 10px; /* future proofing */
 }
 
-#worker-status span {
+#worker-status-icon span {
   margin-top: 10px;
 }

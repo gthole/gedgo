@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 
 from gedgo.views.research import can_preview
-from gedgo.storages import gedcom_storage, research_storage
+from gedgo.storages import gedcom_storage, research_storage, documentary_storage
 
 import mimetypes
 from os import path
@@ -14,8 +14,8 @@ import sys
 sys.stdout = sys.stderr
 
 
-
 STORAGES = {
+    'documentary': documentary_storage,
     'default': default_storage,
     'research': research_storage,
     'gedcom': gedcom_storage

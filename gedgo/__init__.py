@@ -3,5 +3,8 @@ import redis as Redis
 
 redis = None
 if hasattr(settings, 'GEDGO_REDIS_SERVER'):
-    redis = Redis.StrictRedis(host=settings.GEDGO_REDIS_SERVER)
-    redis.ping()
+    try:
+        redis = Redis.StrictRedis(host=settings.GEDGO_REDIS_SERVER)
+        redis.ping()
+    except Exception as e:
+        print e

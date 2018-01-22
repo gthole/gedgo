@@ -31,6 +31,7 @@ services:
     # Application
     app:
         build: '.'
+        image: 'gedgo_app'
         container_name: 'gedgo_app'
         command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
         volumes:

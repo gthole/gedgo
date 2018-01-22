@@ -3,6 +3,9 @@
 {% block leftsidebar %}
 <div class="text-center hidden-xs word-break">
     <h3>{{ doc.docfile.name }}</h3>
+    <a href="/gedgo/media/gedcom/{{ doc.docfile.name | urlencode }}">
+        <i class="fa fa-download"></i> Download
+    </a>
 </div>
 {% endblock %}
 

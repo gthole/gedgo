@@ -84,14 +84,28 @@ Start up the web server and worker with
 $ docker-compose up
 ```
 
-If you're running a Mac you can go to [http://gedgo.local](http://gedgo.local).  Otherwise find out the local ip address of the gedgo docker machine and visit it.  For example:
+If you're running a Mac you can go to [http://gedgo.local](http://gedgo.local),
+or just [localhost](http://localhost).
 
-```bash
-$ docker-machine ip gedgo
-192.168.99.101
+#### Overriding settings
+
+Drop any settings overrides (like `SECRET_KEY` or `EMAIL_*` settings) in
+`./settings_local.py` to have them auto-imported into your setup.
+
+#### Using Dropbox Files
+Dropbox generates previews for more types of files than are supported with the
+base file system storage.  Storing your gedcom images and documents there can
+also make it easier to keep them in sync between your genealogy application and
+the Gedgo server.
+
+To do this, get a Dropbox OAuth token, and add it to your local settings and
+tell Gedgo to use the Dropbox storage:
+
 ```
-
-And you would go to [http://192.168.99.101](http://192.168.99.101).
+DROPBOX_ACCESS_TOKEN = '<your-access-token>
+GEDGO_GEDCOM_FILE_STORAGE = 'gedgo.storages.DropBoxSearchableStorage'
+GEDGO_GEDCOM_FILE_ROOT = '<dropbox path to your genealogy files>'
+```
 
 #### Updating Gedcoms
 To update your gedcom, you can either use the manage.py command, passing it

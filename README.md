@@ -41,17 +41,12 @@ to install packages or a have a database running in order to get started.
 
 #### Dependencies
 
-Download and install [Docker Toolbox](http://www.docker.com/toolbox).
+Download and install [Docker](https://www.docker.com/community-edition).  Test
+that it works with `$ docker ps`
 
 Clone this repo and `cd` into it.
 
 ```bash
-# Create a docker machine for gedgo to run in
-$ docker-machine create -d virtualbox gedgo
-
-# Point docker environment variables at it
-$ eval $(docker-machine env gedgo)
-
 # Build the docker images
 $ docker-compose build
 ```

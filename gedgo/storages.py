@@ -71,6 +71,16 @@ class DropBoxSearchableStorage(Storage):
         )[1].content)
         return resize_thumb(file_, size)
 
+    def can_preview(self, name):
+        return (
+            '.' in name and
+            name.rsplit('.', 1)[1].lower() in (
+                'jpeg', 'jpg', 'gif', 'png', 'pdf', 'tif', 'tiff',
+                'mov', 'avi', 'doc', 'mpg', 'bmp', 'psd'
+            )
+        )
+
+
 
 class FileSystemSearchableStorage(FileSystemStorage):
     def search(self, query):
@@ -85,6 +95,14 @@ class FileSystemSearchableStorage(FileSystemStorage):
 
     def preview(self, name, size='w128h128'):
         return resize_thumb(self.open(name), size)
+
+    def can_preview(self, name):
+        return (
+            '.' in name and
+            name.rsplit('.', 1)[1].lower() in (
+                'jpeg', 'jpg'
+            )
+        )
 
 
 def resize_thumb(file_, size='w128h128', crop=None):

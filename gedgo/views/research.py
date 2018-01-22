@@ -123,16 +123,8 @@ def can_preview(storage, name):
     """
     Check if the file in question can generate a preview
     """
-    # TODO: Move suffix check onto storage child classes, since filesystem
-    # won't support previewing lots of these other types
     return (
         hasattr(storage, 'preview') and
         is_ascii(name) and
-        (
-            '.' in name and
-            name.rsplit('.', 1)[1].lower() in (
-                'jpeg', 'jpg', 'gif', 'png', 'pdf',
-                'mov', 'avi', 'doc', 'mpg', 'bmp'
-            )
-        )
+        storage.can_preview(name)
     )

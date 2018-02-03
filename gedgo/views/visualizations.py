@@ -151,6 +151,7 @@ def __gatherby(inlist, func):
         d[func(item)].append(item)
     return d.values()
 
+
 # TODO: Switch to database storage?
 HISTORICAL = [
     ['First Nobel Prizes awarded', 1901],

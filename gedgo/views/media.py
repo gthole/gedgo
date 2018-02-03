@@ -3,10 +3,10 @@ from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.conf import settings
-from django.shortcuts import redirect
 
 from gedgo.views.research import can_preview
-from gedgo.storages import gedcom_storage, research_storage, documentary_storage
+from gedgo.storages import gedcom_storage, research_storage, \
+     documentary_storage
 
 import mimetypes
 from os import path

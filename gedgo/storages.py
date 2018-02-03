@@ -26,7 +26,7 @@ class DropBoxSearchableStorage(Storage):
                 self.client.files_get_metadata(self.path(name)),
                 (FileMetadata, FolderMetadata)
             )
-        except:
+        except Exception:
             return False
 
     def listdir(self, name):
@@ -43,7 +43,7 @@ class DropBoxSearchableStorage(Storage):
         return (directories, files)
 
     def open(self, name, mode='rb'):
-        meta, resp= self.client.files_download(self.path(name))
+        meta, resp = self.client.files_download(self.path(name))
         return resp.raw
 
     def size(self, name):
@@ -79,7 +79,6 @@ class DropBoxSearchableStorage(Storage):
                 'mov', 'avi', 'doc', 'mpg', 'bmp', 'psd'
             )
         )
-
 
 
 class FileSystemSearchableStorage(FileSystemStorage):
@@ -125,6 +124,7 @@ def resize_thumb(file_, size='w128h128', crop=None):
     output = StringIO()
     im.save(output, 'JPEG')
     return output
+
 
 research_storage = import_string(settings.GEDGO_RESEARCH_FILE_STORAGE)(
     location=settings.GEDGO_RESEARCH_FILE_ROOT)

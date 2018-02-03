@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-rm -rf /src/files/test
-mkdir /src/files/test
+rm -rf /app/files/test
+mkdir /app/files/test
 
 flake8 ./ --exclude migrations
 

@@ -32,7 +32,7 @@ class Command(BaseCommand):
         gid = args[0]
         try:
             g = Gedcom.objects.get(pk=gid)
-        except:
+        except Exception:
             raise CommandError('Gedcom "%s" does not exist.' % gid)
 
         file_name = args[1]
@@ -51,7 +51,7 @@ class Command(BaseCommand):
             errstr = ''
             try:
                 update(g, file_name)
-            except:
+            except Exception:
                 e = exc_info()[0]
                 errstr = 'There was an error: %s\n%s' % (
                     e, traceback.format_exc())

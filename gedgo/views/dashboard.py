@@ -61,7 +61,7 @@ def worker_status(request):
     """
     try:
         status = app.control.ping() or []
-    except Exception as e:
+    except Exception:
         # TODO: What celery exceptions are we catching here?
         status = []
     return HttpResponse(
@@ -166,5 +166,5 @@ def _timestamp_from_redis(key):
     try:
         timestamp = redis.get(key)
         return datetime.datetime.fromtimestamp(int(timestamp))
-    except:
+    except Exception:
         pass

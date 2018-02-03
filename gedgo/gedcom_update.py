@@ -5,7 +5,7 @@ from django.core.files.storage import default_storage
 from django.db import transaction
 from django.utils.datetime_safe import date
 from django.utils import timezone
-from datetime import datetime, date
+from datetime import datetime
 from re import findall
 from os import path
 
@@ -24,7 +24,8 @@ def update(g, file_name, verbose=True):
             title=__child_value_by_tags(parsed.header, 'TITL', default=''),
             last_updated=datetime(1920, 1, 1)  # TODO: Fix.
         )
-    print 'Gedcom id=%s' % g.id
+    if verbose:
+        print 'Gedcom id=%s' % g.id
 
     if verbose:
         print 'Importing entries to models'
@@ -177,7 +178,6 @@ def __process_Person(entry, g):
             p.profile.add(d)
 
 
-
 def __process_Family(entry, g):
     f, _ = Family.objects.get_or_create(
         pointer=entry['pointer'],
@@ -297,7 +297,7 @@ def __check_unchanged(entry, existing):
         __child_value_by_tags(entry, ['CHAN', 'DATE'])
     )[0]
     return isinstance(existing.last_changed, date) and \
-           changed == existing.last_changed
+        changed == existing.last_changed
 
 
 DATE_FORMATS = [

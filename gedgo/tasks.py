@@ -1,6 +1,8 @@
+# flake8: noqa: E402
 from __future__ import absolute_import
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
+
 import django
 django.setup()
 
@@ -29,7 +31,7 @@ def async_update(gedcom_id, file_name, recipient_ids,
     errstr = ''
     try:
         update(gedcom, file_name, verbose=False)
-    except:
+    except Exception:
         errstr = traceback.format_exc()
 
     end = datetime.now()

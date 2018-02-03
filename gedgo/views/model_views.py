@@ -39,7 +39,8 @@ def person(request, gedcom_id, person_id):
     context = {
         'person': p,
         'posts': BlogPost.objects.filter(tagged_people=p),
-        'photos': [photo for photo in p.photos if not photo.id == p.key_photo.id],
+        'photos': [photo for photo in p.photos
+                   if not photo.id == p.key_photo.id],
         'gedcom': g,
         'form': form,
         'comment_noun': str(p)

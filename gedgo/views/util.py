@@ -1,4 +1,3 @@
-from django.core.files.storage import default_storage
 from django.conf import settings
 from django.shortcuts import redirect
 from django.contrib.auth import logout

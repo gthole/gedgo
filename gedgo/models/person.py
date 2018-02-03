@@ -134,6 +134,7 @@ class Person(models.Model):
         else:
             return ''
 
+
 # Keywords to filter out document-type photos in preference of portraits.
 BLOCK_TAGS_RE = re.compile(
     "(?i)(?:death|birth|masscard|census|burial|tax|obit|cemet(?:a|e)ry|"

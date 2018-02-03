@@ -1,6 +1,5 @@
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
-from django.core.files.storage import default_storage
 
 from os import path
 import mimetypes
@@ -68,7 +67,7 @@ def research(request, pathname):
     if request.GET.get('fn'):
         try:
             index = [f[len(dirname):] for f in files].index(basename)
-        except:
+        except Exception:
             raise Http404
         next_file = files[(index + 1) % len(files)]
         prev_file = files[(index - 1) % len(files)]
@@ -99,13 +98,13 @@ def process_file(name, p, is_dir=False):
         'preview': can_preview(storage, p)
     }
 
+
 # glyphicon name mappings
 MIMETYPE_MAPPING = {
     'video': 'video-camera',
     'audio': 'volume-up',
     'image': 'image'
 }
-
 
 
 def _get_type(c):

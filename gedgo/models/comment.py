@@ -9,7 +9,8 @@ class Comment(models.Model):
     user = models.ForeignKey(User)
     text = models.TextField()
     posted = models.DateTimeField(auto_now_add=True)
-    upload = models.FileField(upload_to='uploads/comments', null=True, blank=True)
+    upload = models.FileField(upload_to='uploads/comments', null=True,
+                              blank=True)
 
     gedcom = models.ForeignKey('Gedcom', null=True, blank=True)
     person = models.ForeignKey('Person', null=True, blank=True)

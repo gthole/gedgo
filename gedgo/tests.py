@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test.utils import override_settings
 
 from gedgo.gedcom_update import update
-from gedgo.models import Person, Family, Gedcom
+from gedgo.models import Person, Family, Gedcom, Comment
 from datetime import date
 from mock import patch
 
@@ -87,35 +87,56 @@ class TestViews(TestCase):
             self.assertEqual(resp.status_code, 200,
                              '%s %s' % (resp.status_code, page))
 
-    def test_comments(self):
-        pages = [
-            ('/gedgo/1/', 'Test Gedcom'),
-            ('/gedgo/1/I1/', 'John Doe (I1)')
-        ]
+    def test_comment_person(self):
         self.login_user()
         data = {
-            'message': 'My test message'
+            'person': 'I1',
+            'text': 'My test message'
         }
-        for page, noun in pages:
-            resp = self.client.post(page, data)
-            self.assertEqual(resp.status_code, 302)
 
-            self.assertEqual(len(mail.outbox), 1)
-            message = mail.outbox[0]
-            self.assertEqual(
-                message.subject,
-                'Comment from Test User about %s' % noun
-            )
-            self.assertEqual(message.body, data['message'] + '\n\n')
+        resp = self.client.post('/gedgo/%s/I1/' % self.gedcom.id, data)
+        self.assertEqual(resp.status_code, 302)
 
-            mail.outbox = []
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(
+            message.subject,
+            'Comment from Test User about Doe, John (I1)'
+        )
+        self.assertEqual(message.body.split('\n\n')[-1], data['text'])
+        self.assertEqual(
+            Comment.objects.filter(person__pointer='I1').count(),
+            1
+        )
+
+        mail.outbox = []
+
+    def test_comment_gedcom(self):
+        self.login_user()
+        data = {
+            'gedcom': '1',
+            'text': 'My test message'
+        }
+        resp = self.client.post('/gedgo/1/', data)
+        self.assertEqual(resp.status_code, 302)
+
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(
+            message.subject,
+            'Comment from Test User about Test Gedcom (1)'
+        )
+        self.assertEqual(message.body.split('\n\n')[-1], data['text'])
+        self.assertEqual(Comment.objects.filter(gedcom__id=1).count(), 1)
+        mail.outbox = []
 
     @patch('django.core.files.storage.default_storage.save')
     def test_upload_file(self, FileStorageMock):
         self.login_user()
         with open('gedgo/static/img/generic_person.gif') as fp:
             data = {
-                'message': 'My test message',
+                'person': 'I1',
+                'text': 'My test message',
                 'uploads': fp
             }
             resp = self.client.post('/gedgo/%s/I1/' % self.gedcom.id, data)
@@ -125,18 +146,11 @@ class TestViews(TestCase):
         message = mail.outbox[0]
         self.assertEqual(
             message.subject,
-            'Comment from Test User about John Doe (I1)'
-        )
-        self.assertTrue(
-            message.body.endswith(
-                'uploaded/test/%s/I1/generic_person.gif' % self.gedcom.id
-            )
+            'Comment from Test User about Doe, John (I1)'
         )
 
-        self.assertTrue(FileStorageMock.called)
-        self.assertTrue(
-            ('uploaded/test/%s/I1/generic_person.gif' % self.gedcom.id)
-            in str(FileStorageMock.call_args))
+        comment = Comment.objects.filter(person__pointer='I1').first()
+        self.assertFalse(comment.upload is None)
 
     # TODO: Sort this test out
     @override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,

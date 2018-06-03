@@ -1,6 +1,8 @@
 *.py[co]
+*.pyc
+settings.pyc
 settings_local.py
 *.ged
-/tmp
-/files
-/data
+tmp/
+files/
+data/

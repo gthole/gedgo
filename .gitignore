@@ -35,6 +35,7 @@ pip-log.txt
 /files/
 /data/
 *.ged
+!gedgo/static/test/*.ged
 docker-compose-prd.yml
 settings_local.py
 /tmp

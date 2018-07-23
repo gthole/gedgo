@@ -1,0 +1,80 @@
+0 HEAD
+1 SOUR Test
+2 VERS V9.0
+1 DEST Test
+1 DATE 21 JUN 2012
+1 TITL Test Gedcom
+1 FILE Test
+1 GEDC
+2 VERS 5.5
+1 CHAR UTF-8
+0 @I1@ INDI
+1 NAME John /Doe/
+1 SEX M
+1 BIRT
+2 DATE 22 MAR 1950
+2 PLAC Houston, Texas
+1 _CONTACT
+2 TYPE home
+2 ADDR Paris, France
+1 NOTE @N1@
+1 FAMC @F2@
+1 FAMS @F1@
+1 CHAN
+2 DATE 5 JUL 2004
+0 @I2@ INDI
+1 NAME Jill /Jillian/
+1 SEX F
+1 BIRT
+2 DATE 8 JUN 1952
+2 PLAC Honolulu, Hawaii
+1 FAMS @F1@
+0 @I3@ INDI
+1 NAME John /Doe/
+1 NSFX , Jr.
+1 SEX M
+1 BIRT
+2 DATE 10 MAR 1984
+2 PLAC Arlington, Virgina
+1 FAMC @F19@
+0 @I4@ INDI
+1 NAME Jane /Doe/
+1 SEX F
+1 BIRT
+2 DATE 3 NOV 1986
+2 PLAC Arlington, Virginia
+1 FAMC @F1@
+0 @I5@ INDI
+1 NAME Smith /Joe/
+1 SEX M
+1 BIRT
+2 DATE 10 MAY 1945
+2 PLAC Mount Plesant, Titus, Texas
+1 DEAT
+2 DATE 7 FEB 1987
+2 PLAC Fort Worth, Tarrant, Texas
+1 FAMS @F2@
+0 @I6@ INDI
+1 NAME Jayda /Doe/
+1 SEX F
+1 BIRT
+2 DATE BET. 1946 1953
+2 PLAC Fort Worth, Tarrant, Texas
+1 FAMC @F2@
+0 @F1@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 MARR
+2 DATE 7 JUN 1972
+2 PLAC The Moon
+1 CHIL @I3@
+1 CHIL @I4@
+0 @F2@ FAM
+1 HUSB @I5@
+1 CHIL @I1@
+1 CHIL @I6@
+0 @N1@ NOTE
+1 CONT John Doe is an American Musician, known for the bop, the beep, and the Whoa Nelly. He incorporated elements of jazz, ja
+1 CONC xx and trip-hop to form an influential style. He garnered a large following, including notable musicians such as Cab
+1 CONC Calloway and Tribe Called Quest's Q-Tip. [Citation Needed]
+0 TRLR

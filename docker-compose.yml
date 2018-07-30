@@ -40,10 +40,10 @@ services:
             - 'db'
             - 'redis'
     web:
-        image: 'nginx'
+        image: 'nginx:alpine'
         command: 'nginx -g "daemon off;"'
         volumes:
-            - './gedgo-web.conf:/etc/nginx/conf.d/gedgo-web.conf:ro'
+            - './gedgo-web.conf:/etc/nginx/conf.d/default.conf:ro'
             - './files:/src/files:ro'
         ports:
             - '80:80'

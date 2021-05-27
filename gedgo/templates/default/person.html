@@ -4,7 +4,7 @@
 {% block leftsidebar %}
 <div class="row">
 {% for photo in photos %}
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-4 col-md-6" style="padding: 0 10px; padding-bottom: 10px">
       <a href="/gedgo/document/{{ photo.id }}">
         <img src="/gedgo/media/gedcom/{{ photo.docfile.name }}?size=w128h128" class="sidebar-thumb img-rounded" onerror="this.onerror=null;this.src='{{ STATIC_URL }}/question.jpg';">
       </a>
@@ -63,7 +63,7 @@
 
 {% for family in person.spousal_families.iterator %}
 <div class="section">
-  <h3>{% if family.kind = "MARR" %}Marital Family{% else %}Domestic Relationship{% endif %}</h3>
+  <h3>{% if family.kind == "MARR" %}Marital Family{% else %}Domestic Relationship{% endif %}</h3>
   <div class="row">
   {% for somebody in family.spouses %}
       {% if not somebody == person %}
@@ -78,9 +78,9 @@
   {% if family.joined.date or family.joined.place or family.separated.date %}
   <hr />
     {% if family.joined.date %}
-      <strong>{% if family.kind = "MARR" %}Married{% else %}Domestic Partners{% endif %}:</strong> {{ family.joined.date_string }}{% if family.joined.date_approxQ %} (approximate){% endif %}{% endif %}{% if family.joined.place %}<br />{{ family.joined.place }}{% endif %}
+      <strong>{% if family.kind == "MARR" %}Married{% else %}Domestic Partners{% endif %}:</strong> {{ family.joined.date_string }}{% if family.joined.date_approxQ %} (approximate){% endif %}{% endif %}{% if family.joined.place %}<br />{{ family.joined.place }}{% endif %}
     {% if family.separated.date %}
-      <strong>{% if family.kind = "MARR" %}Divorced{% else %}Separated{% endif %}:</strong> {{ family.separated.date_string }} {% if family.separated.date_approxQ %}(approximate){% endif %}
+      <strong>{% if family.kind == "MARR" %}Divorced{% else %}Separated{% endif %}:</strong> {{ family.separated.date_string }} {% if family.separated.date_approxQ %}(approximate){% endif %}
       <br />
     {% endif %}
     {% if family.separated.place %}

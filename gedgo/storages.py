@@ -6,8 +6,8 @@ from django.utils.module_loading import import_string
 import re
 import os
 from PIL import Image
-from cStringIO import StringIO
-from dropbox.dropbox import Dropbox
+from io import StringIO, BytesIO
+from dropbox import Dropbox
 from dropbox.files import FileMetadata, FolderMetadata, ThumbnailFormat, \
     ThumbnailSize
 
@@ -26,7 +26,8 @@ class DropBoxSearchableStorage(Storage):
                 self.client.files_get_metadata(self.path(name)),
                 (FileMetadata, FolderMetadata)
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             return False
 
     def listdir(self, name):
@@ -64,7 +65,7 @@ class DropBoxSearchableStorage(Storage):
         return (directories, files)
 
     def preview(self, name, size='w128h128'):
-        file_ = StringIO(self.client.files_get_thumbnail(
+        file_ = BytesIO(self.client.files_get_thumbnail(
             self.path(name),
             format=ThumbnailFormat('jpeg', None),
             size=ThumbnailSize(size, None)
@@ -110,10 +111,10 @@ def resize_thumb(file_, size='w128h128', crop=None):
 
     if size in ('w64h64', 'w128h128'):
         if width > height:
-            offset = (width - height) / 2
+            offset = (width - height) // 2
             box = (offset, 0, offset + height, height)
         else:
-            offset = ((height - width) * 3) / 10
+            offset = ((height - width) * 3) // 10
             box = (0, offset, width, offset + width)
         im = im.crop(box)
 
@@ -121,7 +122,7 @@ def resize_thumb(file_, size='w128h128', crop=None):
     new_size = [int(d) for d in m.groups()]
 
     im.thumbnail(new_size, Image.ANTIALIAS)
-    output = StringIO()
+    output = BytesIO()
     im.save(output, 'JPEG')
     return output
 

@@ -220,5 +220,7 @@ HISTORICAL = [
     ['Wikipedia founded', 2001],
     ['Human genome project completed', 2003],
     ['Barack Obama sworn US President', 2009],
-    ['population reaches 7 billion', 2011]
+    ['population reaches 7 billion', 2011],
+    ['NASA Flies by Pluto', 2015],
+    ['COVID-19 Pandemic', 2020],
 ]

@@ -4,7 +4,7 @@
 {% block leftsidebar %}
 <div class="row">
 {% for photo in gedcom.photo_sample %}
-  <div class="col-lg-4 col-md-6">
+  <div class="col-lg-4 col-md-6" style="padding: 0 10px; padding-bottom: 10px">
   <a href="{% if photo.key_person_tag %}{{ photo.key_person_tag.pointer }}{% else %}/gedgo/document/{{ photo.id }}{% endif %}">
       <img src="/gedgo/media/gedcom/{{ photo.docfile.name }}?size=w128h128" class="sidebar-thumb img-rounded" onerror="this.onerror=null;this.src='{{ STATIC_URL }}/question.jpg';">
   </a>

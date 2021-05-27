@@ -1,7 +1,7 @@
 from django.db import models
 
-from document import Document
-from documentary import Documentary
+from gedgo.models.document import Document
+from gedgo.models.documentary import Documentary
 import re
 
 
@@ -10,7 +10,7 @@ class Person(models.Model):
         app_label = 'gedgo'
         verbose_name_plural = 'People'
     pointer = models.CharField(max_length=10, primary_key=True)
-    gedcom = models.ForeignKey('Gedcom')
+    gedcom = models.ForeignKey('Gedcom', on_delete=models.CASCADE)
     last_changed = models.DateField(null=True, blank=True)
 
     # Name
@@ -28,13 +28,15 @@ class Person(models.Model):
         'Event',
         related_name='person_birth',
         null=True,
-        blank=True
+        blank=True,
+        on_delete=models.CASCADE,
     )
     death = models.ForeignKey(
         'Event',
         related_name='person_death',
         null=True,
-        blank=True
+        blank=True,
+        on_delete=models.CASCADE,
     )
 
     # Family
@@ -42,7 +44,8 @@ class Person(models.Model):
         'Family',
         related_name='person_child_family',
         null=True,
-        blank=True
+        blank=True,
+        on_delete=models.CASCADE,
     )
     spousal_families = models.ManyToManyField(
         'Family',
@@ -55,7 +58,7 @@ class Person(models.Model):
     # Profile
     profile = models.ManyToManyField('Document', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s, %s (%s)' % (self.last_name, self.first_name, self.pointer)
 
     @property

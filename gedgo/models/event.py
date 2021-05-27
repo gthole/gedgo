@@ -5,7 +5,7 @@ from django.utils.datetime_safe import date
 class Event(models.Model):
     class Meta:
         app_label = 'gedgo'
-    gedcom = models.ForeignKey('Gedcom')
+    gedcom = models.ForeignKey('Gedcom', on_delete=models.CASCADE)
 
     # Can't use DateFields because sometimes only a Year is known, and
     # we don't want to show those as January 01, <year>, and datetime
@@ -28,5 +28,5 @@ class Event(models.Model):
             new_date = date(self.date.year, self.date.month, self.date.day)
             return new_date.strftime(self.date_format)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.date_string. self.id)

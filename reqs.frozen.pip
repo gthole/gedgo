@@ -1,3 +1,4 @@
+[33mDEPRECATION: Python 2.7 will reach the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 won't be maintained after that date. A future version of pip will drop support for Python 2.7.[0m
 amqp==2.2.2
 anyjson==0.3.3
 billiard==3.5.0.3
@@ -22,7 +23,6 @@ Pillow==3.1.1
 pycodestyle==2.3.1
 pyflakes==1.6.0
 pytz==2017.3
-redis==2.10.6
 requests==2.18.4
 six==1.11.0
 static3==0.7.0

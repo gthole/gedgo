@@ -2,7 +2,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.shortcuts import render_to_response
+from django.shortcuts import render as render_to_response
 from django.template import RequestContext
 
 from gedgo.models import BlogPost, Documentary
@@ -30,7 +30,7 @@ def process_comments(request):
             'Your comment has been sent. Thank you!'
         )
     except Exception as e:
-        print e
+        print(e)
         messages.error(
             request,
             "We're sorry, we couldn't process your comment."
@@ -39,10 +39,11 @@ def process_comments(request):
 
 
 def render(request, template, context):
+    context.update(site_context(request))
     return render_to_response(
+        request,
         template,
         context,
-        context_instance=RequestContext(request, site_context(request))
     )
 
 
@@ -54,10 +55,7 @@ def site_context(request):
     """
     show_blog = BlogPost.objects.exists()
     show_documentaries = Documentary.objects.exists()
-    show_researchfiles = isinstance(
-        getattr(settings, 'GEDGO_RESEARCH_FILE_ROOT', None),
-        basestring
-    )
+    show_researchfiles = getattr(settings, 'GEDGO_RESEARCH_FILE_ROOT', None)
     show_file_uploads = getattr(
         settings, 'GEDGO_ALLOW_FILE_UPLOADS', True) is True
     site_title = settings.GEDGO_SITE_TITLE

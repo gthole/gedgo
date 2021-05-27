@@ -1,5 +1,5 @@
-from gedcom_parser import GedcomParser
-from models import Gedcom, Person, Family, Note, Document, Event
+from gedgo.gedcom_parser import GedcomParser
+from gedgo.models import Gedcom, Person, Family, Note, Document, Event
 
 from django.core.files.storage import default_storage
 from django.db import transaction
@@ -8,15 +8,19 @@ from django.utils import timezone
 from datetime import datetime
 from re import findall
 from os import path
+import sys
 
 from gedgo.storages import gedcom_storage, resize_thumb
+
+# For logging
+sys.stdout = sys.stderr
 
 
 @transaction.atomic
 def update(g, file_name, verbose=True):
     # Prevent circular dependencies
     if verbose:
-        print 'Parsing content'
+        print('Parsing content')
     parsed = GedcomParser(file_name)
 
     if g is None:
@@ -24,11 +28,11 @@ def update(g, file_name, verbose=True):
             title=__child_value_by_tags(parsed.header, 'TITL', default=''),
             last_updated=datetime(1920, 1, 1)  # TODO: Fix.
         )
-    if verbose:
-        print 'Gedcom id=%s' % g.id
 
     if verbose:
-        print 'Importing entries to models'
+        print('Gedcom id=%s' % g.id)
+        print('Importing entries to models')
+
     person_counter = family_counter = note_counter = 0
     entries = parsed.entries.values()
     for index, entry in enumerate(entries):
@@ -45,26 +49,29 @@ def update(g, file_name, verbose=True):
             note_counter += 1
 
         if verbose and (index + 1) % 100 == 0:
-            print ' ... %d / %d' % (index + 1, len(entries))
+            print(' ... %d / %d' % (index + 1, len(entries)))
 
     if verbose:
-        print 'Found %d people, %d families, %d notes, and %d documents' % (
+        print('Found %d people, %d families, %d notes, and %d documents' % (
             person_counter, family_counter, note_counter,
-            Document.objects.count())
+            Document.objects.count()))
 
     if verbose:
-        print 'Creating ForeignKey links'
+        print('Creating ForeignKey links')
 
     __process_all_relations(g, parsed, verbose)
 
     g.last_updated = timezone.now()
     g.save()
 
+    if verbose:
+        print('Done updating gedcom')
+
 
 # --- Second Level script functions
 def __process_all_relations(gedcom, parsed, verbose=True):
     if verbose:
-        print '  Starting Person objects.'
+        print('  Starting Person objects.')
 
     # Process Person objects
     for index, person in enumerate(gedcom.person_set.iterator()):
@@ -75,7 +82,7 @@ def __process_all_relations(gedcom, parsed, verbose=True):
         else:
             person.delete()
     if verbose:
-        print '  Finished Person objects, starting Family objects.'
+        print('  Finished Person objects, starting Family objects.')
 
     # Process Family objects
     for family in gedcom.family_set.iterator():
@@ -86,7 +93,7 @@ def __process_all_relations(gedcom, parsed, verbose=True):
         else:
             family.delete()
     if verbose:
-        print '  Finished Family objects.'
+        print('  Finished Family objects.')
 
 
 def __process_person_relations(gedcom, person, entry):
@@ -94,7 +101,7 @@ def __process_person_relations(gedcom, person, entry):
     notes = gedcom.note_set
 
     # "FAMS"
-    person.spousal_families = []
+    person.spousal_families.clear()
     person.spousal_families.add(
         *__objects_from_entry_tag(families, entry, 'FAMS')
     )
@@ -106,7 +113,7 @@ def __process_person_relations(gedcom, person, entry):
         person.child_family = child_family[0]
 
     # "NOTE"
-    person.notes = []
+    person.notes.clear()
     person.notes.add(*__objects_from_entry_tag(notes, entry, 'NOTE'))
 
     person.save()
@@ -117,19 +124,19 @@ def __process_family_relations(gedcom, family, entry):
     notes = gedcom.note_set
 
     # "HUSB"
-    family.husbands = []
+    family.husbands.clear()
     family.husbands.add(*__objects_from_entry_tag(people, entry, 'HUSB'))
 
     # "WIFE"
-    family.wives = []
+    family.wives.clear()
     family.wives.add(*__objects_from_entry_tag(people, entry, 'WIFE'))
 
     # "CHIL"
-    family.children = []
+    family.children.clear()
     family.children.add(*__objects_from_entry_tag(people, entry, 'CHIL'))
 
     # "NOTE"
-    family.notes = []
+    family.notes.clear()
     family.notes.add(*__objects_from_entry_tag(notes, entry, 'NOTE'))
 
     family.save()
@@ -257,7 +264,7 @@ def __process_Note(entry, g):
 
 def __process_Document(entry, obj, g):
     full_name = __child_value_by_tags(entry, 'FILE')
-    name = path.basename(full_name).decode('utf-8').strip()
+    name = path.basename(full_name).strip()
     known = Document.objects.filter(docfile=name).exists()
 
     if not known and not gedcom_storage.exists(name):
@@ -275,8 +282,8 @@ def __process_Document(entry, obj, g):
             make_thumbnail(name, 'w128h128')
             make_thumbnail(name, 'w640h480')
         except Exception as e:
-            print e
-            print '  Warning: failed to make or find thumbnail: %s' % name
+            print(e)
+            print('  Warning: failed to make or find thumbnail: %s' % name)
             return None  # Bail on document creation if thumb fails
 
     m.save()
@@ -352,7 +359,7 @@ def __objects_from_entry_tag(qset, entry, tag):
 
 
 def __child_value_by_tags(entry, tags, default=None):
-    if isinstance(tags, basestring):
+    if isinstance(tags, str):
         tags = [tags]
     tags.reverse()
     next = entry

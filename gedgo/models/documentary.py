@@ -10,13 +10,14 @@ class Documentary(models.Model):
     tagline = models.CharField(max_length=100)
     location = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    gedcom = models.ForeignKey('Gedcom')
+    gedcom = models.ForeignKey('Gedcom', on_delete=models.CASCADE)
     last_updated = models.DateTimeField(auto_now_add=True)
 
     thumb = models.ForeignKey(
         'Document',
         related_name='documentaries_thumb',
-        blank=True
+        blank=True,
+        on_delete=models.CASCADE,
     )
     tagged_people = models.ManyToManyField(
         'Person',
@@ -29,5 +30,5 @@ class Documentary(models.Model):
         blank=True
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title

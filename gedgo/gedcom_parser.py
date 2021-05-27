@@ -17,7 +17,7 @@ class GedcomParser(object):
     )
 
     def __init__(self, file_name_or_stream):
-        if isinstance(file_name_or_stream, basestring):
+        if isinstance(file_name_or_stream, str):
             self.file = open(file_name_or_stream, 'rU')
         else:
             self.file = file_name_or_stream
@@ -70,9 +70,7 @@ class GedcomParser(object):
                 break
 
         # Keep the entry trimmed down
-        for key in entry.keys():
-            if not entry[key]:
-                del entry[key]
+        entry = dict((key, entry[key]) for key in entry.keys() if entry[key])
 
         return tag, entry
 

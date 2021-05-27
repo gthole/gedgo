@@ -1,37 +1,24 @@
-# flake8: noqa: E402
-from __future__ import absolute_import
-import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
-
-import django
-django.setup()
-
 from gedgo.gedcom_update import update
-from gedgo import redis
 from gedgo.models import Gedcom
-from celery import Celery
 from django.conf import settings
 from datetime import datetime
 from django.core.mail import send_mail, send_mass_mail
 from django.contrib.auth.models import User
 import traceback
-import requests
-import json
-
-app = Celery('gedgo')
-app.config_from_object(settings)
 
 
-@app.task
 def async_update(gedcom_id, file_name, recipient_ids,
                  message, domain, sender_id):
+    print('OK!')
+
     start = datetime.now()
     gedcom = Gedcom.objects.get(id=gedcom_id)
 
     errstr = ''
     try:
-        update(gedcom, file_name, verbose=False)
-    except Exception:
+        update(gedcom, file_name, verbose=True)
+    except Exception as e:
+        print(e)
         errstr = traceback.format_exc()
 
     end = datetime.now()
@@ -61,15 +48,3 @@ def async_update(gedcom_id, file_name, recipient_ids,
 
         send_mass_mail(datatuple)
 
-
-@app.task
-def geo_resolve_ip(ip_address):
-    if redis is None:
-        return
-    try:
-        response = requests.get('ipinfo.io/%s/json' % ip_address)
-        j = response.json()
-        j['requested'] = datetime.utcnow().isoformat()
-        redis.set('gedgo_ip_%s', json.dumps(j))
-    except (requests.exceptions.RequestsException, ValueError):
-        return

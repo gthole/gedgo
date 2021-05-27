@@ -10,7 +10,7 @@ class Document(models.Model):
     description = models.TextField(null=True, blank=True)
     docfile = models.FileField(upload_to='uploads')
     last_updated = models.DateTimeField(auto_now_add=True)
-    gedcom = models.ForeignKey('Gedcom', null=True, blank=True)
+    gedcom = models.ForeignKey('Gedcom', null=True, blank=True, on_delete=models.CASCADE)
 
     kind = models.CharField(
         max_length=5,
@@ -29,7 +29,7 @@ class Document(models.Model):
         related_name='media_tagged_families', blank=True
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return path.basename(self.docfile.path)
 
     @property

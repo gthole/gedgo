@@ -52,13 +52,13 @@ def serve_thumbnail(request, storage_name, storage, size, name):
 
     try:
         if not default_storage.exists(cache_name):
-            print 'generating cache: ' + cache_name
+            print('generating cache: ' + cache_name)
             content = storage.preview(name, size)
             assert content
             default_storage.save(cache_name, content)
         return serve_content(default_storage, cache_name)
     except Exception as e:
-        print e
+        print(e)
         return HttpResponseRedirect(settings.STATIC_URL + 'img/question.jpg')
 
 
@@ -83,7 +83,7 @@ def serve_content(storage, name):
     # Set various file headers and return
     base = path.basename(name)
     response['Content-Type'] = mimetypes.guess_type(base)[0]
-    response['Content-Length'] = storage.size(name)
+    # response['Content-Length'] = storage.size(name)
     response['Cache-Control'] = 'public, max-age=31536000'
     if response['Content-Type'] is None:
         response['Content-Disposition'] = "attachment; filename=%s;" % (base)

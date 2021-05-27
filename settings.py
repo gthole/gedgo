@@ -1,35 +1,20 @@
 import os
-import sys
-project_root = os.path.dirname(__file__)
+
 # Django settings for gedgo project.
-
-DEBUG = True
-
-ADMINS = ()
-
-MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gedgo',
-        'USER': 'gedgo',
-        'PASSWORD': 'gedgo',
-        'HOST': 'db',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/data/db.sqllite',
     }
 }
-
-ALLOWED_HOSTS = []
-TIME_ZONE = 'America/New_York'
-LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-MEDIA_ROOT = '/app/files/default/'
+MEDIA_ROOT = '/app/.files/default/'
 MEDIA_URL = '/gedgo/media/default/'
 
 STATIC_ROOT = '/static/'
@@ -46,8 +31,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(project_root, 'gedgo/templates'),
-            os.path.join(project_root, 'gedgo/templates/default'),
+            '/app/gedgo/templates',
+            '/app/gedgo/templates/default',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -61,13 +46,14 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
 ]
 
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,7 +64,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'urls'
-WSGI_APPLICATION = 'wsgi.application'
+ASGI_APPLICATION = 'asgi.application'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -88,13 +74,15 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'gedgo'
+    'django_simple_task',
+    'gedgo',
 )
+
 
 CACHES = {
     'research_preview': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/app/files/research_preview',
+        'LOCATION': '/app/.files/research_preview',
     },
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -104,27 +92,9 @@ CACHES = {
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
-# Just send emails to the console.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-SERVER_EMAIL = ['noreply@example.com']
-
-GEDGO_ALLOW_FILE_UPLOADS = True
-GEDGO_SENDFILE_HEADER = 'X-Accel-Redirect'
-GEDGO_SENDFILE_PREFIX = '/protected/'
-GEDGO_SITE_TITLE = 'My Genealogy Site'
-GEDGO_REDIS_SERVER = 'redis'
-GEDGO_RESEARCH_FILE_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
-GEDGO_RESEARCH_FILE_ROOT = '/app/files/gedcom/'
-GEDGO_DOCUMENTARY_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
-GEDGO_DOCUMENTARY_ROOT = '/app/files/documentaries/'
-GEDGO_GEDCOM_FILE_STORAGE = 'gedgo.storages.FileSystemSearchableStorage'
-GEDGO_GEDCOM_FILE_ROOT = '/app/files/research/'
-GEDGO_SHOW_RESEARCH_FILES = True
-
-BROKER_BACKEND = 'redis'
-BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-CELERY_ACCEPT_CONTENT = ["json"]
+# BROKER_URL = 'django://'
+# CELERY_RESULT_BACKEND = 'djcelery.backends.database'
+# CELERY_ACCEPT_CONTENT = ["json"]
 
 LOGGING = {
     'version': 1,
@@ -149,12 +119,52 @@ LOGGING = {
         },
     }
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-if 'test' in sys.argv:
-    DATABASES['default']['USER'] = 'root'
-    DATABASES['default']['PASSWORD'] = 'docker'
+
+#
+# Environment-variable overrides
+#
+
+TIME_ZONE = os.environ.get('TIME_ZONE', 'America/New_York')
+LANGUAGE_CODE = os.environ.get('LANGUAGE_CODE', 'en-us')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+DEBUG = (os.environ.get('DEBUG') == 'True')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'foo')
+if os.environ.get('ADMINS'):
+    ADMINS = [a.split(':') for a in os.environ['ADMINS'].split(',')]
 else:
-    try:
-        from settings_local import *  # noqa
-    except ImportError:
-        pass
+    ADMINS = []
+MANAGERS = ADMINS
+
+#
+# Gedgo-specific settings
+#
+
+DROPBOX_ACCESS_TOKEN = os.environ.get('DROPBOX_ACCESS_TOKEN', None)
+GEDGO_ALLOW_FILE_UPLOADS = os.environ.get('GEDGO_ALLOW_FILE_UPLOADS', 'False') == 'True'
+GEDGO_SENDFILE_HEADER = os.environ.get('GEDGO_SENDIFLE_HEADER', 'X-Accel-Redirect')
+GEDGO_SENDFILE_PREFIX = os.environ.get('GEDOG_SENDFILE_PREFIX', '/protected/')
+GEDGO_SITE_TITLE = os.environ.get('GEDGO_SITE_TITLE', 'My Genealogy Site')
+GEDGO_RESEARCH_FILE_STORAGE = os.environ.get('GEDGO_RESEARCH_FILE_STORAGE', 'gedgo.storages.FileSystemSearchableStorage')
+GEDGO_RESEARCH_FILE_ROOT = os.environ.get('GEDGO_RESEARCH_FILE_ROOT', '/app/.files/gedcom/')
+GEDGO_DOCUMENTARY_STORAGE = os.environ.get('GEDGO_DOCUMENTARY_STORAGE', 'gedgo.storages.FileSystemSearchableStorage')
+GEDGO_DOCUMENTARY_ROOT = os.environ.get('GEDGO_DOCUMENTARY_ROOT', '/app/.files/documentaries/')
+GEDGO_GEDCOM_FILE_STORAGE = os.environ.get('GEDGO_GEDCOM_FILE_STORAGE', 'gedgo.storages.FileSystemSearchableStorage')
+GEDGO_GEDCOM_FILE_ROOT = os.environ.get('GEDGO_GEDCOM_FILE_ROOT', '/app/.files/research/')
+GEDGO_SHOW_RESEARCH_FILES = os.environ.get('GEDGO_SHOW_RESEARCH_FILES', 'True') == 'True'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SERVER_EMAIL = ['noreply@example.com']
+if os.environ.get('EMAIL_HOST') and not DEBUG:
+    EMAIL_BACKEND = os.environ.get(
+        'EMAIL_BACKEND',
+        'django.core.mail.backends.smtp.EmailBackend'
+    )
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+    SERVER_EMAIL = os.environ.get('SERVER_EMAIL', EMAIL_HOST_USER)

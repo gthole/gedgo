@@ -1,5 +1,5 @@
 from django.db import models
-from person import Person
+from gedgo.models.person import Person
 
 
 class Gedcom(models.Model):
@@ -22,7 +22,7 @@ class Gedcom(models.Model):
         blank=True
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if not self.title:
             return 'Gedcom #%d' % self.id
         return '%s (%d)' % (self.title, self.id)

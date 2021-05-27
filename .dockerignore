@@ -3,6 +3,8 @@
 settings.pyc
 settings_local.py
 *.ged
-tmp/
-files/
-data/
+.env
+.tmp/
+.files/
+.data/
+.tmp/

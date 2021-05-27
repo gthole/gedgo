@@ -6,9 +6,9 @@ class Note(models.Model):
         app_label = 'gedgo'
     pointer = models.CharField(max_length=10, primary_key=True)
     text = models.TextField()
-    gedcom = models.ForeignKey('Gedcom')
+    gedcom = models.ForeignKey('Gedcom', on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Note (%s)' % self.pointer
 
     @property

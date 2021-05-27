@@ -1,7 +1,6 @@
 from django.conf.urls import url
 from django.shortcuts import redirect
-from django.contrib.auth.views import password_reset, password_reset_done, \
-    password_reset_confirm
+from django.contrib.auth.views import PasswordResetView
 
 from gedgo import views
 
@@ -27,29 +26,14 @@ urlpatterns = [
     url(r'^research/(?P<pathname>.*)$', views.research),
     url(r'^search/$', views.search),
     url(r'^dashboard/$', views.dashboard),
-    url(r'^dashboard/user/(?P<user_id>\d+)/$', views.user_tracking),
 
     # Auth
     url(r'^logout/$', views.logout_view),
-    url(r'^password_reset/$',
-        password_reset,
-        {
-            'template_name': 'auth/login.html',
-            'email_template_name': 'auth/password_reset_email.html',
-            'post_reset_redirect': '/gedgo/password_reset/done/'
-        }),
-    url(r'^password_reset/done/$',
-        password_reset_done,
-        {
-            'template_name': 'auth/password_reset_done.html'
-        }),
-    url(r'^password_reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        password_reset_confirm,
-        {
-            'post_reset_redirect': '/',
-            'template_name': 'auth/password_reset_confirm.html'
-        }),
-
+    url(r'^password_reset/$', PasswordResetView.as_view(
+        subject_template_name='email/password_reset_subject.txt',
+        email_template_name='auth/password_reset_email.txt',
+        html_email_template_name='email/password_reset.html',
+    ), name='auth_password_reset'),
     # Authenticated media fileserve view
     url(r'^media/(?P<storage_name>\w+)/(?P<pathname>.*)$', views.media),
 

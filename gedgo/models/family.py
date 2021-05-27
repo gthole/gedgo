@@ -1,14 +1,14 @@
 from django.db import models
 
-from document import Document
-from documentary import Documentary
+from .document import Document
+from .documentary import Documentary
 
 
 class Family(models.Model):
     class Meta:
         app_label = 'gedgo'
     pointer = models.CharField(max_length=10, primary_key=True)
-    gedcom = models.ForeignKey('Gedcom')
+    gedcom = models.ForeignKey('Gedcom', on_delete=models.CASCADE)
     last_changed = models.DateField(null=True, blank=True)
 
     husbands = models.ManyToManyField('Person', related_name='family_husbands')
@@ -22,16 +22,18 @@ class Family(models.Model):
         'Event',
         related_name='family_joined',
         blank=True,
-        null=True
+        null=True,
+        on_delete=models.CASCADE,
     )
     separated = models.ForeignKey(
         'Event',
         related_name='family_separated',
         blank=True,
-        null=True
+        null=True,
+        on_delete=models.CASCADE,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.family_name, self.pointer)
 
     @property

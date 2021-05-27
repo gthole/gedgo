@@ -1,6 +1,10 @@
 .DS_Store
 *.py[co]
 *.zip
+.env
+.tmp/
+.data/
+.files/
 
 # Packages
 *.egg

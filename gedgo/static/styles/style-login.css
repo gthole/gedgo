@@ -28,15 +28,10 @@ body {
 .form-signin .form-control:focus {
   z-index: 2;
 }
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
+.form-signin input {
+  margin-bottom: 5px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 }
 .pod {
   background-color: #FFFBFF;

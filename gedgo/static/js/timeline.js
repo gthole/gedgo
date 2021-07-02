@@ -36,7 +36,7 @@
             .append("line")
             .attr("x1", w/2).attr("y1", 10)
             .attr("x2", w/2).attr("y2", h - 10)
-            .attr("stroke", "teal");
+            .attr("stroke", "#004643");
 
         svg.selectAll("circle")
             .data(events)
@@ -45,9 +45,9 @@
             .attr("cx", w/2)
             .attr("cy", (d) => scale(d.year))
             .attr("r", 5)
-            .attr("fill", d => (d.year === birthyear || d.year === deathyear) ? "teal" : "white")
+            .attr("fill", d => (d.year === birthyear || d.year === deathyear) ? "#004643" : "#fffffe")
             .attr("stroke-width", 3)
-            .attr("stroke", d => (d.type === 'personal') ? "teal" : "orange");
+            .attr("stroke", d => (d.type === 'personal') ? "#004643" : "#f9bc60");
 
         svg.selectAll("text")
               .data(events)

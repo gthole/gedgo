@@ -1,16 +1,23 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  background-color: #d5dce0;
+  background-color: #abd1c6;
   font-family: Camphor, Open Sans, Segoe UI, sans-serif;
   text-rendering: optimizeLegibility;
+  color: #001e1d;
 }
 
 a {
-  color: #537484;
+  color: #004643;
+}
+a:hover {
+  color: #004643;
 }
 
 .navbar {
-  background-color: #538463 !important;
+  background-color: #004643;
+}
+.navbar.navbar-inverse {
+  border: none;
 }
 .navbar-nav li a {
   color: #fcfcfc !important;
@@ -18,30 +25,55 @@ a {
 .navbar-nav .dropdown .footlist a {
   color: #666 !important;
 }
-.navbar-nav .active a {
-  background-color: #6e9b7d !important;
+
+a.dropdown-toggle {
+    margin-top: 3px;
+    padding-bottom: 0;
 }
-.navbar-nav .open .dropdown-toggle {
-  background-color: #6e9b7d !important;
+.navbar-nav .open .dropdown-toggle,
+.navbar-nav .active a {
+  background-color: #004643 !important;
+  color: #f9bc60 !important;
+}
+.btn-primary {
+  border: none;
+  background-color: #f9bc60 !important;
 }
 
 .navbar-brand {
   color: #fff !important;
+  padding-bottom: 35px;
 }
 
 .main-container {
   margin-top: 65px;
 }
 
+.main-container > .row > div {
+  padding: 0 5px;
+}
+
+.blog .time {
+  color: #999;
+}
+
+.documentary,
+.blog {
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.documentary:first-child,
+.blog:first-child {
+    padding-top: 0;
+}
+
 .main {
   margin: 5px;
-  color: #666;
-  background-color: #fff;
+  color: #001e1d;
+  background-color: #fffffe;
   padding: 20px;
   border-radius: 5px;
-  border-style: solid;
-  border-color: #d3d3d3;
-  border-width: 1px;
 }
 .section {
   margin-top: 35px;
@@ -55,6 +87,7 @@ a {
   min-height: 100%;
   max-height: 100%;
   margin-bottom: 10px;
+  border: 1px solid #eee
 }
 .subsection-thumb {
   display: block;
@@ -84,9 +117,23 @@ a {
     min-height: 64px;
 }
 
-.comment-area {
+textarea.comment-area.form-control {
   resize: none;
+  appearance: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+  border: none;
+  background-color: #eee;
+  border-bottom: 2px solid #004643;
 }
+textarea.comment-area.form-control:focus {
+  background-color: #fffffe;
+  border-top: 1px solid #004643;
+  border-left: 1px solid #004643;
+  border-right: 1px solid #004643;
+}
+
 .card {
   margin-bottom: 5px;
 }
@@ -106,7 +153,7 @@ a {
 
 rect {
   fill: white;
-  stroke: teal;
+  stroke: #004643;
   stroke-width: 2;
 }
 path {

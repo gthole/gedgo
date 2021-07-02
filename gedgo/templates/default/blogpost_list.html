@@ -20,10 +20,10 @@
     <!-- Posts  -->
     {% if posts.object_list %}
         {% for post in posts.object_list %}
-        <div class="pod">
+        <div class="pod blog">
             <a href="/gedgo/blog/post/{{ post.id }}"><h2>{{ post.title }}</h2></a>
-            <div class="body">{{ post.body|linebreaks|truncatewords:200 }}</div>
             <div class="time">{{ post.created }}</div>
+            <div class="body">{{ post.body|linebreaks|truncatewords:200 }}</div>
         </div>
         {% endfor %}
     {% else %}
@@ -31,13 +31,13 @@
             No blog posts written yet.
         </div>
     {% endif %}
-        
+
     <!-- Next/Prev page links  -->
     {% if posts.object_list and posts.paginator.num_pages > 1 %}
     <div class="section">
       <div style="text-align: center;">
         {% if posts.has_previous %}
-            <a class="btn btn-default" href="?page={{ posts.previous_page_number }}"> &lt;&lt; newer entries </a>
+            <a class="btn btn-default" href="?page={{ posts.previous_page_number }}"> &lt; newer</a>
         {% endif %}
 
         <span class="current">
@@ -45,8 +45,8 @@
         </span> {# post list #}
 
         {% if posts.has_next %}
-            <a class="btn btn-default" href="?page={{ posts.next_page_number }}">older entries &gt;&gt; </a>
-        {% endif %} 
+            <a class="btn btn-default" href="?page={{ posts.next_page_number }}">older &gt;</a>
+        {% endif %}
       </div>
     </div>
   {% endif %}

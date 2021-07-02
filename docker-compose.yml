@@ -5,8 +5,8 @@ services:
         image: 'gedgo_app'
         env_file: '.env'
         container_name: 'gedgo_app'
-        # command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
-        command: ['uvicorn', '--host=0.0.0.0', '--reload', 'asgi:application']
+        command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+        # command: ['uvicorn', '--host=0.0.0.0', '--reload', 'asgi:application']
         ports:
             - '8000:8000'
         volumes:

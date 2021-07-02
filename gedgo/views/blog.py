@@ -1,11 +1,15 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.db.models.functions import Trunc
 
 from gedgo.models import BlogPost
 from gedgo.views.util import render, process_comments
 
 from datetime import datetime
+from pytz import timezone
+
+eastern = timezone('US/Eastern')
 
 
 @login_required
@@ -18,7 +22,7 @@ def blog(request, year, month):
     if month:
         posts = posts.filter(created__month=month)
 
-    paginator = Paginator(posts, 2)
+    paginator = Paginator(posts, 5)
 
     try:
         page = int(request.GET.get("page", '1'))
@@ -30,9 +34,14 @@ def blog(request, year, month):
     except (InvalidPage, EmptyPage):
         posts = paginator.page(paginator.num_pages)
 
-    months = set(
+    months = (
         (d.year, d.month, datetime(2012, d.month, 1).strftime('%B'))
-        for d in BlogPost.objects.values_list('created', flat=True))
+        for d in BlogPost.objects \
+                .annotate(group=Trunc('created', 'month', tzinfo=eastern)) \
+                .order_by('-group') \
+                .distinct() \
+                .values_list('group', flat=True)
+    )
 
     return render(
         request,

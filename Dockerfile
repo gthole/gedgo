@@ -17,4 +17,4 @@ RUN mkdir -p /static && \
 
 USER app
 
-CMD uvicorn --host=0.0.0.0 asgi:application
+CMD sh ./run.sh

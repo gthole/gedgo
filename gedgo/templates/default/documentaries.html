@@ -21,7 +21,7 @@
 {% block content %}
 {% if documentaries.exists %}
     {% for documentary in documentaries.iterator %}
-      <div class="row">
+      <div class="row documentary">
         <div class="col-xs-6 col-sm-3">
           <a class="pull-left" href="/gedgo/documentaries/{{ documentary.title | urlencode }}/">
             <img style="width: 100%" class="documentary-thumb media-object" src="/gedgo/media/gedcom/{{ documentary.thumb.docfile.name }}?size=w640h480">
